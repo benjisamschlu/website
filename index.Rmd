@@ -1,5 +1,16 @@
 ---
 title: "Benjamin Schluter"
 site: distill::distill_website
-listing: posts
+image: "ben_pic.jpg"
+links:
+  - label: '`r fontawesome::fa("github")`'
+    url: "https://github.com/benjisamschlu"
+  - label: '`r fontawesome::fa("twitter")`'
+    url: "https://twitter.com/Bensam_Schluter"
+  - label: '`r fontawesome::fa("paper-plane")`'
+    url: "mailto:benjamin-samuel.schluter@uclouvain.be"
+output:
+  postcards::jolla
 ---
+ 
+I am a PhD student at UCLouvain, Belgium. My thesis focuses on mortality estimation in uncertain settings using Bayesian methods. Demographer, interested in statistics, applied mathematics, science of science and R.
