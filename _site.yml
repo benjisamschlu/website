@@ -1,5 +1,6 @@
 name: "website"
 title: "Benjamin Schluter"
+theme: theme.css
 description: |
   Benjamin Schluter
 output_dir: "_site"

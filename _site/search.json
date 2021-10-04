@@ -6,21 +6,21 @@
       "description": "Some additional details about the blog",
       "author": [],
       "contents": "\r\n\r\n\r\n\r\n",
-      "last_modified": "2021-10-04T10:10:57+02:00"
+      "last_modified": "2021-10-04T14:42:26+02:00"
     },
     {
       "path": "blog.html",
       "title": "Blog",
       "author": [],
       "contents": "\r\n\r\n\r\n\r\n",
-      "last_modified": "2021-10-04T10:11:03+02:00"
+      "last_modified": "2021-10-04T14:42:32+02:00"
     },
     {
       "path": "index.html",
       "title": "Benjamin Schluter",
       "author": [],
       "contents": "\r\n\r\n          \r\n      \r\n      Benjamin Schluter\r\n      \r\n      \r\n      Home\r\n      Blog\r\n      About\r\n      ☰\r\n      \r\n      \r\n      \r\n        \r\n          \r\n            Benjamin Schluter\r\n          \r\n          \r\n            \r\n              I am a PhD student at UCLouvain, Belgium. My thesis focuses on mortality estimation in uncertain settings using Bayesian methods. Demographer, interested in statistics, applied mathematics, science of science and R.\r\n            \r\n            \r\n              I am a PhD student at UCLouvain, Belgium. My thesis focuses on mortality estimation in uncertain settings using Bayesian methods. Demographer, interested in statistics, applied mathematics, science of science and R.\r\n            \r\n          \r\n\r\n          \r\n            \r\n              \r\n                  \r\n                    \r\n                      \r\n                  \r\n                \r\n                                \r\n                  \r\n                    \r\n                      \r\n                  \r\n                \r\n                                \r\n                  \r\n                    \r\n                      \r\n                  \r\n                \r\n                              \r\n          \r\n\r\n          \r\n            \r\n              \r\n                                \r\n                  \r\n                    \r\n                \r\n                                \r\n                  \r\n                    \r\n                \r\n                                \r\n                  \r\n                    \r\n                \r\n                              \r\n            \r\n          \r\n        \r\n      \r\n    \r\n\r\n    \r\n    \r\n    ",
-      "last_modified": "2021-10-04T10:11:08+02:00"
+      "last_modified": "2021-10-04T14:42:38+02:00"
     }
   ],
   "collections": ["posts/posts.json"]
