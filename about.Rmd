@@ -1,9 +1,10 @@
 ---
-title: "About this blog"
-description: |
-  Some additional details about the blog
+title: "About"
 ---
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = FALSE)
 ```
+
+
+I am a PhD student at UCLouvain, Belgium. My thesis focuses on mortality estimation in uncertain settings using Bayesian methods. Demographer, interested in statistics, applied mathematics, science of science and R.

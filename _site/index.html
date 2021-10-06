@@ -458,12 +458,12 @@
       
       /* Optional: embed custom fonts here with `@import`          */
       /* This must remain at the top of this file.                 */
-      
+      @import url('https://fonts.googleapis.com/css2?family=Roboto');
       
       
       html {
         /*-- Main font sizes --*/
-        --title-size:      50px;
+        --title-size:      30px;
         --body-size:       1.06rem;
         --code-size:       14px;
         --aside-size:      12px;
@@ -475,10 +475,10 @@
         --aside-color:     rgba(0, 0, 0, 0.6);
         --fig-cap-color:   rgba(0, 0, 0, 0.6);
         /*-- Specify custom fonts ~~~ must be imported above   --*/
-        --heading-font:    sans-serif;
-        --mono-font:       monospace;
-        --body-font:       sans-serif;
-        --navbar-font:     sans-serif;  /* websites + blogs only */
+        --heading-font:    "Roboto", sans-serif;
+        --mono-font:       "Roboto", monospace;
+        --body-font:       "Roboto", sans-serif;
+        --navbar-font:     "Roboto", sans-serif;  /* websites + blogs only */
       }
       
       /*-- ARTICLE METADATA --*/
@@ -507,11 +507,11 @@
       /* These properties only apply to Distill sites and blogs  */
       
       .distill-site-header {
-        --title-size:       36px; /* 18px */
-        --text-color:       rgba(255, 255, 255, 0.8);
+        --title-size:       30px; /* 18px */
+        --text-color:       rgba(0, 0, 0, 0.8); /* rgba(255, 255, 255, 0.8) */
         --text-size:        25px; /* 18px */
-        --hover-color:      white;
-        --bkgd-color:       #0F2E3D;
+        --hover-color:      teal;
+        --bkgd-color:       white; /* #0F2E3D */
       }
       
       .distill-site-footer {
@@ -523,6 +523,10 @@
       
       /*-- Additional custom styles --*/
       /* Add any additional CSS rules below                      */
+      
+      .distill-site-nav {
+        font-weight: 900;
+      }
       </style>
       <style type="text/css">
       /* base style */
@@ -687,7 +691,7 @@
       <header class="header header--fixed" role="banner">
       <nav class="distill-site-nav distill-site-header">
       <div class="nav-left">
-      <a href="index.html" class="title">Benjamin Schluter</a>
+      <a href="index.html" class="title">BENJAMIN SCHLUTER</a>
       </div>
       <div class="nav-right">
       <a href="index.html">Home</a>
@@ -710,10 +714,10 @@
           </div>
           <div class="row justify-content-center align-items-center">
             <div class="col-6 mt-3 text-center d-none d-sm-block">
-              <p>I am a PhD student at UCLouvain, Belgium. My thesis focuses on mortality estimation in uncertain settings using Bayesian methods. Demographer, interested in statistics, applied mathematics, science of science and R.</p>
+              <p>PhD student in Demography at University of Louvain (UCLouvain)</p>
             </div>
             <div class="col-11 mt-3 text-center d-block d-sm-none">
-              <p>I am a PhD student at UCLouvain, Belgium. My thesis focuses on mortality estimation in uncertain settings using Bayesian methods. Demographer, interested in statistics, applied mathematics, science of science and R.</p>
+              <p>PhD student in Demography at University of Louvain (UCLouvain)</p>
             </div>
           </div>
 
