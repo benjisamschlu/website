@@ -1,5 +1,5 @@
 ---
-title: "Benjamin Schluter"
+title: "Benjamin Schlüter"
 site: distill::distill_website
 image: "ben_pic.jpg"
 links:
@@ -7,10 +7,12 @@ links:
     url: "https://github.com/benjisamschlu"
   - label: '`r fontawesome::fa("twitter")`'
     url: "https://twitter.com/Bensam_Schluter"
-  - label: '`r fontawesome::fa("paper-plane")`'
+  - label: '`r fontawesome::fa("envelope")`'
     url: "mailto:benjamin-samuel.schluter@uclouvain.be"
 output:
   postcards::jolla
 ---
  
-PhD student in Demography at University of Louvain (UCLouvain)
+**PhD student in Demography** 
+
+**University of Louvain (UCLouvain)**
