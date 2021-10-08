@@ -1,11 +1,10 @@
 ---
-title: "welcome"
+title: "Introduction to Bayesian Temporal Smoothing"
 description: |
-  A short description of the post.
+  A short introduction to Temporal Smoothing of a proportion with Bayesian statistics. Code in R and STAN presented in the post.
 author:
-  - name: Nora Jones
-    url: https://example.com/norajones
-date: 10-04-2021
+  - name: Benjamin Schlüter
+date: 10-08-2021
 output:
   distill::distill_article:
     self_contained: false

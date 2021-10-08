@@ -1,36 +1,36 @@
 [
   {
     "path": "posts/2021-10-04-welcome/",
-    "title": "welcome",
-    "description": "A short description of the post.",
+    "title": "Introduction to Bayesian Temporal Smoothing",
+    "description": "A short introduction to Temporal Smoothing of a proportion with Bayesian statistics. Code in R and STAN presented in the post.",
     "author": [
       {
-        "name": "Nora Jones",
-        "url": "https://example.com/norajones"
+        "name": "Benjamin Schlüter",
+        "url": {}
       }
     ],
-    "date": "2021-10-04",
+    "date": "2021-10-08",
     "categories": [],
     "contents": "\r\nDistill is a publication format for scientific and technical writing, native to the web.\r\nLearn more about using Distill at https://rstudio.github.io/distill.\r\n\r\n\r\n\r\n",
     "preview": {},
-    "last_modified": "2021-10-04T10:08:18+02:00",
+    "last_modified": "2021-10-08T18:23:57+02:00",
     "input_file": {}
   },
   {
     "path": "posts/welcome/",
-    "title": "Welcome to Benjamin Schluter",
-    "description": "Welcome to our new blog, Benjamin Schluter. We hope you enjoy \nreading what we have to say!",
+    "title": "Demography of Belgium",
+    "description": "Demographic indicators on Belgium's population with cool data visualizations",
     "author": [
       {
-        "name": "Nora Jones",
+        "name": "Benjamin Schlüter",
         "url": "https://example.com/norajones"
       }
     ],
-    "date": "2021-10-03",
+    "date": "2021-10-08",
     "categories": [],
     "contents": "\r\n\r\n\r\n\r\n",
     "preview": {},
-    "last_modified": "2021-10-03T13:19:46+02:00",
+    "last_modified": "2021-10-08T18:35:26+02:00",
     "input_file": {}
   }
 ]
