@@ -1,22 +1,5 @@
 [
   {
-    "path": "posts/2021-10-04-welcome/",
-    "title": "Introduction to Bayesian Temporal Smoothing",
-    "description": "A short introduction to Temporal Smoothing of a proportion with Bayesian statistics. Code in R and STAN presented in the post.",
-    "author": [
-      {
-        "name": "Benjamin Schlüter",
-        "url": {}
-      }
-    ],
-    "date": "2021-10-08",
-    "categories": [],
-    "contents": "\r\nDistill is a publication format for scientific and technical writing, native to the web.\r\nLearn more about using Distill at https://rstudio.github.io/distill.\r\n\r\n\r\n\r\n",
-    "preview": {},
-    "last_modified": "2021-10-08T18:23:57+02:00",
-    "input_file": {}
-  },
-  {
     "path": "posts/welcome/",
     "title": "Demography of Belgium",
     "description": "Demographic indicators on Belgium's population with cool data visualizations",
@@ -32,5 +15,22 @@
     "preview": {},
     "last_modified": "2021-10-08T18:35:26+02:00",
     "input_file": {}
+  },
+  {
+    "path": "posts/2021-10-04-welcome/",
+    "title": "Introduction to Bayesian Temporal Smoothing",
+    "description": "A short introduction to Temporal Smoothing of a proportion with Bayesian statistics. Code in R and STAN presented in the post.",
+    "author": [
+      {
+        "name": "Benjamin Schlüter",
+        "url": {}
+      }
+    ],
+    "date": "2021-10-08",
+    "categories": [],
+    "contents": "\r\nSee slides 13, 30-32 from part 2 Wakefield to defines the topics of this post.\r\nSample prevalence in a area (small- medium size: impact on variation of proportion)\r\nBAYESIAN formula good for smoothing (prior)\r\n\r\n\r\n\r\n\r\n\r\n\r\nProportion of individuals with a characteristic over time.\r\n\r\n\r\n\r\n\r\n\r\n\r\n",
+    "preview": "posts/2021-10-04-welcome/temp_smooth_p_files/figure-html5/unnamed-chunk-3-1.png",
+    "last_modified": "2021-10-10T19:15:39+02:00",
+    "input_file": "temp_smooth_p.knit.md"
   }
 ]
