@@ -19,5 +19,20 @@ knitr::opts_chunk$set(echo = FALSE)
 
 ```
 
+Population evolution over time
 
+Median age of Belgian
 
+Population pyramid on 3 time points
+
++65 share variation across districts/commune?
+
+Dependency ratio on the same time points
+
+Fertility (age at first birth, ASFR, PASFR)
+
+Seasonality of death
+
+Male to Female ratio over age
+
+Mortality ?

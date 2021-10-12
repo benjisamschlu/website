@@ -25,6 +25,7 @@ BAYESIAN formula good for smoothing (prior)
 require(tidyverse)
 require(scales)
 require(viridis)
+library(rstan)
 ```
 
 
@@ -55,14 +56,137 @@ df %>%
         ggplot(aes(x = t, y = p)) +
         geom_line(aes(col = "true proportion"),
                   linetype = "dashed") +
-        geom_point(aes(x = t, y = p.sim, col = "random realizations")) +
+        geom_point(aes(x = t, y = p.sim, col = "sampled proportion")) +
         theme_bw() +
         theme(legend.position = c(0.35, 0.79),
               legend.title = element_blank()) +
         scale_color_manual(values = c("true proportion" = "#287D8EFF",
-                                      "random realizations" = "#FCA007FF")) +
+                                      "sampled proportion" = "#FCA007FF")) +
         labs(y = "Proportion", 
              x = "Time") +
         facet_wrap( ~ n)
 ```
 
+Estimating RW(1) model
+
+```{r, echo=FALSE}
+# STAN data
+# create data matrix
+event_list = sapply(1:81, function(i){
+  c(rep(1, df$sim[i]), rep(0, df$n[i] - df$sim[i]))
+})
+event_vector = as.vector(event_list)
+time_vector = rep(1:81, each = 100)
+
+
+
+stan_data = list(
+  t = time_vector,
+  y = event_vector,
+  N = length(time_vector),
+  T_pts = length(0:80)
+  )
+
+```
+
+
+```{r, eval=FALSE, echo=TRUE}
+# STAN code
+data {
+  int<lower=0> N; // number of lines
+  int<lower=0> T_pts; // number of time points
+  
+  int<lower=0, upper=1> y[N]; // success/failure
+  int<lower=1, upper=81> t[N]; // time point of success/failure
+}
+parameters {
+  real alpha;
+  vector[T_pts] phi;
+  real<lower=0> sigma;
+}
+transformed parameters {
+  vector[T_pts] eta;
+  vector[T_pts] p_hat;
+
+  eta = alpha + phi;
+  
+  for (i in 1:T_pts){
+      p_hat[i] = 1/(1+exp(-eta[i]));
+  }
+}
+model {
+  
+  alpha ~ normal(0, 10);
+  phi[1] ~ normal(0, 10);
+  phi[2:T_pts] ~ normal(phi[1:(T_pts-1)], sigma);
+  sigma ~ normal(0, 10);
+  
+  for (i in 1:N) {
+      y[i] ~ bernoulli_logit(eta[ t[i] ]);
+  }
+}
+```
+
+
+```{r, echo=FALSE, eval=FALSE}
+# fit model
+
+# options(mc.cores = parallel::detectCores()-1)
+# 
+# fit = stan("./modeling/stan/temp_smooth_rw.stan",
+#            iter = 2000,
+#            data = stan_data)
+# saveRDS(fit, "./modeling/estimates/temp_smooth_rw1.rda")
+
+```
+
+
+
+
+```{r, echo=FALSE}
+
+# load estimates
+fit = readRDS("./modeling/estimates/temp_smooth_rw1.rda")
+
+# exctract estimates
+p_hat = as.matrix(fit, "p_hat")
+df.est = apply(p_hat, 2, quantile, probs = c(0.025, 0.5, 0.975)) %>% 
+  as.data.frame.table() %>% 
+  pivot_wider(names_from = Var1, values_from = Freq) %>% 
+  rename("lower" = "2.5%",
+         "median" = "50%",
+         "upper" = "97.5%") %>% 
+  mutate(t = 0:80)
+# plot fitted vs observed
+df.fitted = df %>% 
+  filter(n == 100) %>% 
+  left_join(df.est %>% 
+              select(!parameters),
+            by = "t")
+ 
+```
+
+
+
+```{r, echo=FALSE}
+
+df.fitted %>% 
+        ggplot(aes(x = t, y = p)) +
+        geom_line(aes(col = "true proportion"),
+                  linetype = "dashed") +
+        geom_line(aes(y = median, col = "RW(1) fit")) +
+        geom_ribbon(aes(ymin = lower, ymax = upper, col = "RW(1) fit", 
+                        fill = "RW(1) fit"),
+                  alpha = 0.2) +
+        geom_point(aes(x = t, y = p.sim, col = "sampled proportion")) +
+        theme_bw() +
+        theme(legend.position = c(0.35, 0.79),
+              legend.title = element_blank()) +
+        scale_color_manual(values = c("true proportion" = "#287D8EFF",
+                                      "sampled proportion" = "#FCA007FF",
+                                      "RW(1) fit" = "black")) +
+        labs(y = "Proportion", 
+             x = "Time")
+```
+ 
+ 

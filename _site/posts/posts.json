@@ -28,9 +28,9 @@
     ],
     "date": "2021-10-08",
     "categories": [],
-    "contents": "\r\nSee slides 13, 30-32 from part 2 Wakefield to defines the topics of this post.\r\nSample prevalence in a area (small- medium size: impact on variation of proportion)\r\nBAYESIAN formula good for smoothing (prior)\r\n\r\n\r\n\r\n\r\n\r\n\r\nProportion of individuals with a characteristic over time.\r\n\r\n\r\n\r\n\r\n\r\n\r\n",
+    "contents": "\r\nSee slides 13, 30-32 from part 2 Wakefield to defines the topics of this post.\r\nSample prevalence in a area (small- medium size: impact on variation of proportion)\r\nBAYESIAN formula good for smoothing (prior)\r\n\r\n\r\n\r\n\r\n\r\n\r\nProportion of individuals with a characteristic over time.\r\n\r\n\r\n\r\nEstimating RW(1) model\r\n\r\n\r\n\r\n\r\n# STAN code\r\ndata {\r\n  int<lower=0> N; // number of lines\r\n  int<lower=0> T_pts; // number of time points\r\n  \r\n  int<lower=0, upper=1> y[N]; // success/failure\r\n  int<lower=1, upper=81> t[N]; // time point of success/failure\r\n}\r\nparameters {\r\n  real alpha;\r\n  vector[T_pts] phi;\r\n  real<lower=0> sigma;\r\n}\r\ntransformed parameters {\r\n  vector[T_pts] eta;\r\n  vector[T_pts] p_hat;\r\n\r\n  eta = alpha + phi;\r\n  \r\n  for (i in 1:T_pts){\r\n      p_hat[i] = 1/(1+exp(-eta[i]));\r\n  }\r\n}\r\nmodel {\r\n  \r\n  alpha ~ normal(0, 10);\r\n  phi[1] ~ normal(0, 10);\r\n  phi[2:T_pts] ~ normal(phi[1:(T_pts-1)], sigma);\r\n  sigma ~ normal(0, 10);\r\n  \r\n  for (i in 1:N) {\r\n      y[i] ~ bernoulli_logit(eta[ t[i] ]);\r\n  }\r\n}\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n",
     "preview": "posts/2021-10-04-welcome/temp_smooth_p_files/figure-html5/unnamed-chunk-3-1.png",
-    "last_modified": "2021-10-10T19:15:39+02:00",
+    "last_modified": "2021-10-12T21:50:54+02:00",
     "input_file": "temp_smooth_p.knit.md"
   }
 ]
