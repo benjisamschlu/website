@@ -1,0 +1,127 @@
+---
+title: "Maximum likelihood estimation of mortality models"
+description: |
+  Estimates the Log-quadratic model of mortality with maximum likelihood
+author:
+  - name: Benjamin Schlüter
+date: 10-19-2021
+output:
+  distill::distill_article:
+    self_contained: false
+---
+
+This blog post shows how to estimate parameters of a mortality model by maximum likelihood instead of using regression. The aim is to show the influence of outliers at the highest age on the parameters.
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE)
+```
+
+```{r, echo = FALSE}
+library(tidyverse)
+```
+
+
+```{r tidy data, echo = FALSE}
+dth = read.delim("./modeling/data/dth_1x1.txt", 
+                 skip = 1,
+                 sep = "", 
+                 stringsAsFactors=FALSE,
+                 header = TRUE)
+
+exp = read.delim("./modeling/data/exp_1x1.txt", 
+                 skip = 1,
+                 sep = "", 
+                 stringsAsFactors=FALSE,
+                 header = TRUE)
+
+df.dth = dth %>% 
+  filter(Year == 2015) %>% select(Year, Age, Male) %>% 
+  mutate(Male = as.numeric(Male))
+
+df.exp = exp %>% 
+  filter(Year == 2015) %>% select(Year, Age, Male)
+
+df = df.dth %>% 
+  left_join(df.exp, 
+            by = c("Year", "Age")) %>% 
+  rename("D" = Male.x,
+         "N" = Male.y) %>% 
+  mutate(mx = D/N,
+         Age = ifelse(Age == "110+", 110, Age),
+         Age = as.numeric(Age))
+
+ggplot(df, aes(x = Age, y = log(mx), group = 1)) +
+  geom_line() +
+  theme_bw()
+
+```
+
+
+```{r regression estimation, echo = FALSE}
+fit.reg = lm(log(mx) ~ 1 + Age, 
+             df %>% filter(Age >= 30,
+                           Age < 107))
+coef.reg = fit.reg$coefficients
+exp(coef.reg)
+
+ggplot(df %>% filter(Age >= 30,
+                     Age < 107), 
+       aes(x = Age, y = log(mx), group = 1)) +
+  geom_line() +
+  geom_abline(slope = coef.reg[2],
+              intercept = coef.reg[1],
+              col = "blue") +
+  theme_bw()
+```
+
+
+```{r likelihood estimation 1, echo = FALSE, eval = FALSE}
+pois.lik <- function(pars, data){
+  alpha = pars[1]
+  beta = pars[2]
+  ll = with(data, sum( D*(alpha+beta*Age) - N*exp(alpha+beta*Age) ) )
+  return(-ll)
+}
+# pois.lik(c(5.1e-06, 1.1), 
+#           df %>% filter(Age >= 30,
+#                         Age < 107))
+
+fit.pars = optim(c(-12, 0.1), pois.lik, 
+      data=df %>% filter(Age >= 30,
+                           Age < 107), 
+      method="BFGS")
+
+ggplot(df %>% filter(Age >= 30,
+                     Age < 107), 
+       aes(x = Age, y = log(mx), group = 1)) +
+  geom_line() +
+  geom_abline(slope = fit.pars$par[2],
+              intercept = fit.pars$par[1],
+              col = "blue") +
+  theme_bw()
+
+# TO DO: add noise at old age or decrease sample size
+# Compare likelihood and regression
+# Do that for Log-quad model
+```
+
+
+```{r likelihood estimation 2, echo = FALSE, eval = FALSE}
+# Try to do it with binomial distribution
+binom.lik <- function(pars, data){
+  alpha = pars[1]
+  beta = pars[2]
+  ll = with(data, sum( dth*log( 1 - exp ( -(alpha/beta)*(exp(beta*(Age+1)) - exp(beta*Age) ) ) ) + (exp-dth)*(-(alpha/beta)*(exp(beta*(Age+1)) - exp(beta*Age) )) ))
+  return(-ll)
+}
+binom.lik(c(2,0.1), df %>% filter(Age >= 30,
+                           Age < 107))
+
+fit.pars = optim(c(0.01, 2), binom.lik, 
+      data=df %>% filter(Age >= 30,
+                           Age < 107), 
+      method="L-BFGS-B",
+      lower = c(0, 0),
+      upper = rep(Inf, 2))
+```
+

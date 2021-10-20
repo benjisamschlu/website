@@ -8,23 +8,23 @@ knitr::opts_chunk$set(echo = FALSE)
 
 # Bio
 
-I am a PhD student at [UCLouvain](https://uclouvain.be/fr/index.html), Belgium in the demography department [DEMO](https://uclouvain.be/en/research-institutes/iacchos/demo). My thesis focuses on mortality estimation at the subnational level using Bayesian methods. I am interested in statistics, applied mathematics, R, data visualization and science of science. 
+I am a PhD student at [UCLouvain](https://uclouvain.be/fr/index.html), Belgium in the demography department [(DEMO)](https://uclouvain.be/en/research-institutes/iacchos/demo). My thesis focuses on mortality estimation at the subnational level using Bayesian methods. I am interested in statistics, applied mathematics, R, data visualization and science of science. 
 
-Outside of work I am interested in cycling, trekking, basket balling and accordeon playing.
+Outside of work, I am interested in cycling, trekking, basket balling and accordeon playing.
 
 
 # Experience
 
-I previously worked at the [Centre for Research on the Epidemiology of Disasters](https://www.cred.be/) (CRED) where I conducted statistical analyses on different research projects: health profiles and health needs of non-EU migrants arriving in Greece; impact of the 2015 Earthquake on hospital admissions in Kathmandu (Nepal); mortality estimation of civilian during the Syrian conflict.
+Before starting my PhD, I worked at the [Centre for Research on the Epidemiology of Disasters](https://www.cred.be/) (CRED) where I conducted statistical analyses on different research projects: evaluating health profiles and health needs of non-EU migrants arriving in Greece with Médecins du Monde data; assessing the impact of the 2015 Earthquake on hospital admissions in Kathmandu (Nepal) using Tribhuvan University Teaching Hospital data; estimating the civilian mortality during the Syrian conflict focusing on deaths recorded by the Syrian Violation Documentation Center (VDC).
 
 
 # Education
 
-I did my master in quantitative economics at the Free University Brussels (ULB). I then trained myself further in statistics by first following an online micromaster in statistics and data science at the Massachusetts Institute of Technology (MIT) and then, by validating statistics courses in my actual university (UCLouvain).
+I did my master in quantitative economics at the Free University Brussels (ULB). I trained myself further in statistics by first following an [online micromaster](https://micromasters.mit.edu/ds/) in Statistics and Data Science at the Massachusetts Institute of Technology (MIT) and then, by validating statistics courses at UCLouvain.
 
 I also had the opportunity to follow several workshops (usually 1 week long):
 
-* *[Statistical Demography](https://sciencesmaths-paris.fr/f/actualites-fr/cours-raftery)* by Adrian E. Raftery at the Fondation des Sciences Mathématiques de Paris in 2021 
+* *[Statistical Demography](https://sciencesmaths-paris.fr/f/actualites-fr/cours-raftery)* by Adrian E. Raftery at the Fondation des Sciences Mathématiques de Paris (FSMP) in 2021 
 
 * *Bayesian Spatio-Temporal health Modeling* by Andrew B. Lawson at the Medical University of South Carolina (online) in 2021
 

@@ -1,24 +1,28 @@
 data {
-  int<lower=0> t; // number of time points
-  vector[t] y; // number of people having a given characteristic
-  vector[t] n; // 
+  int<lower=0> N; // number of lines
+  int<lower=0> T_pts; // number of time points
+  
+  int<lower=0, upper=1> y[N]; // success/failure
+  int<lower=1, upper=81> t[N]; // time point of success/failure
 }
 
 parameters {
-  real<lower=0, upper=1> p[t];
-  real alpha[1];
-  real phi[t];
+  real alpha;
+  vector[T_pts] phi;
   real<lower=0> sigma;
 }
 
 transformed parameters {
-  real eta[t];
-  vector[t] ones;
+  vector[T_pts] eta;
+  vector[T_pts] p_hat;
 
-  ones = rep_vector(1, t);
-  
+
+  // ones = rep_vector(1, t);
   eta = alpha + phi;
-  p = exp(eta)/(ones + exp(eta));
+  
+  for (i in 1:T_pts){
+      p_hat[i] = 1/(1+exp(-eta[i]));
+  }
   
 }
 
@@ -27,10 +31,13 @@ model {
   // priors
   alpha ~ normal(0, 10);
   phi[1] ~ normal(0, 10);
-  phi[2:t] ~ normal(phi[1:(t-1)], sigma);
+  phi[2:T_pts] ~ normal(phi[1:(T_pts-1)], sigma);
   sigma ~ normal(0, 10);
   
   // likelihood
-  y ~ binomial_logit_lpmf(y | n, eta);
+  for (i in 1:N) {
+      y[i] ~ bernoulli_logit(eta[ t[i] ]);
+
+  }
 }
 
