@@ -1,7 +1,7 @@
 ---
-title: "Maximum likelihood estimation of mortality models"
+title: "Maximum likelihood estimation of mortality models with Newton-Raphson algorithm"
 description: |
-  Estimates the Log-quadratic model of mortality with maximum likelihood
+  Estimation of the Gompertz and Log-quadratic models of mortality with maximum likelihood by applying Newton-Raphson maximization algorithm
 author:
   - name: Benjamin Schlüter
 date: 10-19-2021
@@ -10,7 +10,7 @@ output:
     self_contained: false
 ---
 
-This blog post shows how to estimate parameters of a mortality model by maximum likelihood instead of using regression. The aim is to show the influence of outliers at the highest age on the parameters.
+This blog post shows how to estimate parameters of a mortality model by maximum likelihood instead of using regression. The aim is to show the influence of outliers at the highest age on the parameters.Regression cannot estimates mx=0 while this is not a problem for likelihoo estimation. Optim() does not work and no real control of what is happening.
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = FALSE)
@@ -18,110 +18,337 @@ knitr::opts_chunk$set(echo = FALSE)
 
 ```{r, echo = FALSE}
 library(tidyverse)
+library(viridis)
+library(scales)
 ```
 
 
+We'll study old age mortality, higher or equal than 80 years old.
+
 ```{r tidy data, echo = FALSE}
-dth = read.delim("./modeling/data/dth_1x1.txt", 
+dth = read.delim("./modeling/data/dthES_1x1.txt", 
                  skip = 1,
                  sep = "", 
                  stringsAsFactors=FALSE,
                  header = TRUE)
 
-exp = read.delim("./modeling/data/exp_1x1.txt", 
+exp = read.delim("./modeling/data/expES_1x1.txt", 
                  skip = 1,
                  sep = "", 
                  stringsAsFactors=FALSE,
                  header = TRUE)
 
 df.dth = dth %>% 
-  filter(Year == 2015) %>% select(Year, Age, Male) %>% 
-  mutate(Male = as.numeric(Male))
+  filter(Year == 2018) %>% select(Year, Age, Female) %>% 
+  mutate(Female = as.numeric(Female))
 
 df.exp = exp %>% 
-  filter(Year == 2015) %>% select(Year, Age, Male)
+  filter(Year == 2018) %>% select(Year, Age, Female)
 
 df = df.dth %>% 
   left_join(df.exp, 
             by = c("Year", "Age")) %>% 
-  rename("D" = Male.x,
-         "N" = Male.y) %>% 
+  rename("D" = Female.x,
+         "N" = Female.y) %>% 
   mutate(mx = D/N,
          Age = ifelse(Age == "110+", 110, Age),
-         Age = as.numeric(Age))
+         Age = as.numeric(Age),
+         Age2 = Age^2)
 
-ggplot(df, aes(x = Age, y = log(mx), group = 1)) +
-  geom_line() +
-  theme_bw()
-
+ggplot(df, aes(x = Age, y = log(mx))) +
+  geom_point(data = df %>% filter(Age >= 80), 
+             size = 2, col = "#802582FF") +
+  geom_point(data = df %>% filter(Age < 80), 
+             size = 2, col = "#802582FF",
+             alpha = 0.2) +
+  geom_rect(xmin = 79, xmax=111, ymin = -5, ymax = 0.1,
+            alpha = 0.1, col = "#238A8DFF", fill = NA,
+            size = 2) + 
+  theme_bw() +
+  theme(plot.title = element_text(size = 16, face = "bold",hjust = 0.5),
+        panel.grid.major.y = element_line(linetype = "dashed"),
+        panel.grid.minor.y = element_line(linetype = "dashed"),
+        panel.grid.major.x = element_blank(),
+        panel.grid.minor.x = element_blank(),
+        panel.border = element_blank(),
+        axis.line.x = element_line(size = 0.5, linetype = "solid", colour = "black"),
+        axis.line.y = element_line(size = 0.5, linetype = "solid", colour = "black")) +
+  annotate("text",
+           label = "Old age \n mortality",
+            x = 95,
+            y = -3.5,
+            col = "#238A8DFF") +
+  labs(title = "Mortality's Age Schedule",
+       y = expression(paste("log(", {}[1], m[x], ")" )))
 ```
 
 
 ```{r regression estimation, echo = FALSE}
-fit.reg = lm(log(mx) ~ 1 + Age, 
-             df %>% filter(Age >= 30,
-                           Age < 107))
-coef.reg = fit.reg$coefficients
-exp(coef.reg)
+# remove young age mortality
+df = df %>% filter(Age >= 80)
 
-ggplot(df %>% filter(Age >= 30,
-                     Age < 107), 
-       aes(x = Age, y = log(mx), group = 1)) +
-  geom_line() +
-  geom_abline(slope = coef.reg[2],
-              intercept = coef.reg[1],
-              col = "blue") +
-  theme_bw()
+fit.reg = lm(log(mx) ~ 1 + Age, 
+             df)
+coef.reg = fit.reg$coefficients
+
+```
+
+Newton-Raphson's maximization algorithm.
+
+```{r NR gompertz estimation, echo = TRUE}
+# Design matrix
+X = matrix(c(rep(1, dim(df)[1]), df$Age),
+           ncol = 2)
+# vector of deaths and exposure
+D = df$D
+N = df$N
+# Expected deaths according to
+# alpha
+Dhat = function(alpha) {
+  lambda.hat = X %*% alpha
+  return( as.numeric( N * exp(lambda.hat)))
+}
+# NR algorithm
+next_alpha = function(alpha) {
+  dhat = Dhat(alpha)
+  M = solve ( t(X) %*% diag(dhat) %*% X)
+  v = t(X) %*% (D - dhat)
+  return( alpha + M %*% v)
+}
+
+a = matrix(0, 2, 15)
+for (i in 2:ncol(a)) { a[,i] = next_alpha(a[,i-1])}
+
+```
+
+Alpha values over N-R iterations. Convergence before tenth iteration.
+
+```{r plot iterations NR gompertz, echo = FALSE}
+df.a = t(a) %>% 
+  as.data.frame() %>% 
+  rename("alpha1" = V1,
+         "alpha2" = V2)
+
+ggplot(df.a, aes(x = 1:15)) +
+  geom_line(aes(y = alpha1, col = "alpha1"), size = 1.2) +
+  geom_line(aes(y = alpha2, col = "alpha2"), size = 1.2) +
+  theme_bw() +
+  theme(plot.title = element_text(size = 16, face = "bold",hjust = 0.5),
+        legend.position = c(0.7, 0.55),
+        legend.title = element_blank(),
+        legend.text = element_text(size = 12),
+        legend.direction = "horizontal",
+        panel.grid.major.y = element_line(linetype = "dashed"),
+        panel.grid.minor.y = element_line(linetype = "dashed"),
+        panel.grid.major.x = element_blank(),
+        panel.grid.minor.x = element_blank(),
+        panel.border = element_blank(),
+        axis.line.x = element_line(size = 0.5, linetype = "solid", colour = "black"),
+        axis.line.y = element_line(size = 0.5, linetype = "solid", colour = "black")) +
+  scale_color_manual(values = c("alpha1" = "#C7B76BFF",
+                                "alpha2" = "#00336FFF"),
+                     labels = c(expression(alpha[1]), expression(alpha[2]))) +
+  labs(title = "Alpha parameters over N-R iterations",
+       y = "Values",
+        x = "Iterations")
+
 ```
 
 
-```{r likelihood estimation 1, echo = FALSE, eval = FALSE}
-pois.lik <- function(pars, data){
+Gompertz fit of old age mortality. Regression gives more weights to rates at oldest ages.
+
+```{r plot outputs NR gompertz, echo = FALSE}
+fitted.logmx = X %*% a[, ncol(a)]
+
+df = df %>% 
+  mutate(log.mx.hat.NR.gptz = fitted.logmx,
+         log.mx.hat.reg.gptz = coef.reg[1] + coef.reg[2]*Age)
+
+ggplot(df, aes(x = Age, y = log(mx), group = 1)) +
+  geom_point(size = 2, col = "#802582FF") +  
+  geom_line(aes(x = Age, y = log.mx.hat.NR.gptz, 
+                col = "Gompertz by N-R" ),
+            size = 1.2) +
+  geom_line(aes(x = Age, y = log.mx.hat.reg.gptz, 
+                col = "Gompertz by regression" ),
+            size = 1.2) +
+  theme_bw() +
+  theme(plot.title = element_text(size = 16, face = "bold", hjust = 0.5),
+        legend.position = c(0.8, 0.2),
+        legend.title = element_blank(),
+        legend.text = element_text(size = 12),
+        panel.grid.major.y = element_line(linetype = "dashed"),
+        panel.grid.minor.y = element_line(linetype = "dashed"),
+        panel.grid.major.x = element_line(linetype = "dashed"),
+        panel.grid.minor.x = element_line(linetype = "dashed"),
+        panel.border = element_blank(),
+        axis.line.x = element_line(size = 0.5, linetype = "solid", colour = "black"),
+        axis.line.y = element_line(size = 0.5, linetype = "solid", colour = "black")) +
+  scale_color_manual(values = c("Gompertz by N-R" = "#D6456CFF",
+                                "Gompertz by regression" = "#3F4788FF")) +
+  labs(title = "Gompertz fits",
+       y = expression(paste("log(", {}[1], m[x], ")" )))
+```
+
+
+```{r likelihood estimation gompertz, echo = FALSE, eval = FALSE}
+pois.lik.gmptz <- function(pars, data){
   alpha = pars[1]
   beta = pars[2]
   ll = with(data, sum( D*(alpha+beta*Age) - N*exp(alpha+beta*Age) ) )
   return(-ll)
 }
-# pois.lik(c(5.1e-06, 1.1), 
-#           df %>% filter(Age >= 30,
-#                         Age < 107))
 
-fit.pars = optim(c(-12, 0.1), pois.lik, 
-      data=df %>% filter(Age >= 30,
-                           Age < 107), 
+fit.pars = optim(c(coef.reg[1], coef.reg[2]), pois.lik.gmptz, 
+      data=df, 
       method="BFGS")
-
-ggplot(df %>% filter(Age >= 30,
-                     Age < 107), 
+# Comparison of reg, optim() and NR
+ggplot(df, 
        aes(x = Age, y = log(mx), group = 1)) +
   geom_line() +
+  geom_line(aes(x = Age, y = log.mx.hat.NR.gptz ),
+              col = "blue") +
   geom_abline(slope = fit.pars$par[2],
               intercept = fit.pars$par[1],
-              col = "blue") +
+              col = "navy") +
+  geom_abline(slope = coef.reg[2],
+              intercept = coef.reg[1],
+              col = "red") +
   theme_bw()
 
-# TO DO: add noise at old age or decrease sample size
-# Compare likelihood and regression
-# Do that for Log-quad model
+```
+
+Algorithm only need a third column in design matrix and an additional line in a. Alpha values over N-R iterations. Convergence before tenth iteration.
+
+
+```{r NR log-quad estimation, echo = FALSE}
+# Augment design matrix
+X = matrix(c(rep(1, dim(df)[1]), df$Age, df$Age^2),
+           ncol = 3)
+
+a = matrix(0, 3, 15)
+for (i in 2:ncol(a)) { a[,i] = next_alpha(a[,i-1])}
+# round(a, 4)
+
+df.a = t(a) %>% 
+  as.data.frame() %>% 
+  rename("alpha1" = V1,
+         "alpha2" = V2,
+         "alpha3" = V3)
+
+ggplot(df.a, aes(x = 1:15)) +
+  geom_line(aes(y = alpha1, col = "alpha1"), size = 1.2) +
+  geom_line(aes(y = alpha2, col = "alpha2"), size = 1.2) +
+  geom_line(aes(y = alpha3, col = "alpha3"), size = 1.2) +
+
+  theme_bw() +
+  theme(plot.title = element_text(size = 16, face = "bold",hjust = 0.5),
+        legend.position = c(0.7, 0.55),
+        legend.title = element_blank(),
+        legend.text = element_text(size = 12),
+        legend.direction = "horizontal",
+        panel.grid.major.y = element_line(linetype = "dashed"),
+        panel.grid.minor.y = element_line(linetype = "dashed"),
+        panel.grid.major.x = element_blank(),
+        panel.grid.minor.x = element_blank(),
+        panel.border = element_blank(),
+        axis.line.x = element_line(size = 0.5, linetype = "solid", colour = "black"),
+        axis.line.y = element_line(size = 0.5, linetype = "solid", colour = "black")) +
+  scale_color_manual(values = c("alpha1" = "#C7B76BFF",
+                                "alpha2" = "#00336FFF",
+                                "alpha3" = "#56C667FF"),
+                     labels = c(expression(alpha[1]), 
+                                expression(alpha[2]),
+                                expression(alpha[3]))) +
+  labs(title = "Alpha parameters over N-R iterations",
+       y = "Values",
+        x = "Iterations")
+
+
 ```
 
 
-```{r likelihood estimation 2, echo = FALSE, eval = FALSE}
-# Try to do it with binomial distribution
-binom.lik <- function(pars, data){
+Gompertz and Log-Quadratic fits. Regression outputs more sensitive to outlying value.
+
+```{r plot outputs NR log-quad, echo = FALSE}
+
+fitted.logmx = X %*% a[, ncol(a)]
+
+fit.reg = lm(log(mx) ~ 1 + Age + Age2, 
+             df)
+coef.reg.lq = fit.reg$coefficients
+
+df = df %>% 
+  mutate(log.mx.hat.NR.lq = fitted.logmx,
+         log.mx.hat.reg.lq = coef.reg.lq[1] + coef.reg.lq[2]*Age + coef.reg.lq[3]*Age2)
+
+ggplot(df, aes(x = Age, y = log(mx), group = 1)) +
+  geom_point(size = 2, col = "#802582FF") +  
+  geom_line(aes(x = Age, y = log.mx.hat.NR.gptz, 
+                col = "Gompertz by N-R" ),
+            size = 1.2) +
+  geom_line(aes(x = Age, y = log.mx.hat.NR.lq, 
+                col = "Log-Quadratic by N-R" ),
+            size = 1.2) +
+  geom_line(aes(x = Age, y = log.mx.hat.reg.lq, 
+                col = "Log-Quadratic by regression" ),
+            size = 1.2) +
+  theme_bw() +
+  theme(plot.title = element_text(size = 16, face = "bold", hjust = 0.5),
+        legend.position = c(0.8, 0.2),
+        legend.title = element_blank(),
+        legend.text = element_text(size = 12),
+        panel.grid.major.y = element_line(linetype = "dashed"),
+        panel.grid.minor.y = element_line(linetype = "dashed"),
+        panel.grid.major.x = element_line(linetype = "dashed"),
+        panel.grid.minor.x = element_line(linetype = "dashed"),
+        panel.border = element_blank(),
+        axis.line.x = element_line(size = 0.5, linetype = "solid", colour = "black"),
+        axis.line.y = element_line(size = 0.5, linetype = "solid", colour = "black")) +
+  scale_color_manual(values = c("Gompertz by N-R" = "#D6456CFF",
+                                "Log-Quadratic by N-R" = "#74D055FF",
+                                "Log-Quadratic by regression" = "#6B6C71FF")) +
+  labs(title = "Gompertz and Log-Quadratic fits",
+       y = expression(paste("log(", {}[1], m[x], ")" )))
+
+```
+
+
+
+```{r likelihood estimation log-quad, echo = FALSE, eval = FALSE}
+
+# DOES NOT WORK
+pois.lik.lq <- function(pars, data){
   alpha = pars[1]
-  beta = pars[2]
-  ll = with(data, sum( dth*log( 1 - exp ( -(alpha/beta)*(exp(beta*(Age+1)) - exp(beta*Age) ) ) ) + (exp-dth)*(-(alpha/beta)*(exp(beta*(Age+1)) - exp(beta*Age) )) ))
+  beta1 = pars[2]
+  beta2 = pars[3]
+  ll = with(data, sum( D*(alpha+beta1*Age+beta2*Age2) - N*exp(alpha+beta1*Age+beta2*Age2) ) )
   return(-ll)
 }
-binom.lik(c(2,0.1), df %>% filter(Age >= 30,
-                           Age < 107))
+ 
+fit.reg = lm(log(mx) ~ 1 + Age + Age2, 
+             df)
+coef.reg.lq = fit.reg$coefficients
 
-fit.pars = optim(c(0.01, 2), binom.lik, 
-      data=df %>% filter(Age >= 30,
-                           Age < 107), 
-      method="L-BFGS-B",
-      lower = c(0, 0),
-      upper = rep(Inf, 2))
+df = df %>% 
+  mutate(mx_lq_rg = coef.reg.lq[1] + coef.reg.lq[2]*Age + coef.reg.lq[3]*Age2)
+
+ggplot(df, aes(x = Age, y = log(mx), group = 1)) +
+  geom_line() +
+  geom_line(aes(x = Age, y = mx_lq_rg)) +
+  # geom_abline(slope = fit.pars$par[2],
+  #             intercept = fit.pars$par[1],
+  #             col = "blue") +
+  geom_abline(slope = coef.reg[2],
+              intercept = coef.reg[1],
+              col = "red") +
+  theme_bw()
+
+
+fit.pars = optim(coef.reg.lq, pois.lik.lq, 
+      data=df, 
+      method="BFGS")
+
 ```
+
 

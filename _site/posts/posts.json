@@ -1,8 +1,8 @@
 [
   {
     "path": "posts/2021-10-19-maximum-likelihood-estimation-of-mortality-models/",
-    "title": "Maximum likelihood estimation of mortality models",
-    "description": "Estimates the Log-quadratic model of mortality with maximum likelihood",
+    "title": "Maximum likelihood estimation of mortality models with Newton-Raphson algorithm",
+    "description": "Estimation of the Gompertz and Log-quadratic models of mortality with maximum likelihood by applying Newton-Raphson maximization algorithm",
     "author": [
       {
         "name": "Benjamin Schlüter",
@@ -11,9 +11,9 @@
     ],
     "date": "2021-10-19",
     "categories": [],
-    "contents": "\r\nThis blog post shows how to estimate parameters of a mortality model by maximum likelihood instead of using regression. The aim is to show the influence of outliers at the highest age on the parameters.\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n (Intercept)          Age \r\n5.171124e-06 1.112170e+00 \r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n",
+    "contents": "\r\nThis blog post shows how to estimate parameters of a mortality model by maximum likelihood instead of using regression. The aim is to show the influence of outliers at the highest age on the parameters.Regression cannot estimates mx=0 while this is not a problem for likelihoo estimation. Optim() does not work and no real control of what is happening.\r\n\r\n\r\n\r\nWe’ll study old age mortality, higher or equal than 80 years old.\r\n\r\n\r\n\r\n\r\n\r\n\r\nNewton-Raphson’s maximization algorithm.\r\n\r\n\r\n# Design matrix\r\nX = matrix(c(rep(1, dim(df)[1]), df$Age),\r\n           ncol = 2)\r\n# vector of deaths and exposure\r\nD = df$D\r\nN = df$N\r\n# Expected deaths according to\r\n# alpha\r\nDhat = function(alpha) {\r\n  lambda.hat = X %*% alpha\r\n  return( as.numeric( N * exp(lambda.hat)))\r\n}\r\n# NR algorithm\r\nnext_alpha = function(alpha) {\r\n  dhat = Dhat(alpha)\r\n  M = solve ( t(X) %*% diag(dhat) %*% X)\r\n  v = t(X) %*% (D - dhat)\r\n  return( alpha + M %*% v)\r\n}\r\n\r\na = matrix(0, 2, 15)\r\nfor (i in 2:ncol(a)) { a[,i] = next_alpha(a[,i-1])}\r\n\r\n\r\n\r\nAlpha values over N-R iterations. Convergence before tenth iteration.\r\n\r\n\r\n\r\nGompertz fit of old age mortality. Regression gives more weights to rates at oldest ages.\r\n\r\n\r\n\r\n\r\n\r\n\r\nAlgorithm only need a third column in design matrix and an additional line in a. Alpha values over N-R iterations. Convergence before tenth iteration.\r\n\r\n\r\n\r\nGompertz and Log-Quadratic fits. Regression outputs more sensitive to outlying value.\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n",
     "preview": "posts/2021-10-19-maximum-likelihood-estimation-of-mortality-models/maximum-likelihood-estimation-of-mortality-models_files/figure-html5/tidy data-1.png",
-    "last_modified": "2021-10-20T10:38:04+02:00",
+    "last_modified": "2021-10-22T14:28:09+02:00",
     "input_file": "maximum-likelihood-estimation-of-mortality-models.knit.md"
   },
   {
