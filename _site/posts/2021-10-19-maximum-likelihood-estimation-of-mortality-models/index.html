@@ -2161,17 +2161,21 @@ d-appendix d-footnote-list a.footnote-backlink {
 </div>
 
 <div class="d-article">
-<p>This blog post shows how to estimate parameters of a mortality model by maximum likelihood instead of using regression. The aim is to show the influence of outliers at the highest age on the parameters.Regression cannot estimates mx=0 while this is not a problem for likelihoo estimation. Optim() does not work and no real control of what is happening.</p>
+<p>When studying demographic methods for mortality estimations, we encounter the issue of estimating mortality at old ages where data are sparse (fewer deaths and fewer survivors). In this context, D. M. Feehan (2018) advised to estimate mortality models using maximum likelihood for several reasons. One of the reason that is of interest for this post is that estimating parameters by maximizing a likelihood accounts for the data available at each age, giving less influence to older ages in parameter estimates. In what follows, we will look at the difference between parameters estimated in the context of a simple linear model and parameters estimated in the context of a Maximum Likelihood estimation. The MLE will be performed using the Newton-Raphson (N-R) maximization algorithm to estimate parameters for the Gompertz and Log-Quadratic models.</p>
+<p>Below is the mortality age schedule for Belgium in 2002 where old age mortality showed “unusual” low mortality rates, most likely due to sparse data at these ages. What we will do in the following is to try to model data points in the rectangle showed on the figure.</p>
 <div class="layout-chunk" data-layout="l-body">
 
 </div>
-<p>We’ll study old age mortality, higher or equal than 80 years old.</p>
 <div class="layout-chunk" data-layout="l-body">
 <p><img src="maximum-likelihood-estimation-of-mortality-models_files/figure-html5/tidy%20data-1.png" width="624" /></p>
 </div>
+<h1 id="fitting-mortality-models-by-linear-regression">Fitting mortality models by linear regression</h1>
 <div class="layout-chunk" data-layout="l-body">
 
 </div>
+<p>One solution sometimes performed (and that is not advisable as you will see) is to fit a linear model on the logarithm of the mortality rates. Gompertz and Log-Quadtric model would then be expressed respectively as follow:</p>
+<p><span class="math inline">\(ln(m_x) \sim Normal(\alpha_1 + \alpha_2x, \sigma)\)</span> <span class="math inline">\(ln(m_x) \sim Normal(\alpha_1 + \alpha_2x + \alpha_3x^2, \sigma)\)</span></p>
+<p>where <span class="math inline">\(x \in \{80, 81, .., A\}\)</span> is age from age 80 years old.</p>
 <h1 id="poisson-log-likelihood">Poisson Log Likelihood</h1>
 <p>We assume that deaths, <span class="math inline">\(D_x\)</span>, at each age <span class="math inline">\(x \in \{80, 81, .., A\}\)</span> have a Poisson distribution with expected value equal to the observed exposure <span class="math inline">\(N_x\)</span> times the mortality rate:</p>
 <p><span class="math display">\[D_x \sim Poisson(N_x \mu_x)\]</span> The sample likelihood can be expressed as</p>
