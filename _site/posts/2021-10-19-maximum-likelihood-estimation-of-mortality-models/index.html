@@ -1870,6 +1870,7 @@ d-appendix {
 /* Optional: embed custom fonts here with `@import`          */
 /* This must remain at the top of this file.                 */
 @import url('https://fonts.googleapis.com/css2?family=Roboto');
+@import url('https://fonts.googleapis.com/css2?family=Source Code Pro');
 
 
 html {
@@ -1938,6 +1939,14 @@ d-appendix {
 .distill-site-nav {
   font-weight: 900;
 }
+
+code {
+  font-family: 'Source Code Pro', monospace;
+  font-weight: 650;
+  font-size: 1.1em;
+}
+
+
 
 
 </style>
@@ -2163,7 +2172,26 @@ d-appendix d-footnote-list a.footnote-backlink {
 <div class="layout-chunk" data-layout="l-body">
 
 </div>
-<p>Newton-Raphson’s maximization algorithm.</p>
+<h1 id="poisson-log-likelihood">Poisson Log Likelihood</h1>
+<p>We assume that deaths, <span class="math inline">\(D_x\)</span>, at each age <span class="math inline">\(x \in \{80, 81, .., A\}\)</span> have a Poisson distribution with expected value equal to the observed exposure <span class="math inline">\(N_x\)</span> times the mortality rate:</p>
+<p><span class="math display">\[D_x \sim Poisson(N_x \mu_x)\]</span> The sample likelihood can be expressed as</p>
+<p><span class="math display">\[L(D_x | N_x, \mu_x) = \prod_{x=80}^G \frac{(N_x \mu_X)^{D_x}e^{-(N_x \mu_x)}}{D_x!}\]</span></p>
+<p>Thus the sample log likelihood is</p>
+<p><span class="math display">\[l(\mu_x) = K + \sum_{x=80}^G (D_xln(\mu_x) - \hat{D_x})\]</span></p>
+<p>where <span class="math inline">\(\hat{D_x}=N_x \mu_x\)</span> is the expected number of deaths predicted by the model, <span class="math inline">\(K\)</span> is a constant not depending on <span class="math inline">\(\mu_x\)</span> and <span class="math inline">\(G\)</span> corresponds to the number of age group considered.</p>
+<p>In this post, we will consider two mortality models: Gompertz and Log-Quadratic. In what follows, we show the math for the Gompertz model. Mortality rates are commonly expressed as follow in the Gompertz model</p>
+<p><span class="math display">\[\mu_x = exp(\alpha_1 + \alpha_2x)\]</span> In matrix form we can rewrite that as</p>
+<p><span class="math display">\[\boldsymbol{\lambda} = ln(\boldsymbol{\mu}) = \boldsymbol{X\alpha}\]</span></p>
+<p>where <span class="math inline">\(\boldsymbol{X}\)</span> is a <span class="math inline">\(G \times 2\)</span> design matrix, <span class="math inline">\(\boldsymbol{\alpha}\)</span> is a <span class="math inline">\(2 \times 1\)</span> vector and <span class="math inline">\(ln(\boldsymbol{\mu})\)</span> is a <span class="math inline">\(G \times 1\)</span> vector of log mortality rates.</p>
+<h1 id="maximizing-the-log-likelihood-via-newton-raphson-iteration">Maximizing the Log Likelihood via Newton-Raphson iteration</h1>
+<p>We search <span class="math inline">\(\boldsymbol{\alpha}\)</span> to maximize <span class="math inline">\(\boldsymbol{l(\alpha)}\)</span>. For Newton-Raphson algorithm to do that we need both first and second derivatives of <span class="math inline">\(\boldsymbol{l(\alpha)}\)</span></p>
+<p><span class="math display">\[\frac{\partial \boldsymbol{l(\alpha)}}{ \partial \boldsymbol{\alpha}} = \sum_{x=80}^G(D_x-\hat{D_x})\boldsymbol{x_x} = \boldsymbol{X&#39;(D-\hat{D})} = 0\]</span></p>
+<p>since <span class="math inline">\(\frac{ln(\mu_x)}{\partial \boldsymbol{\alpha}} = \boldsymbol{x_x}\)</span>, <span class="math inline">\(\frac{\partial \mu_x}{\partial \boldsymbol{\alpha}} = \mu_x \boldsymbol{x_x}\)</span> and <span class="math inline">\(\frac{\partial \hat{D_x}}{\partial \boldsymbol{\alpha}} = N_x\mu_x \boldsymbol{x_x} = \hat{D_x}\boldsymbol{x_x}\)</span>.</p>
+<p>The second derivatives are then</p>
+<p><span class="math display">\[\frac{\partial^2 \boldsymbol{l(\alpha)}}{ \partial \boldsymbol{\alpha}\boldsymbol{\alpha&#39;}} = \sum_{x=80}^G(-\frac{\partial \hat{D_x}}{\partial \boldsymbol{\alpha&#39;}}\boldsymbol{x_x}) = \sum_{x=80}^G(\boldsymbol{-x_x&#39; \hat{D_x} x_x}) = -\boldsymbol{X&#39;}diag(\hat{\boldsymbol{D}})\boldsymbol{X}\]</span> The Newton-Raphson algorithm for solving <span class="math inline">\(\frac{\partial \boldsymbol{l(\alpha)}}{ \partial \boldsymbol{\alpha}}=0\)</span> is</p>
+<p><span class="math display">\[\boldsymbol{\alpha_{i+1}} = \boldsymbol{\alpha_i}-[\frac{\partial^2 \boldsymbol{l(\alpha)}}{ \partial \boldsymbol{\alpha}\boldsymbol{\alpha&#39;}}]^{-1}[\frac{\partial \boldsymbol{l(\alpha)}}{ \partial \boldsymbol{\alpha}}]\]</span> which in our case is</p>
+<p><span class="math display">\[\boldsymbol{\alpha_{i+1}} = \boldsymbol{\alpha_i}+[\boldsymbol{X&#39;}diag(\hat{\boldsymbol{D}})\boldsymbol{X}]^{-1}[\boldsymbol{X&#39;(D-\hat{D})}]\]</span></p>
+<p>and is shown in the R-code below</p>
 <div class="layout-chunk" data-layout="l-body">
 <div class="sourceCode">
 <pre class="sourceCode r"><code class="sourceCode r"><span class='co'># Design matrix</span>
@@ -2172,13 +2200,12 @@ d-appendix d-footnote-list a.footnote-backlink {
 <span class='co'># vector of deaths and exposure</span>
 <span class='va'>D</span> <span class='op'>=</span> <span class='va'>df</span><span class='op'>$</span><span class='va'>D</span>
 <span class='va'>N</span> <span class='op'>=</span> <span class='va'>df</span><span class='op'>$</span><span class='va'>N</span>
-<span class='co'># Expected deaths according to</span>
-<span class='co'># alpha</span>
+<span class='co'># Expected deaths according to alpha</span>
 <span class='va'>Dhat</span> <span class='op'>=</span> <span class='kw'>function</span><span class='op'>(</span><span class='va'>alpha</span><span class='op'>)</span> <span class='op'>{</span>
   <span class='va'>lambda.hat</span> <span class='op'>=</span> <span class='va'>X</span> <span class='op'>%*%</span> <span class='va'>alpha</span>
   <span class='kw'><a href='https://rdrr.io/r/base/function.html'>return</a></span><span class='op'>(</span> <span class='fu'><a href='https://rdrr.io/r/base/numeric.html'>as.numeric</a></span><span class='op'>(</span> <span class='va'>N</span> <span class='op'>*</span> <span class='fu'><a href='https://rdrr.io/r/base/Log.html'>exp</a></span><span class='op'>(</span><span class='va'>lambda.hat</span><span class='op'>)</span><span class='op'>)</span><span class='op'>)</span>
 <span class='op'>}</span>
-<span class='co'># NR algorithm</span>
+<span class='co'># Newton-Raphson algorithm</span>
 <span class='va'>next_alpha</span> <span class='op'>=</span> <span class='kw'>function</span><span class='op'>(</span><span class='va'>alpha</span><span class='op'>)</span> <span class='op'>{</span>
   <span class='va'>dhat</span> <span class='op'>=</span> <span class='fu'>Dhat</span><span class='op'>(</span><span class='va'>alpha</span><span class='op'>)</span>
   <span class='va'>M</span> <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/solve.html'>solve</a></span> <span class='op'>(</span> <span class='fu'><a href='https://rdrr.io/r/base/t.html'>t</a></span><span class='op'>(</span><span class='va'>X</span><span class='op'>)</span> <span class='op'>%*%</span> <span class='fu'><a href='https://rdrr.io/r/base/diag.html'>diag</a></span><span class='op'>(</span><span class='va'>dhat</span><span class='op'>)</span> <span class='op'>%*%</span> <span class='va'>X</span><span class='op'>)</span>
@@ -2221,6 +2248,15 @@ d-appendix d-footnote-list a.footnote-backlink {
 <div class="d-appendix">
 </div>
 
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
 
 <!--radix_placeholder_site_after_body-->
 <!--/radix_placeholder_site_after_body-->

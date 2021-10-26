@@ -93,7 +93,53 @@ coef.reg = fit.reg$coefficients
 
 ```
 
-Newton-Raphson's maximization algorithm.
+
+
+# Poisson Log Likelihood
+
+We assume that deaths, $D_x$, at each age $x \in \{80, 81, .., A\}$ have a Poisson distribution with expected value equal to the observed exposure $N_x$ times the mortality rate:
+
+$$D_x \sim Poisson(N_x \mu_x)$$
+The sample likelihood can be expressed as
+
+$$L(D_x | N_x, \mu_x) = \prod_{x=80}^G \frac{(N_x \mu_X)^{D_x}e^{-(N_x \mu_x)}}{D_x!}$$
+
+
+Thus the sample log likelihood is
+
+$$l(\mu_x) = K + \sum_{x=80}^G (D_xln(\mu_x) - \hat{D_x})$$
+
+where $\hat{D_x}=N_x \mu_x$ is the expected number of deaths predicted by the model, $K$ is a constant not depending on $\mu_x$ and $G$ corresponds to the number of age group considered.
+
+In this post, we will consider two mortality models: Gompertz and Log-Quadratic. In what follows, we show the math for the Gompertz model. Mortality rates are commonly expressed as follow in the Gompertz model
+
+$$\mu_x = exp(\alpha_1 + \alpha_2x)$$
+In matrix form we can rewrite that as
+
+$$\boldsymbol{\lambda} = ln(\boldsymbol{\mu}) = \boldsymbol{X\alpha}$$
+
+where $\boldsymbol{X}$ is a $G \times 2$ design matrix, $\boldsymbol{\alpha}$ is a $2 \times 1$ vector and $ln(\boldsymbol{\mu})$ is a $G \times 1$ vector of log mortality rates. 
+
+
+# Maximizing the Log Likelihood via Newton-Raphson iteration
+
+We search $\boldsymbol{\alpha}$ to maximize $\boldsymbol{l(\alpha)}$. For Newton-Raphson algorithm to do that we need both first and second derivatives of $\boldsymbol{l(\alpha)}$
+
+$$\frac{\partial \boldsymbol{l(\alpha)}}{ \partial \boldsymbol{\alpha}} = \sum_{x=80}^G(D_x-\hat{D_x})\boldsymbol{x_x} = \boldsymbol{X'(D-\hat{D})} = 0$$
+
+since $\frac{ln(\mu_x)}{\partial \boldsymbol{\alpha}} = \boldsymbol{x_x}$, $\frac{\partial \mu_x}{\partial \boldsymbol{\alpha}} = \mu_x \boldsymbol{x_x}$ and $\frac{\partial \hat{D_x}}{\partial \boldsymbol{\alpha}} = N_x\mu_x \boldsymbol{x_x} = \hat{D_x}\boldsymbol{x_x}$.
+
+The second derivatives are then
+
+$$\frac{\partial^2 \boldsymbol{l(\alpha)}}{ \partial \boldsymbol{\alpha}\boldsymbol{\alpha'}} = \sum_{x=80}^G(-\frac{\partial \hat{D_x}}{\partial \boldsymbol{\alpha'}}\boldsymbol{x_x}) = \sum_{x=80}^G(\boldsymbol{-x_x' \hat{D_x} x_x}) = -\boldsymbol{X'}diag(\hat{\boldsymbol{D}})\boldsymbol{X}$$
+The Newton-Raphson algorithm for solving $\frac{\partial \boldsymbol{l(\alpha)}}{ \partial \boldsymbol{\alpha}}=0$ is 
+
+$$\boldsymbol{\alpha_{i+1}} = \boldsymbol{\alpha_i}-[\frac{\partial^2 \boldsymbol{l(\alpha)}}{ \partial \boldsymbol{\alpha}\boldsymbol{\alpha'}}]^{-1}[\frac{\partial \boldsymbol{l(\alpha)}}{ \partial \boldsymbol{\alpha}}]$$
+which in our case is
+
+$$\boldsymbol{\alpha_{i+1}} = \boldsymbol{\alpha_i}+[\boldsymbol{X'}diag(\hat{\boldsymbol{D}})\boldsymbol{X}]^{-1}[\boldsymbol{X'(D-\hat{D})}]$$
+
+and is shown in the R-code below
 
 ```{r NR gompertz estimation, echo = TRUE}
 # Design matrix
@@ -102,13 +148,12 @@ X = matrix(c(rep(1, dim(df)[1]), df$Age),
 # vector of deaths and exposure
 D = df$D
 N = df$N
-# Expected deaths according to
-# alpha
+# Expected deaths according to alpha
 Dhat = function(alpha) {
   lambda.hat = X %*% alpha
   return( as.numeric( N * exp(lambda.hat)))
 }
-# NR algorithm
+# Newton-Raphson algorithm
 next_alpha = function(alpha) {
   dhat = Dhat(alpha)
   M = solve ( t(X) %*% diag(dhat) %*% X)
@@ -310,6 +355,9 @@ ggplot(df, aes(x = Age, y = log(mx), group = 1)) +
                                 "Log-Quadratic by regression" = "#6B6C71FF")) +
   labs(title = "Gompertz and Log-Quadratic fits",
        y = expression(paste("log(", {}[1], m[x], ")" )))
+
+
+# TO DO: Estimates with a t-regression to diminish outliying value effect !!!
 
 ```
 
