@@ -12,7 +12,7 @@ output:
 
 When studying demographic methods for mortality estimations, we encounter the issue of estimating mortality at old ages where data are sparse (fewer deaths and fewer survivors). In this context, D. M. Feehan (2018) advised to estimate mortality models using maximum likelihood for several reasons. One of the reason that is of interest for this post is that estimating parameters by maximizing a likelihood accounts for the data available at each age, giving less influence to older ages in parameter estimates. In what follows, we will look at the difference between parameters estimated in the context of a simple linear model and parameters estimated in the context of a Maximum Likelihood estimation. The MLE will be performed using the Newton-Raphson (N-R) maximization algorithm to estimate parameters for the Gompertz and Log-Quadratic models. 
 
-Below is the mortality age schedule for Belgium in 2002 where old age mortality showed "unusual" low mortality rates, most likely due to sparse data at these ages. What we will do in the following is to try to model data points in the rectangle showed on the figure.
+We will use the Belgian mortality age schedule in 2002 (deaths and exposures from Human Mortality Database) where old age mortality showed "unusual" low mortality rates, most likely due to sparse data at these ages. What we will do in the following is to try to model data points in the rectangle showed on the figure.
 
 
 ```{r setup, include=FALSE}
@@ -63,7 +63,7 @@ ggplot(df, aes(x = Age, y = log(mx))) +
   geom_point(data = df %>% filter(Age < 80), 
              size = 2, col = "#802582FF",
              alpha = 0.2) +
-  geom_rect(xmin = 79, xmax=111, ymin = -5, ymax = 0.1,
+  geom_rect(xmin = 79, xmax=111, ymin = -5, ymax = -0.2,
             alpha = 0.1, col = "#238A8DFF", fill = NA,
             size = 2) + 
   theme_bw() +
@@ -84,7 +84,7 @@ ggplot(df, aes(x = Age, y = log(mx))) +
        y = expression(paste("log(", {}[1], m[x], ")" )))
 ```
 
-# Fitting mortality models by linear regression
+# Fitting mortality models by OLS
 
 ```{r regression estimation, echo = FALSE}
 # remove young age mortality
@@ -98,15 +98,19 @@ coef.reg = fit.reg$coefficients
 
 One solution sometimes performed (and that is not advisable as you will see) is to fit a linear model on the logarithm of the mortality rates. Gompertz and Log-Quadtric model would then be expressed respectively as follow:
 
-$ln(m_x) \sim Normal(\alpha_1 + \alpha_2x, \sigma)$
-$ln(m_x) \sim Normal(\alpha_1 + \alpha_2x + \alpha_3x^2, \sigma)$
+$\begin{aligned}
+  ln(m_x) & \sim Normal(\alpha_1 + \alpha_2x, \sigma) \\
+  ln(m_x) & \sim Normal(\alpha_1 + \alpha_2x + \alpha_3x^2, \sigma)
+\end{aligned}$
+
+
 
 where $x \in \{80, 81, .., A\}$ is age from age 80 years old. 
 
 
 # Poisson Log Likelihood
 
-We assume that deaths, $D_x$, at each age $x \in \{80, 81, .., A\}$ have a Poisson distribution with expected value equal to the observed exposure $N_x$ times the mortality rate:
+Instead we can derive the likelihood assuming deaths $D_x$ follow a poisson distribution. We assume that deaths, $D_x$, at each age $x \in \{80, 81, .., A\}$ have a Poisson distribution with expected value equal to the observed exposure $N_x$ times the mortality rate:
 
 $$D_x \sim Poisson(N_x \mu_x)$$
 The sample likelihood can be expressed as
