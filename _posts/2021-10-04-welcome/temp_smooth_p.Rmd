@@ -26,6 +26,8 @@ require(tidyverse)
 require(scales)
 require(viridis)
 library(rstan)
+
+source("./modeling/function/theme_dark_blue.R")
 ```
 
 
@@ -55,12 +57,13 @@ df %>%
                           labels = c("n = 100", "n = 1000"))) %>% 
         ggplot(aes(x = t, y = p)) +
         geom_line(aes(col = "true proportion"),
-                  linetype = "dashed") +
-        geom_point(aes(x = t, y = p.sim, col = "sampled proportion")) +
-        theme_bw() +
-        theme(legend.position = c(0.35, 0.79),
-              legend.title = element_blank()) +
-        scale_color_manual(values = c("true proportion" = "#287D8EFF",
+                  linetype = "dashed",
+                  size = 1.5) +
+        geom_point(aes(x = t, y = p.sim, col = "sampled proportion"), alpha = 0.6) +
+        theme_dark_blue() +
+        theme(legend.position = "bottom",
+              legend.direction = "horizontal") +
+        scale_color_manual(values = c("true proportion" = "#238A8DFF",
                                       "sampled proportion" = "#FCA007FF")) +
         labs(y = "Proportion", 
              x = "Time") +
@@ -172,17 +175,20 @@ df.fitted = df %>%
 
 df.fitted %>% 
         ggplot(aes(x = t, y = p)) +
-        geom_line(aes(col = "true proportion"),
-                  linetype = "dashed") +
-        geom_line(aes(y = median, col = "RW(1) fit")) +
         geom_ribbon(aes(ymin = lower, ymax = upper, col = "RW(1) fit", 
                         fill = "RW(1) fit"),
                   alpha = 0.2) +
+        geom_line(aes(col = "true proportion"),
+                  linetype = "dashed",
+                  size = 1.5) +
+        geom_line(aes(y = median, col = "RW(1) fit"),
+                  size = 1.5) +
+        
         geom_point(aes(x = t, y = p.sim, col = "sampled proportion")) +
-        theme_bw() +
-        theme(legend.position = c(0.35, 0.79),
+        theme_dark_blue() +
+        theme(legend.position = c(0.7, 0.79),
               legend.title = element_blank()) +
-        scale_color_manual(values = c("true proportion" = "#287D8EFF",
+        scale_color_manual(values = c("true proportion" = "#238A8DFF",
                                       "sampled proportion" = "#FCA007FF",
                                       "RW(1) fit" = "black")) +
         labs(y = "Proportion", 

@@ -84,26 +84,33 @@ code span.wa { color: #5e5e5e; font-style: italic; } /* Warning */
 </style>
 
   <!--radix_placeholder_meta_tags-->
-  <title>Benjamin Schluter: About</title>
+  <title>Benjamin Schluter: Math of mortality</title>
+  
+  <meta property="description" itemprop="description" content="Three complementary math functions of mortality"/>
   
   
-  
+  <!--  https://schema.org/Article -->
+  <meta property="article:published" itemprop="datePublished" content="2022-01-21"/>
+  <meta property="article:created" itemprop="dateCreated" content="2022-01-21"/>
+  <meta name="article:author" content="Benjamin Schlüter"/>
   
   <!--  https://developers.facebook.com/docs/sharing/webmasters#markup -->
-  <meta property="og:title" content="Benjamin Schluter: About"/>
+  <meta property="og:title" content="Benjamin Schluter: Math of mortality"/>
   <meta property="og:type" content="article"/>
+  <meta property="og:description" content="Three complementary math functions of mortality"/>
   <meta property="og:locale" content="en_US"/>
   <meta property="og:site_name" content="Benjamin Schluter"/>
   
   <!--  https://dev.twitter.com/cards/types/summary -->
   <meta property="twitter:card" content="summary"/>
-  <meta property="twitter:title" content="Benjamin Schluter: About"/>
+  <meta property="twitter:title" content="Benjamin Schluter: Math of mortality"/>
+  <meta property="twitter:description" content="Three complementary math functions of mortality"/>
   
   <!--/radix_placeholder_meta_tags-->
   <!--radix_placeholder_rmarkdown_metadata-->
   
   <script type="text/json" id="radix-rmarkdown-metadata">
-  {"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["title"]}},"value":[{"type":"character","attributes":{},"value":["About"]}]}
+  {"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["title","description","author","date","output"]}},"value":[{"type":"character","attributes":{},"value":["Math of mortality"]},{"type":"character","attributes":{},"value":["Three complementary math functions of mortality\n"]},{"type":"list","attributes":{},"value":[{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["name"]}},"value":[{"type":"character","attributes":{},"value":["Benjamin Schlüter"]}]}]},{"type":"character","attributes":{},"value":["01-21-2022"]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["distill::distill_article"]}},"value":[{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["self_contained"]}},"value":[{"type":"logical","attributes":{},"value":[false]}]}]}]}
   </script>
   <!--/radix_placeholder_rmarkdown_metadata-->
   <!--radix_placeholder_navigation_in_header-->
@@ -2133,7 +2140,7 @@ code span.wa { color: #5e5e5e; font-style: italic; } /* Warning */
 <!--radix_placeholder_front_matter-->
 
 <script id="distill-front-matter" type="text/json">
-{"title":"About","authors":[]}
+{"title":"Math of mortality","description":"Three complementary math functions of mortality","authors":[{"author":"Benjamin Schlüter","authorURL":"#","affiliation":"&nbsp;","affiliationURL":"#","orcidID":""}],"publishedDate":"2022-01-21T00:00:00.000+01:00","citationText":"Schlüter, 2022"}
 </script>
 
 <!--/radix_placeholder_front_matter-->
@@ -2156,28 +2163,54 @@ code span.wa { color: #5e5e5e; font-style: italic; } /* Warning */
 <!--/radix_placeholder_site_before_body-->
 
 <div class="d-title">
-<h1>About</h1>
+<h1>Math of mortality</h1>
 <!--radix_placeholder_categories-->
 <!--/radix_placeholder_categories-->
-
+<p><p>Three complementary math functions of mortality</p></p>
 </div>
 
+<div class="d-byline">
+  Benjamin Schlüter  
+  
+<br/>01-21-2022
+</div>
 
 <div class="d-article">
-<h1 id="bio">Bio</h1>
-<p>I am a PhD student at <a href="https://uclouvain.be/fr/index.html">UCLouvain</a>, Belgium in the demography department <a href="https://uclouvain.be/en/research-institutes/iacchos/demo">(DEMO)</a>. My thesis focuses on mortality estimation at the subnational level using Bayesian methods. I am interested in statistics, applied mathematics, R, data visualization and science of science.</p>
-<p>Outside of work, I am interested in cycling, trekking, basket balling and accordeon playing.</p>
-<h1 id="experience">Experience</h1>
-<p>Before starting my PhD, I worked at the <a href="https://www.cred.be/">Centre for Research on the Epidemiology of Disasters</a> (CRED) where I conducted statistical analyses on different research projects: evaluating health profiles and health needs of non-EU migrants arriving in Greece with Médecins du Monde data; assessing the impact of the 2015 Earthquake on hospital admissions in Kathmandu (Nepal) using Tribhuvan University Teaching Hospital data; estimating the civilian mortality during the Syrian conflict focusing on deaths recorded by the Syrian Violation Documentation Center (VDC).</p>
-<h1 id="education">Education</h1>
-<p>I did my master in quantitative economics at the Free University Brussels (ULB). I trained myself further in statistics by first following an <a href="https://micromasters.mit.edu/ds/">online micromaster</a> in Statistics and Data Science at the Massachusetts Institute of Technology (MIT) and then, by validating statistics courses at UCLouvain.</p>
-<p>I also had the opportunity to follow several workshops (usually 1 week long):</p>
-<ul>
-<li><p><em><a href="https://sciencesmaths-paris.fr/f/actualites-fr/cours-raftery">Statistical Demography</a></em> by Adrian E. Raftery at the Fondation des Sciences Mathématiques de Paris (FSMP) in 2021</p></li>
-<li><p><em>Bayesian Spatio-Temporal health Modeling</em> by Andrew B. Lawson at the Medical University of South Carolina (online) in 2021</p></li>
-<li><p><em><a href="https://populationsciences.berkeley.edu/population-center/annual-workshop-on-formal-demography/">Berkeley Formal Demography</a></em> at Berkeley University (online) in 2021</p></li>
-<li><p><em><a href="https://www.demogr.mpg.de/en/career_6122/international_advanced_studies_in_demography_6682/courses_6931/smoothing_demographic_data_flexible_models_in_population_studies_7174/">Smoothing Demographic Data</a></em> by Carlo Giovanni Camarda at the Max Planck Institute for Demographic Research (online) in 2020</p></li>
-</ul>
+<p>The field of mortality can be analyzed (at minimal) with three complementary functions: hazard, survival and death probability density function.</p>
+<p>Let denote X: the age at death of an individual and assume that this random variable is <span class="math inline">\(X\geq 0\)</span> and continuous.</p>
+<p>Suriving beyond age x is expressed as</p>
+<p><span class="math display">\[
+\begin{align}
+S(x) &amp; = Pr(X&gt;x) \\
+S(x) &amp; = 1 - F(x) \\
+S&#39;(x) &amp; = -f(x) 
+\end{align}
+\]</span></p>
+<p><span class="math display">\[S(x) = Pr(X &gt; x) = -\int^{\infty}_xf(t)dt\]</span></p>
+<p>Let’s now express the hazard function, also called the force of mortality:</p>
+<p><span class="math display">\[
+\begin{align}
+h(x) &amp;= lim_{\Delta x \rightarrow 0} \frac{Pr(x \leq X &lt; x + \Delta x | X &gt; x)}{\Delta x} \\
+ &amp;= lim_{\Delta x \rightarrow 0} \frac{Pr(X &lt; x + \Delta x) - Pr(X \leq x)}{\Delta x} \cdot \frac{1}{Pr(X&gt;x)} \\
+ &amp;= \frac{f(t)}{S(t)}
+\end{align}
+\]</span></p>
+<p>Thus, the force of mortality can be expressed as</p>
+<p><span class="math display">\[
+\begin{align}
+\boxed{h(x) = -\frac{d}{dx}ln(S(x))}
+\end{align}
+\]</span></p>
+<p>and re-arranging that equation we expressed the survival probability at age t as</p>
+<p><span class="math display">\[\boxed{S(t) = e^{-\int^t_0h(x)dx} = e^{-H(t)}}\]</span></p>
+<p>or also</p>
+<p><span class="math display">\[S(t+n) = S(t)e^{-\int^{t+n}_{t}h(x)dx}\]</span></p>
+<p>where <span class="math inline">\(H(t)\)</span> is called the cumulative hazard.</p>
+<p>Note that when <span class="math inline">\(h(x)\)</span> is constant,</p>
+<p><span class="math display">\[S(t) = e^{-ht}\]</span></p>
+<p>From earlier derivation of <span class="math inline">\(h(x)\)</span> we can obtain a math expression for the death probability density function</p>
+<p><span class="math display">\[\boxed{f(x) = h(x)S(x)}\]</span></p>
+<p>Let’s check these identities visually.</p>
 <div class="sourceCode" id="cb1"><pre class="sourceCode r distill-force-highlighting-css"><code class="sourceCode r"></code></pre></div>
 <!--radix_placeholder_article_footer-->
 <!--/radix_placeholder_article_footer-->
@@ -2186,6 +2219,15 @@ code span.wa { color: #5e5e5e; font-style: italic; } /* Warning */
 <div class="d-appendix">
 </div>
 
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
 
 <!--radix_placeholder_site_after_body-->
 <!--/radix_placeholder_site_after_body-->

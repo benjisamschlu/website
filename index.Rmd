@@ -1,5 +1,4 @@
 ---
-title: "Benjamin Schlüter"
 site: distill::distill_website
 image: "ben_pic.jpg"
 links:

@@ -5,21 +5,34 @@
       "title": "About",
       "author": [],
       "contents": "\r\nBio\r\nI am a PhD student at UCLouvain, Belgium in the demography department (DEMO). My thesis focuses on mortality estimation at the subnational level using Bayesian methods. I am interested in statistics, applied mathematics, R, data visualization and science of science.\r\nOutside of work, I am interested in cycling, trekking, basket balling and accordeon playing.\r\nExperience\r\nBefore starting my PhD, I worked at the Centre for Research on the Epidemiology of Disasters (CRED) where I conducted statistical analyses on different research projects: evaluating health profiles and health needs of non-EU migrants arriving in Greece with Médecins du Monde data; assessing the impact of the 2015 Earthquake on hospital admissions in Kathmandu (Nepal) using Tribhuvan University Teaching Hospital data; estimating the civilian mortality during the Syrian conflict focusing on deaths recorded by the Syrian Violation Documentation Center (VDC).\r\nEducation\r\nI did my master in quantitative economics at the Free University Brussels (ULB). I trained myself further in statistics by first following an online micromaster in Statistics and Data Science at the Massachusetts Institute of Technology (MIT) and then, by validating statistics courses at UCLouvain.\r\nI also had the opportunity to follow several workshops (usually 1 week long):\r\nStatistical Demography by Adrian E. Raftery at the Fondation des Sciences Mathématiques de Paris (FSMP) in 2021\r\nBayesian Spatio-Temporal health Modeling by Andrew B. Lawson at the Medical University of South Carolina (online) in 2021\r\nBerkeley Formal Demography at Berkeley University (online) in 2021\r\nSmoothing Demographic Data by Carlo Giovanni Camarda at the Max Planck Institute for Demographic Research (online) in 2020\r\n\r\n\r\n\r\n",
-      "last_modified": "2021-10-26T08:29:13+02:00"
+      "last_modified": "2022-02-09T20:06:05+01:00"
     },
     {
       "path": "blog.html",
-      "title": "Blog",
+      "title": "Posts",
       "author": [],
       "contents": "\r\n\r\n\r\n\r\n",
-      "last_modified": "2021-10-26T08:29:22+02:00"
+      "last_modified": "2022-02-09T20:06:08+01:00"
     },
     {
       "path": "index.html",
-      "title": "Benjamin Schlüter",
       "author": [],
-      "contents": "\r\n\r\n          \r\n      \r\n      BENJAMIN SCHLUTER\r\n      \r\n      \r\n      Home\r\n      Blog\r\n      About\r\n      ☰\r\n      \r\n      \r\n      \r\n        \r\n          \r\n            Benjamin Schlüter\r\n          \r\n          \r\n            \r\n              PhD student in Demography\r\n              University of Louvain (UCLouvain)\r\n            \r\n            \r\n              PhD student in Demography\r\n              University of Louvain (UCLouvain)\r\n            \r\n          \r\n\r\n          \r\n            \r\n              \r\n                  \r\n                    \r\n                      \r\n                  \r\n                \r\n                                \r\n                  \r\n                    \r\n                      \r\n                  \r\n                \r\n                                \r\n                  \r\n                    \r\n                      \r\n                  \r\n                \r\n                              \r\n          \r\n\r\n          \r\n            \r\n              \r\n                                \r\n                  \r\n                    \r\n                \r\n                                \r\n                  \r\n                    \r\n                \r\n                                \r\n                  \r\n                    \r\n                \r\n                              \r\n            \r\n          \r\n        \r\n      \r\n    \r\n\r\n    \r\n    \r\n    ",
-      "last_modified": "2021-10-26T08:29:27+02:00"
+      "contents": "\r\n\r\n          \r\n      \r\n      Benjamin Schluter\r\n      \r\n      \r\n      Home\r\n      Blog\r\n      About\r\n      ☰\r\n      \r\n      \r\n      \r\n        \r\n          \r\n            \r\n          \r\n          \r\n            \r\n              PhD student in Demography\r\n              University of Louvain (UCLouvain)\r\n            \r\n            \r\n              PhD student in Demography\r\n              University of Louvain (UCLouvain)\r\n            \r\n          \r\n\r\n          \r\n            \r\n              \r\n                  \r\n                    \r\n                      \r\n                  \r\n                \r\n                                \r\n                  \r\n                    \r\n                      \r\n                  \r\n                \r\n                                \r\n                  \r\n                    \r\n                      \r\n                  \r\n                \r\n                              \r\n          \r\n\r\n          \r\n            \r\n              \r\n                                \r\n                  \r\n                    \r\n                \r\n                                \r\n                  \r\n                    \r\n                \r\n                                \r\n                  \r\n                    \r\n                \r\n                              \r\n            \r\n          \r\n        \r\n      \r\n    \r\n\r\n    \r\n    \r\n    ",
+      "last_modified": "2022-02-09T20:06:11+01:00"
+    },
+    {
+      "path": "math_mortality.html",
+      "title": "Math of mortality",
+      "description": "Three complementary math functions of mortality\n",
+      "author": [
+        {
+          "name": "Benjamin Schlüter",
+          "url": {}
+        }
+      ],
+      "date": "01-21-2022",
+      "contents": "\r\nThe field of mortality can be analyzed (at minimal) with three complementary functions: hazard, survival and death probability density function.\r\nLet denote X: the age at death of an individual and assume that this random variable is \\(X\\geq 0\\) and continuous.\r\nSuriving beyond age x is expressed as\r\n\\[\r\n\\begin{align}\r\nS(x) & = Pr(X>x) \\\\\r\nS(x) & = 1 - F(x) \\\\\r\nS'(x) & = -f(x) \r\n\\end{align}\r\n\\]\r\n\\[S(x) = Pr(X > x) = -\\int^{\\infty}_xf(t)dt\\]\r\nLet’s now express the hazard function, also called the force of mortality:\r\n\\[\r\n\\begin{align}\r\nh(x) &= lim_{\\Delta x \\rightarrow 0} \\frac{Pr(x \\leq X < x + \\Delta x | X > x)}{\\Delta x} \\\\\r\n &= lim_{\\Delta x \\rightarrow 0} \\frac{Pr(X < x + \\Delta x) - Pr(X \\leq x)}{\\Delta x} \\cdot \\frac{1}{Pr(X>x)} \\\\\r\n &= \\frac{f(t)}{S(t)}\r\n\\end{align}\r\n\\]\r\nThus, the force of mortality can be expressed as\r\n\\[\r\n\\begin{align}\r\n\\boxed{h(x) = -\\frac{d}{dx}ln(S(x))}\r\n\\end{align}\r\n\\]\r\nand re-arranging that equation we expressed the survival probability at age t as\r\n\\[\\boxed{S(t) = e^{-\\int^t_0h(x)dx} = e^{-H(t)}}\\]\r\nor also\r\n\\[S(t+n) = S(t)e^{-\\int^{t+n}_{t}h(x)dx}\\]\r\nwhere \\(H(t)\\) is called the cumulative hazard.\r\nNote that when \\(h(x)\\) is constant,\r\n\\[S(t) = e^{-ht}\\]\r\nFrom earlier derivation of \\(h(x)\\) we can obtain a math expression for the death probability density function\r\n\\[\\boxed{f(x) = h(x)S(x)}\\]\r\nLet’s check these identities visually.\r\n\r\n\r\n\r\n",
+      "last_modified": "2022-02-09T20:07:45+01:00"
     }
   ],
   "collections": ["posts/posts.json"]

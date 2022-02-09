@@ -8,7 +8,7 @@
     <!-- Bootstrap CSS -->
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css">
 
-    <title>Benjamin Schlüter</title>
+    <title></title>
 
     
           <!--radix_placeholder_navigation_in_header-->
@@ -470,11 +470,11 @@
         --aside-size:      12px;
         --fig-cap-size:    13px;
         /*-- Main font colors --*/
-        --title-color:     #000000;
-        --header-color:    rgba(0, 0, 0, 0.8);
-        --body-color:      rgba(0, 0, 0, 0.8);
-        --aside-color:     rgba(0, 0, 0, 0.6);
-        --fig-cap-color:   rgba(0, 0, 0, 0.6);
+        --title-color:     rgba(255, 255, 255, 0.8);
+        --header-color:    rgba(255, 255, 255, 0.8);
+        --body-color:      rgba(255, 255, 255, 0.8);
+        --aside-color:     rgba(255, 255, 255, 0.8);
+        --fig-cap-color:   rgba(255, 255, 255, 0.8);
         /*-- Specify custom fonts ~~~ must be imported above   --*/
         --heading-font:    "Roboto", sans-serif;
         --mono-font:       "Roboto", monospace;
@@ -482,12 +482,29 @@
         --navbar-font:     "Roboto", sans-serif;  /* websites + blogs only */
       }
       
+      
+      
+        /*-- Trying to obtain a dark theme   --*/
+      body {
+        background-color: #212121;
+      }
+      
+      p {
+        color: #415ed1;
+      }
+      
+      div {
+        color: rgba(255, 255, 255, 0.8);
+      }
+      
+      
+      
       /*-- ARTICLE METADATA --*/
       d-byline {
         --heading-size:    0.6rem;
-        --heading-color:   rgba(0, 0, 0, 0.5);
+        --heading-color:   rgba(255, 255, 255, 0.8);
         --body-size:       0.8rem;
-        --body-color:      rgba(0, 0, 0, 0.8);
+        --body-color:      rgba(255, 255, 255, 0.8);
       }
       
       /*-- ARTICLE TABLE OF CONTENTS --*/
@@ -499,9 +516,9 @@
       /*-- ARTICLE APPENDIX --*/
       d-appendix {
         --heading-size:    15px;
-        --heading-color:   rgba(0, 0, 0, 0.65);
+        --heading-color:   rgba(255, 255, 255, 0.8);
         --text-size:       0.8em;
-        --text-color:      rgba(0, 0, 0, 0.5);
+        --text-color:      rgba(255, 255, 255, 0.8);
       }
       
       /*-- WEBSITE HEADER + FOOTER --*/
@@ -511,8 +528,8 @@
         --title-size:       30px; /* 18px */
         --text-color:       rgba(0, 0, 0, 0.8); /* rgba(255, 255, 255, 0.8) */
         --text-size:        25px; /* 18px */
-        --hover-color:      teal;
-        --bkgd-color:       white; /* #0F2E3D */
+        --hover-color:      teal; /*color when mouse on it */
+        --bkgd-color:       #415ed1; /* #0F2E3D */
       }
       
       .distill-site-footer {
@@ -521,6 +538,7 @@
         --hover-color:      white;
         --bkgd-color:       #0F2E3D;
       }
+      
       
       /*-- Additional custom styles --*/
       /* Add any additional CSS rules below                      */
@@ -534,6 +552,8 @@
         font-weight: 650;
         font-size: 1.1em;
       }
+      
+      
       
       
       
@@ -702,7 +722,7 @@
       <header class="header header--fixed" role="banner">
       <nav class="distill-site-nav distill-site-header">
       <div class="nav-left">
-      <a href="index.html" class="title">BENJAMIN SCHLUTER</a>
+      <a href="index.html" class="title">Benjamin Schluter</a>
       </div>
       <div class="nav-right">
       <a href="index.html">Home</a>
@@ -721,7 +741,7 @@
         <div class="col-12 text-center">
           <img src=ben_pic.jpg style="height:10rem" class="rounded-circle">
           <div class="mt-3">
-            <h1>Benjamin Schlüter</h1>
+            <h1></h1>
           </div>
           <div class="row justify-content-center align-items-center">
             <div class="col-6 mt-3 text-center d-none d-sm-block">
