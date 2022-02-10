@@ -2,12 +2,14 @@
 site: distill::distill_website
 image: "ben_pic.jpg"
 links:
-  - label: '`r fontawesome::fa("github", fill = "#415ed1")`'
+  - label: '`r fontawesome::fa("github", fill = "#7494A4")`'
     url: "https://github.com/benjisamschlu"
-  - label: '`r fontawesome::fa("twitter", fill = "#415ed1")`'
+  - label: '`r fontawesome::fa("twitter", fill = "#7494A4")`'
     url: "https://twitter.com/Bensam_Schluter"
-  - label: '`r fontawesome::fa("envelope", fill = "#415ed1")`'
+  - label: '`r fontawesome::fa("envelope", fill = "#7494A4")`'
     url: "mailto:benjamin-samuel.schluter@uclouvain.be"
+  - label: '`r fontawesome::fa("graduation-cap", fill = "#7494A4")`'
+    url: "https://scholar.google.com/citations?user=GDtbu2oAAAAJ&hl=en&oi=ao"
 output:
   postcards::jolla
 ---

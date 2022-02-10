@@ -65,8 +65,8 @@ d-appendix {
   --title-size:       30px; /* 18px */
   --text-color:       rgba(0, 0, 0, 0.8); /* rgba(255, 255, 255, 0.8) */
   --text-size:        25px; /* 18px */
-  --hover-color:      teal; /*color when mouse on it */
-  --bkgd-color:       #415ed1; /* #0F2E3D */
+  --hover-color:      #263D67; /*color when mouse on it */
+  --bkgd-color:       #7494A4; /* #0F2E3D */
 }
 
 .distill-site-footer {
@@ -86,7 +86,7 @@ body {
 }
 
 p {  /*-- Description below post title  --*/
-  color: #415ed1;
+  color: #7494A4;
 }
 
 div {
@@ -103,6 +103,16 @@ code {
   font-size: 1.1em;
 }
 
+ /*-- Change link appearance  --*/
+d-article a {
+  border-bottom: 2px solid #7494A4;
+  text-decoration: none;
+} 
+
+ /*-- Change list color --*/
+ul > li > p {
+  color: rgba(255, 255, 255, 0.8);
+}
 
 .distill-site-nav {
   font-weight: 900;
