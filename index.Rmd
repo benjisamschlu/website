@@ -2,16 +2,22 @@
 site: distill::distill_website
 image: "ben_pic.jpg"
 links:
-  - label: '`r fontawesome::fa("github")`'
+  - label: '`r fontawesome::fa("github", fill = "#415ed1")`'
     url: "https://github.com/benjisamschlu"
-  - label: '`r fontawesome::fa("twitter")`'
+  - label: '`r fontawesome::fa("twitter", fill = "#415ed1")`'
     url: "https://twitter.com/Bensam_Schluter"
-  - label: '`r fontawesome::fa("envelope")`'
+  - label: '`r fontawesome::fa("envelope", fill = "#415ed1")`'
     url: "mailto:benjamin-samuel.schluter@uclouvain.be"
 output:
   postcards::jolla
 ---
+  
+ 
  
 **PhD student in Demography** 
 
 **University of Louvain (UCLouvain)**
+
+
+
+

@@ -1,0 +1,377 @@
+---
+title: "ML estimation of mortality models with NN-R"
+description: |
+  A short description of the post.
+author:
+  - name: Benjamin Schlüter
+date: 02-10-2022
+output:
+  distill::distill_article:
+    self_contained: false
+---
+
+
+When studying demographic methods for mortality estimations, we encounter the issue of estimating mortality at old ages where data are sparse (fewer deaths and fewer survivors). In this context, D. M. Feehan (2018) advised to estimate mortality models using maximum likelihood for several reasons. One of the reason that is of interest for this post is that estimating parameters by maximizing a likelihood accounts for the data available at each age, giving less influence to older ages in parameter estimates. In what follows, we will look at the difference between parameters estimated in the context of a simple linear model and parameters estimated in the context of a Maximum Likelihood estimation. The MLE will be performed using the Newton-Raphson (N-R) maximization algorithm to estimate parameters for the Gompertz and Log-Quadratic models. 
+
+We will use the Belgian mortality age schedule in 2002 (deaths and exposures from Human Mortality Database) where old age mortality showed "unusual" low mortality rates, most likely due to sparse data at these ages. What we will do in the following is to try to model data points in the rectangle showed on the figure.
+
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE)
+```
+
+```{r, echo = FALSE}
+library(ggplot2)
+library(tidyverse)
+library(viridis)
+library(scales)
+```
+
+
+
+```{r tidy data, echo = FALSE}
+dth = read.delim("./modeling/data/dthBE_1x1.txt", 
+                 skip = 1,
+                 sep = "", 
+                 stringsAsFactors=FALSE,
+                 header = TRUE)
+
+exp = read.delim("./modeling/data/expBE_1x1.txt", 
+                 skip = 1,
+                 sep = "", 
+                 stringsAsFactors=FALSE,
+                 header = TRUE)
+
+df.dth = dth %>% 
+  filter(Year == 2002) %>% select(Year, Age, Female) %>% 
+  mutate(Female = as.numeric(Female))
+
+df.exp = exp %>% 
+  filter(Year == 2002) %>% select(Year, Age, Female)
+
+df = df.dth %>% 
+  left_join(df.exp, 
+            by = c("Year", "Age")) %>% 
+  rename("D" = Female.x,
+         "N" = Female.y) %>% 
+  mutate(mx = D/N,
+         Age = ifelse(Age == "110+", 110, Age),
+         Age = as.numeric(Age),
+         Age2 = Age^2)
+
+ggplot(df, aes(x = Age, y = log(mx))) +
+  geom_point(data = df %>% filter(Age >= 80), 
+             size = 2, col = "#802582FF") +
+  geom_point(data = df %>% filter(Age < 80), 
+             size = 2, col = "#802582FF",
+             alpha = 0.2) +
+  geom_rect(xmin = 79, xmax=111, ymin = -5, ymax = -0.2,
+            alpha = 0.1, col = "#238A8DFF", fill = NA,
+            size = 2) + 
+  theme_bw() +
+  theme(plot.title = element_text(size = 16, face = "bold",hjust = 0.5),
+        panel.grid.major.y = element_line(linetype = "dashed"),
+        panel.grid.minor.y = element_line(linetype = "dashed"),
+        panel.grid.major.x = element_blank(),
+        panel.grid.minor.x = element_blank(),
+        panel.border = element_blank(),
+        axis.line.x = element_line(size = 0.5, linetype = "solid", colour = "black"),
+        axis.line.y = element_line(size = 0.5, linetype = "solid", colour = "black")) +
+  annotate("text",
+           label = "Old age \n mortality",
+            x = 95,
+            y = -3.5,
+            col = "#238A8DFF") +
+  labs(title = "Mortality's Age Schedule",
+       y = expression(paste("log(", {}[1], m[x], ")" )))
+```
+
+# Fitting mortality models by OLS
+
+```{r regression estimation, echo = FALSE}
+# remove young age mortality
+df = df %>% filter(Age >= 80)
+
+fit.reg = lm(log(mx) ~ 1 + Age, 
+             df)
+coef.reg = fit.reg$coefficients
+
+```
+
+One solution sometimes performed (and that is not advisable as you will see) is to fit a linear model on the logarithm of the mortality rates. Gompertz and Log-Quadtric model would then be expressed respectively as follow:
+
+$\begin{aligned}
+  ln(m_x) & \sim Normal(\alpha_1 + \alpha_2x, \sigma) \\
+  ln(m_x) & \sim Normal(\alpha_1 + \alpha_2x + \alpha_3x^2, \sigma)
+\end{aligned}$
+
+
+
+where $x \in \{80, 81, .., A\}$ is age from age 80 years old. 
+
+
+# Poisson Log Likelihood
+
+Instead we can derive the likelihood assuming deaths $D_x$ follow a poisson distribution. We assume that deaths, $D_x$, at each age $x \in \{80, 81, .., A\}$ have a Poisson distribution with expected value equal to the observed exposure $N_x$ times the mortality rate:
+
+$$D_x \sim Poisson(N_x \mu_x)$$
+The sample likelihood can be expressed as
+
+$$L(D_x | N_x, \mu_x) = \prod_{x=80}^G \frac{(N_x \mu_X)^{D_x}e^{-(N_x \mu_x)}}{D_x!}$$
+
+
+Thus the sample log likelihood is
+
+$$l(\mu_x) = K + \sum_{x=80}^G (D_xln(\mu_x) - \hat{D_x})$$
+
+where $\hat{D_x}=N_x \mu_x$ is the expected number of deaths predicted by the model, $K$ is a constant not depending on $\mu_x$ and $G$ corresponds to the number of age group considered.
+
+In this post, we will consider two mortality models: Gompertz and Log-Quadratic. In what follows, we show the math for the Gompertz model. Mortality rates are commonly expressed as follow in the Gompertz model
+
+$$\mu_x = exp(\alpha_1 + \alpha_2x)$$
+In matrix form we can rewrite that as
+
+$$\boldsymbol{\lambda} = ln(\boldsymbol{\mu}) = \boldsymbol{X\alpha}$$
+
+where $\boldsymbol{X}$ is a $G \times 2$ design matrix, $\boldsymbol{\alpha}$ is a $2 \times 1$ vector and $ln(\boldsymbol{\mu})$ is a $G \times 1$ vector of log mortality rates. 
+
+
+# Maximizing the Log Likelihood via Newton-Raphson iteration
+
+We search $\boldsymbol{\alpha}$ to maximize $\boldsymbol{l(\alpha)}$. For Newton-Raphson algorithm to do that we need both first and second derivatives of $\boldsymbol{l(\alpha)}$
+
+$$\frac{\partial \boldsymbol{l(\alpha)}}{ \partial \boldsymbol{\alpha}} = \sum_{x=80}^G(D_x-\hat{D_x})\boldsymbol{x_x} = \boldsymbol{X'(D-\hat{D})} = 0$$
+
+since $\frac{ln(\mu_x)}{\partial \boldsymbol{\alpha}} = \boldsymbol{x_x}$, $\frac{\partial \mu_x}{\partial \boldsymbol{\alpha}} = \mu_x \boldsymbol{x_x}$ and $\frac{\partial \hat{D_x}}{\partial \boldsymbol{\alpha}} = N_x\mu_x \boldsymbol{x_x} = \hat{D_x}\boldsymbol{x_x}$.
+
+The second derivatives are then
+
+$$\frac{\partial^2 \boldsymbol{l(\alpha)}}{ \partial \boldsymbol{\alpha}\boldsymbol{\alpha'}} = \sum_{x=80}^G(-\frac{\partial \hat{D_x}}{\partial \boldsymbol{\alpha'}}\boldsymbol{x_x}) = \sum_{x=80}^G(\boldsymbol{-x_x' \hat{D_x} x_x}) = -\boldsymbol{X'}diag(\hat{\boldsymbol{D}})\boldsymbol{X}$$
+The Newton-Raphson algorithm for solving $\frac{\partial \boldsymbol{l(\alpha)}}{ \partial \boldsymbol{\alpha}}=0$ is 
+
+$$\boldsymbol{\alpha_{i+1}} = \boldsymbol{\alpha_i}-[\frac{\partial^2 \boldsymbol{l(\alpha)}}{ \partial \boldsymbol{\alpha}\boldsymbol{\alpha'}}]^{-1}[\frac{\partial \boldsymbol{l(\alpha)}}{ \partial \boldsymbol{\alpha}}]$$
+which in our case is
+
+$$\boldsymbol{\alpha_{i+1}} = \boldsymbol{\alpha_i}+[\boldsymbol{X'}diag(\hat{\boldsymbol{D}})\boldsymbol{X}]^{-1}[\boldsymbol{X'(D-\hat{D})}]$$
+
+and is shown in the R-code below
+
+```{r NR gompertz estimation, echo = TRUE}
+# Design matrix
+X = matrix(c(rep(1, dim(df)[1]), df$Age),
+           ncol = 2)
+# vector of deaths and exposure
+D = df$D
+N = df$N
+# Expected deaths according to alpha
+Dhat = function(alpha) {
+  lambda.hat = X %*% alpha
+  return( as.numeric( N * exp(lambda.hat)))
+}
+# Newton-Raphson algorithm
+next_alpha = function(alpha) {
+  dhat = Dhat(alpha)
+  M = solve ( t(X) %*% diag(dhat) %*% X)
+  v = t(X) %*% (D - dhat)
+  return( alpha + M %*% v)
+}
+
+a = matrix(0, 2, 15)
+for (i in 2:ncol(a)) { a[,i] = next_alpha(a[,i-1])}
+
+```
+
+Alpha values over N-R iterations. Convergence before tenth iteration.
+
+```{r plot iterations NR gompertz, echo = FALSE}
+df.a = t(a) %>% 
+  as.data.frame() %>% 
+  rename("alpha1" = V1,
+         "alpha2" = V2)
+
+ggplot(df.a, aes(x = 1:15)) +
+  geom_line(aes(y = alpha1, col = "alpha1"), size = 1.2) +
+  geom_line(aes(y = alpha2, col = "alpha2"), size = 1.2) +
+  theme_bw() +
+  theme(plot.title = element_text(size = 16, face = "bold",hjust = 0.5),
+        legend.position = c(0.7, 0.55),
+        legend.title = element_blank(),
+        legend.text = element_text(size = 12),
+        legend.direction = "horizontal",
+        panel.grid.major.y = element_line(linetype = "dashed"),
+        panel.grid.minor.y = element_line(linetype = "dashed"),
+        panel.grid.major.x = element_blank(),
+        panel.grid.minor.x = element_blank(),
+        panel.border = element_blank(),
+        axis.line.x = element_line(size = 0.5, linetype = "solid", colour = "black"),
+        axis.line.y = element_line(size = 0.5, linetype = "solid", colour = "black")) +
+  scale_color_manual(values = c("alpha1" = "#C7B76BFF",
+                                "alpha2" = "#00336FFF"),
+                     labels = c(expression(alpha[1]), expression(alpha[2]))) +
+  labs(title = "Alpha parameters over N-R iterations",
+       y = "Values",
+        x = "Iterations")
+
+```
+
+
+Gompertz fit of old age mortality. Regression gives more weights to rates at oldest ages.
+
+```{r plot outputs NR gompertz, echo = FALSE}
+fitted.logmx = X %*% a[, ncol(a)]
+
+df = df %>% 
+  mutate(log.mx.hat.NR.gptz = fitted.logmx,
+         log.mx.hat.reg.gptz = coef.reg[1] + coef.reg[2]*Age)
+
+ggplot(df, aes(x = Age, y = log(mx), group = 1)) +
+  geom_point(size = 2, col = "#802582FF") +  
+  geom_line(aes(x = Age, y = log.mx.hat.NR.gptz, 
+                col = "Gompertz by N-R" ),
+            size = 1.2) +
+  geom_line(aes(x = Age, y = log.mx.hat.reg.gptz, 
+                col = "Gompertz by regression" ),
+            size = 1.2) +
+  theme_bw() +
+  theme(plot.title = element_text(size = 16, face = "bold", hjust = 0.5),
+        legend.position = c(0.8, 0.2),
+        legend.title = element_blank(),
+        legend.text = element_text(size = 12),
+        panel.grid.major.y = element_line(linetype = "dashed"),
+        panel.grid.minor.y = element_line(linetype = "dashed"),
+        panel.grid.major.x = element_line(linetype = "dashed"),
+        panel.grid.minor.x = element_line(linetype = "dashed"),
+        panel.border = element_blank(),
+        axis.line.x = element_line(size = 0.5, linetype = "solid", colour = "black"),
+        axis.line.y = element_line(size = 0.5, linetype = "solid", colour = "black")) +
+  scale_color_manual(values = c("Gompertz by N-R" = "#D6456CFF",
+                                "Gompertz by regression" = "#3F4788FF")) +
+  labs(title = "Gompertz fits",
+       y = expression(paste("log(", {}[1], m[x], ")" )))
+```
+
+
+```{r likelihood estimation gompertz, echo = FALSE, eval = FALSE}
+pois.lik.gmptz <- function(pars, data){
+  alpha = pars[1]
+  beta = pars[2]
+  ll = with(data, sum( D*(alpha+beta*Age) - N*exp(alpha+beta*Age) ) )
+  return(-ll)
+}
+
+fit.pars = optim(c(coef.reg[1], coef.reg[2]), pois.lik.gmptz, 
+      data=df, 
+      method="BFGS")
+# Comparison of reg, optim() and NR
+ggplot(df, 
+       aes(x = Age, y = log(mx), group = 1)) +
+  geom_line() +
+  geom_line(aes(x = Age, y = log.mx.hat.NR.gptz ),
+              col = "blue") +
+  geom_abline(slope = fit.pars$par[2],
+              intercept = fit.pars$par[1],
+              col = "navy") +
+  geom_abline(slope = coef.reg[2],
+              intercept = coef.reg[1],
+              col = "red") +
+  theme_bw()
+
+```
+
+Algorithm only need a third column in design matrix and an additional line in a. Alpha values over N-R iterations. Convergence before tenth iteration.
+
+
+```{r NR log-quad estimation, echo = FALSE}
+# Augment design matrix
+X = matrix(c(rep(1, dim(df)[1]), df$Age, df$Age^2),
+           ncol = 3)
+
+a = matrix(0, 3, 15)
+for (i in 2:ncol(a)) { a[,i] = next_alpha(a[,i-1])}
+# round(a, 4)
+
+df.a = t(a) %>% 
+  as.data.frame() %>% 
+  rename("alpha1" = V1,
+         "alpha2" = V2,
+         "alpha3" = V3)
+
+ggplot(df.a, aes(x = 1:15)) +
+  geom_line(aes(y = alpha1, col = "alpha1"), size = 1.2) +
+  geom_line(aes(y = alpha2, col = "alpha2"), size = 1.2) +
+  geom_line(aes(y = alpha3, col = "alpha3"), size = 1.2) +
+
+  theme_bw() +
+  theme(plot.title = element_text(size = 16, face = "bold",hjust = 0.5),
+        legend.position = c(0.7, 0.55),
+        legend.title = element_blank(),
+        legend.text = element_text(size = 12),
+        legend.direction = "horizontal",
+        panel.grid.major.y = element_line(linetype = "dashed"),
+        panel.grid.minor.y = element_line(linetype = "dashed"),
+        panel.grid.major.x = element_blank(),
+        panel.grid.minor.x = element_blank(),
+        panel.border = element_blank(),
+        axis.line.x = element_line(size = 0.5, linetype = "solid", colour = "black"),
+        axis.line.y = element_line(size = 0.5, linetype = "solid", colour = "black")) +
+  scale_color_manual(values = c("alpha1" = "#C7B76BFF",
+                                "alpha2" = "#00336FFF",
+                                "alpha3" = "#56C667FF"),
+                     labels = c(expression(alpha[1]), 
+                                expression(alpha[2]),
+                                expression(alpha[3]))) +
+  labs(title = "Alpha parameters over N-R iterations",
+       y = "Values",
+        x = "Iterations")
+
+
+```
+
+
+Gompertz and Log-Quadratic fits. Regression outputs more sensitive to outlying value.
+
+```{r plot outputs NR log-quad, echo = FALSE}
+
+fitted.logmx = X %*% a[, ncol(a)]
+
+fit.reg = lm(log(mx) ~ 1 + Age + Age2, 
+             df)
+coef.reg.lq = fit.reg$coefficients
+
+df = df %>% 
+  mutate(log.mx.hat.NR.lq = fitted.logmx,
+         log.mx.hat.reg.lq = coef.reg.lq[1] + coef.reg.lq[2]*Age + coef.reg.lq[3]*Age2)
+
+ggplot(df, aes(x = Age, y = log(mx), group = 1)) +
+  geom_point(size = 2, col = "#802582FF") +  
+  geom_line(aes(x = Age, y = log.mx.hat.NR.gptz, 
+                col = "Gompertz by N-R" ),
+            size = 1.2) +
+  geom_line(aes(x = Age, y = log.mx.hat.NR.lq, 
+                col = "Log-Quadratic by N-R" ),
+            size = 1.2) +
+  geom_line(aes(x = Age, y = log.mx.hat.reg.lq, 
+                col = "Log-Quadratic by regression" ),
+            size = 1.2) +
+  theme_bw() +
+  theme(plot.title = element_text(size = 16, face = "bold", hjust = 0.5),
+        legend.position = c(0.8, 0.2),
+        legend.title = element_blank(),
+        legend.text = element_text(size = 12),
+        panel.grid.major.y = element_line(linetype = "dashed"),
+        panel.grid.minor.y = element_line(linetype = "dashed"),
+        panel.grid.major.x = element_line(linetype = "dashed"),
+        panel.grid.minor.x = element_line(linetype = "dashed"),
+        panel.border = element_blank(),
+        axis.line.x = element_line(size = 0.5, linetype = "solid", colour = "black"),
+        axis.line.y = element_line(size = 0.5, linetype = "solid", colour = "black")) +
+  scale_color_manual(values = c("Gompertz by N-R" = "#D6456CFF",
+                                "Log-Quadratic by N-R" = "#74D055FF",
+                                "Log-Quadratic by regression" = "#6B6C71FF")) +
+  labs(title = "Gompertz and Log-Quadratic fits",
+       y = expression(paste("log(", {}[1], m[x], ")" )))
+
+
+# TO DO: Estimates with a t-regression to diminish outliying value effect !!!
+
+```

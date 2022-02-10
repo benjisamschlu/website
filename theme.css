@@ -36,21 +36,6 @@ html {
 
 
 
-  /*-- Trying to obtain a dark theme   --*/
-body {
-  background-color: #212121;
-}
-
-p {
-  color: #415ed1;
-}
-
-div {
-  color: rgba(255, 255, 255, 0.8);
-}
-
-
-
 /*-- ARTICLE METADATA --*/
 d-byline {
   --heading-size:    0.6rem;
@@ -93,16 +78,34 @@ d-appendix {
 
 
 /*-- Additional custom styles --*/
-/* Add any additional CSS rules below                      */
+/* Add any additional CSS rules below   */
 
-.distill-site-nav {
-  font-weight: 900;
+ /*-- Dark theme for website  --*/
+body {
+  background-color: #212121;
 }
 
+p {  /*-- Description below post title  --*/
+  color: #415ed1;
+}
+
+div {
+  color: rgba(255, 255, 255, 0.8);
+}
+
+ /*-- Icon section --*/
+/*-- Done in index.Rmd in fa(fill=..) -- */
+ 
+ /*-- Code theme   --*/
 code {
   font-family: 'Source Code Pro', monospace;
   font-weight: 650;
   font-size: 1.1em;
+}
+
+
+.distill-site-nav {
+  font-weight: 900;
 }
 
 
