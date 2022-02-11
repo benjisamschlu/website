@@ -1,6 +1,7 @@
 ---
 site: distill::distill_website
 image: "ben_pic.jpg"
+pagetitle: "index"
 links:
   - label: '`r fontawesome::fa("github", fill = "#7494A4")`'
     url: "https://github.com/benjisamschlu"
