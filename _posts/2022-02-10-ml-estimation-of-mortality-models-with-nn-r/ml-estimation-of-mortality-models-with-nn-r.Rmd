@@ -25,11 +25,13 @@ library(ggplot2)
 library(tidyverse)
 library(viridis)
 library(scales)
+
+source("./modeling/function/theme_dark_blue.R")
 ```
 
 
 
-```{r tidy data, echo = FALSE}
+```{r, echo = FALSE}
 dth = read.delim("./modeling/data/dthBE_1x1.txt", 
                  skip = 1,
                  sep = "", 
@@ -68,15 +70,8 @@ ggplot(df, aes(x = Age, y = log(mx))) +
   geom_rect(xmin = 79, xmax=111, ymin = -5, ymax = -0.2,
             alpha = 0.1, col = "#238A8DFF", fill = NA,
             size = 2) + 
-  theme_bw() +
-  theme(plot.title = element_text(size = 16, face = "bold",hjust = 0.5),
-        panel.grid.major.y = element_line(linetype = "dashed"),
-        panel.grid.minor.y = element_line(linetype = "dashed"),
-        panel.grid.major.x = element_blank(),
-        panel.grid.minor.x = element_blank(),
-        panel.border = element_blank(),
-        axis.line.x = element_line(size = 0.5, linetype = "solid", colour = "black"),
-        axis.line.y = element_line(size = 0.5, linetype = "solid", colour = "black")) +
+  theme_dark_blue() +
+  theme(plot.title = element_text(size = 16, face = "bold",hjust = 0.5)) +
   annotate("text",
            label = "Old age \n mortality",
             x = 95,
@@ -88,7 +83,7 @@ ggplot(df, aes(x = Age, y = log(mx))) +
 
 # Fitting mortality models by OLS
 
-```{r regression estimation, echo = FALSE}
+```{r, echo = FALSE}
 # remove young age mortality
 df = df %>% filter(Age >= 80)
 
@@ -156,7 +151,7 @@ $$\boldsymbol{\alpha_{i+1}} = \boldsymbol{\alpha_i}+[\boldsymbol{X'}diag(\hat{\b
 
 and is shown in the R-code below
 
-```{r NR gompertz estimation, echo = TRUE}
+```{r, echo = TRUE}
 # Design matrix
 X = matrix(c(rep(1, dim(df)[1]), df$Age),
            ncol = 2)
@@ -183,7 +178,7 @@ for (i in 2:ncol(a)) { a[,i] = next_alpha(a[,i-1])}
 
 Alpha values over N-R iterations. Convergence before tenth iteration.
 
-```{r plot iterations NR gompertz, echo = FALSE}
+```{r, echo = FALSE}
 df.a = t(a) %>% 
   as.data.frame() %>% 
   rename("alpha1" = V1,
@@ -192,19 +187,12 @@ df.a = t(a) %>%
 ggplot(df.a, aes(x = 1:15)) +
   geom_line(aes(y = alpha1, col = "alpha1"), size = 1.2) +
   geom_line(aes(y = alpha2, col = "alpha2"), size = 1.2) +
-  theme_bw() +
+  theme_dark_blue() +
   theme(plot.title = element_text(size = 16, face = "bold",hjust = 0.5),
         legend.position = c(0.7, 0.55),
         legend.title = element_blank(),
         legend.text = element_text(size = 12),
-        legend.direction = "horizontal",
-        panel.grid.major.y = element_line(linetype = "dashed"),
-        panel.grid.minor.y = element_line(linetype = "dashed"),
-        panel.grid.major.x = element_blank(),
-        panel.grid.minor.x = element_blank(),
-        panel.border = element_blank(),
-        axis.line.x = element_line(size = 0.5, linetype = "solid", colour = "black"),
-        axis.line.y = element_line(size = 0.5, linetype = "solid", colour = "black")) +
+        legend.direction = "horizontal") +
   scale_color_manual(values = c("alpha1" = "#C7B76BFF",
                                 "alpha2" = "#00336FFF"),
                      labels = c(expression(alpha[1]), expression(alpha[2]))) +
@@ -217,7 +205,7 @@ ggplot(df.a, aes(x = 1:15)) +
 
 Gompertz fit of old age mortality. Regression gives more weights to rates at oldest ages.
 
-```{r plot outputs NR gompertz, echo = FALSE}
+```{r, echo = FALSE}
 fitted.logmx = X %*% a[, ncol(a)]
 
 df = df %>% 
@@ -232,18 +220,11 @@ ggplot(df, aes(x = Age, y = log(mx), group = 1)) +
   geom_line(aes(x = Age, y = log.mx.hat.reg.gptz, 
                 col = "Gompertz by regression" ),
             size = 1.2) +
-  theme_bw() +
+  theme_dark_blue() +
   theme(plot.title = element_text(size = 16, face = "bold", hjust = 0.5),
         legend.position = c(0.8, 0.2),
         legend.title = element_blank(),
-        legend.text = element_text(size = 12),
-        panel.grid.major.y = element_line(linetype = "dashed"),
-        panel.grid.minor.y = element_line(linetype = "dashed"),
-        panel.grid.major.x = element_line(linetype = "dashed"),
-        panel.grid.minor.x = element_line(linetype = "dashed"),
-        panel.border = element_blank(),
-        axis.line.x = element_line(size = 0.5, linetype = "solid", colour = "black"),
-        axis.line.y = element_line(size = 0.5, linetype = "solid", colour = "black")) +
+        legend.text = element_text(size = 12)) +
   scale_color_manual(values = c("Gompertz by N-R" = "#D6456CFF",
                                 "Gompertz by regression" = "#3F4788FF")) +
   labs(title = "Gompertz fits",
@@ -251,7 +232,7 @@ ggplot(df, aes(x = Age, y = log(mx), group = 1)) +
 ```
 
 
-```{r likelihood estimation gompertz, echo = FALSE, eval = FALSE}
+```{r, echo = FALSE, eval = FALSE}
 pois.lik.gmptz <- function(pars, data){
   alpha = pars[1]
   beta = pars[2]
@@ -281,7 +262,7 @@ ggplot(df,
 Algorithm only need a third column in design matrix and an additional line in a. Alpha values over N-R iterations. Convergence before tenth iteration.
 
 
-```{r NR log-quad estimation, echo = FALSE}
+```{r, echo = FALSE}
 # Augment design matrix
 X = matrix(c(rep(1, dim(df)[1]), df$Age, df$Age^2),
            ncol = 3)
@@ -301,21 +282,14 @@ ggplot(df.a, aes(x = 1:15)) +
   geom_line(aes(y = alpha2, col = "alpha2"), size = 1.2) +
   geom_line(aes(y = alpha3, col = "alpha3"), size = 1.2) +
 
-  theme_bw() +
+  theme_dark_blue() +
   theme(plot.title = element_text(size = 16, face = "bold",hjust = 0.5),
-        legend.position = c(0.7, 0.55),
+        legend.position = c(0.7, 0.45),
         legend.title = element_blank(),
         legend.text = element_text(size = 12),
-        legend.direction = "horizontal",
-        panel.grid.major.y = element_line(linetype = "dashed"),
-        panel.grid.minor.y = element_line(linetype = "dashed"),
-        panel.grid.major.x = element_blank(),
-        panel.grid.minor.x = element_blank(),
-        panel.border = element_blank(),
-        axis.line.x = element_line(size = 0.5, linetype = "solid", colour = "black"),
-        axis.line.y = element_line(size = 0.5, linetype = "solid", colour = "black")) +
+        legend.direction = "horizontal") +
   scale_color_manual(values = c("alpha1" = "#C7B76BFF",
-                                "alpha2" = "#00336FFF",
+                                "alpha2" = "#8305A7FF",
                                 "alpha3" = "#56C667FF"),
                      labels = c(expression(alpha[1]), 
                                 expression(alpha[2]),
@@ -330,7 +304,7 @@ ggplot(df.a, aes(x = 1:15)) +
 
 Gompertz and Log-Quadratic fits. Regression outputs more sensitive to outlying value.
 
-```{r plot outputs NR log-quad, echo = FALSE}
+```{r, echo = FALSE}
 
 fitted.logmx = X %*% a[, ncol(a)]
 
@@ -353,18 +327,11 @@ ggplot(df, aes(x = Age, y = log(mx), group = 1)) +
   geom_line(aes(x = Age, y = log.mx.hat.reg.lq, 
                 col = "Log-Quadratic by regression" ),
             size = 1.2) +
-  theme_bw() +
+  theme_dark_blue() +
   theme(plot.title = element_text(size = 16, face = "bold", hjust = 0.5),
         legend.position = c(0.8, 0.2),
         legend.title = element_blank(),
-        legend.text = element_text(size = 12),
-        panel.grid.major.y = element_line(linetype = "dashed"),
-        panel.grid.minor.y = element_line(linetype = "dashed"),
-        panel.grid.major.x = element_line(linetype = "dashed"),
-        panel.grid.minor.x = element_line(linetype = "dashed"),
-        panel.border = element_blank(),
-        axis.line.x = element_line(size = 0.5, linetype = "solid", colour = "black"),
-        axis.line.y = element_line(size = 0.5, linetype = "solid", colour = "black")) +
+        legend.text = element_text(size = 12)) +
   scale_color_manual(values = c("Gompertz by N-R" = "#D6456CFF",
                                 "Log-Quadratic by N-R" = "#74D055FF",
                                 "Log-Quadratic by regression" = "#6B6C71FF")) +
