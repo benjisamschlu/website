@@ -5,20 +5,20 @@
       "title": "About",
       "author": [],
       "contents": "\r\nBio\r\nI am a PhD student at UCLouvain, Belgium in the demography department (DEMO). My thesis focuses on mortality estimation at the subnational level using Bayesian methods. I am interested in statistics, applied mathematics, R, data visualization and science of science.\r\nOutside of work, I am interested in cycling, trekking, basket balling and accordeon playing.\r\nExperience\r\nBefore starting my PhD, I worked at the Centre for Research on the Epidemiology of Disasters (CRED) where I conducted statistical analyses on different research projects: evaluating health profiles and health needs of non-EU migrants arriving in Greece with Médecins du Monde data; assessing the impact of the 2015 Earthquake on hospital admissions in Kathmandu (Nepal) using Tribhuvan University Teaching Hospital data; estimating the civilian mortality during the Syrian conflict focusing on deaths recorded by the Syrian Violation Documentation Center (VDC).\r\nEducation\r\nI did my master in quantitative economics at the Free University Brussels (ULB). I trained myself further in statistics by first following an online micromaster in Statistics and Data Science at the Massachusetts Institute of Technology (MIT) and then, by validating statistics courses at UCLouvain.\r\nI also had the opportunity to follow several workshops (usually 1 week long):\r\nStatistical Demography by Adrian E. Raftery at the Fondation des Sciences Mathématiques de Paris (FSMP) in 2021\r\nBayesian Spatio-Temporal health Modeling by Andrew B. Lawson at the Medical University of South Carolina (online) in 2021\r\nBerkeley Formal Demography at Berkeley University (online) in 2021\r\nSmoothing Demographic Data by Carlo Giovanni Camarda at the Max Planck Institute for Demographic Research (online) in 2020\r\n\r\n\r\n\r\n",
-      "last_modified": "2022-02-11T12:14:54+01:00"
+      "last_modified": "2022-02-11T17:35:11+01:00"
     },
     {
       "path": "blog.html",
       "title": "Posts",
       "author": [],
       "contents": "\r\n\r\n\r\n\r\n",
-      "last_modified": "2022-02-11T12:14:57+01:00"
+      "last_modified": "2022-02-11T17:35:17+01:00"
     },
     {
       "path": "index.html",
       "author": [],
       "contents": "\r\n\r\n          \r\n      \r\n      Benjamin Schluter\r\n      \r\n      \r\n      Home\r\n      Blog\r\n      About\r\n      ☰\r\n      \r\n      \r\n      \r\n        \r\n          \r\n            \r\n          \r\n          \r\n            \r\n              \r\n              PhD student in Demography\r\n              \r\n              \r\n              University of Louvain (UCLouvain)\r\n              \r\n            \r\n            \r\n              \r\n              PhD student in Demography\r\n              \r\n              \r\n              University of Louvain (UCLouvain)\r\n              \r\n            \r\n          \r\n\r\n          \r\n            \r\n              \r\n                  \r\n                    \r\n                      \r\n                  \r\n                \r\n                                \r\n                  \r\n                    \r\n                      \r\n                  \r\n                \r\n                                \r\n                  \r\n                    \r\n                      \r\n                  \r\n                \r\n                                \r\n                  \r\n                    \r\n                      \r\n                  \r\n                \r\n                              \r\n          \r\n\r\n          \r\n            \r\n              \r\n                                \r\n                  \r\n                    \r\n                \r\n                                \r\n                  \r\n                    \r\n                \r\n                                \r\n                  \r\n                    \r\n                \r\n                                \r\n                  \r\n                    \r\n                \r\n                              \r\n            \r\n          \r\n        \r\n      \r\n    \r\n\r\n    \r\n    \r\n    ",
-      "last_modified": "2022-02-11T12:15:00+01:00"
+      "last_modified": "2022-02-11T17:35:22+01:00"
     }
   ],
   "collections": ["posts/posts.json"]

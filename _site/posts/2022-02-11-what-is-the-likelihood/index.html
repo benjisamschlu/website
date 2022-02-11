@@ -66,38 +66,38 @@ code span.wa { font-style: italic; } /* Warning */
 </style>
 
   <!--radix_placeholder_meta_tags-->
-<title>Benjamin Schluter: ML estimation of mortality models with NN-R</title>
+<title>Benjamin Schluter: What is the likelihood ?</title>
 
-<meta property="description" itemprop="description" content="A short description of the post."/>
+<meta property="description" itemprop="description" content="Opening the likelihood blackbox, showing its derivation and its use in a demographic context."/>
 
 
 <!--  https://schema.org/Article -->
-<meta property="article:published" itemprop="datePublished" content="2022-02-10"/>
-<meta property="article:created" itemprop="dateCreated" content="2022-02-10"/>
+<meta property="article:published" itemprop="datePublished" content="2022-02-11"/>
+<meta property="article:created" itemprop="dateCreated" content="2022-02-11"/>
 <meta name="article:author" content="Benjamin Schlüter"/>
 
 <!--  https://developers.facebook.com/docs/sharing/webmasters#markup -->
-<meta property="og:title" content="Benjamin Schluter: ML estimation of mortality models with NN-R"/>
+<meta property="og:title" content="Benjamin Schluter: What is the likelihood ?"/>
 <meta property="og:type" content="article"/>
-<meta property="og:description" content="A short description of the post."/>
+<meta property="og:description" content="Opening the likelihood blackbox, showing its derivation and its use in a demographic context."/>
 <meta property="og:locale" content="en_US"/>
 <meta property="og:site_name" content="Benjamin Schluter"/>
 
 <!--  https://dev.twitter.com/cards/types/summary -->
 <meta property="twitter:card" content="summary"/>
-<meta property="twitter:title" content="Benjamin Schluter: ML estimation of mortality models with NN-R"/>
-<meta property="twitter:description" content="A short description of the post."/>
+<meta property="twitter:title" content="Benjamin Schluter: What is the likelihood ?"/>
+<meta property="twitter:description" content="Opening the likelihood blackbox, showing its derivation and its use in a demographic context."/>
 
 <!--/radix_placeholder_meta_tags-->
   <!--radix_placeholder_rmarkdown_metadata-->
 
 <script type="text/json" id="radix-rmarkdown-metadata">
-{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["title","description","author","date","output"]}},"value":[{"type":"character","attributes":{},"value":["ML estimation of mortality models with NN-R"]},{"type":"character","attributes":{},"value":["A short description of the post."]},{"type":"list","attributes":{},"value":[{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["name"]}},"value":[{"type":"character","attributes":{},"value":["Benjamin Schlüter"]}]}]},{"type":"character","attributes":{},"value":["02-10-2022"]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["distill::distill_article"]}},"value":[{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["self_contained","highlight"]}},"value":[{"type":"logical","attributes":{},"value":[false]},{"type":"character","attributes":{},"value":["monochrome"]}]}]}]}
+{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["title","description","author","date","output"]}},"value":[{"type":"character","attributes":{},"value":["What is the likelihood ?"]},{"type":"character","attributes":{},"value":["Opening the likelihood blackbox, showing its derivation and its use in a demographic context."]},{"type":"list","attributes":{},"value":[{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["name"]}},"value":[{"type":"character","attributes":{},"value":["Benjamin Schlüter"]}]}]},{"type":"character","attributes":{},"value":["02-11-2022"]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["distill::distill_article"]}},"value":[{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["self_contained","highlight"]}},"value":[{"type":"logical","attributes":{},"value":[false]},{"type":"character","attributes":{},"value":["monochrome"]}]}]}]}
 </script>
 <!--/radix_placeholder_rmarkdown_metadata-->
   
   <script type="text/json" id="radix-resource-manifest">
-  {"type":"character","attributes":{},"value":["ml-estimation-of-mortality-models-with-nn-r_files/anchor-4.2.2/anchor.min.js","ml-estimation-of-mortality-models-with-nn-r_files/bowser-1.9.3/bowser.min.js","ml-estimation-of-mortality-models-with-nn-r_files/distill-2.2.21/template.v2.js","ml-estimation-of-mortality-models-with-nn-r_files/figure-html5/unnamed-chunk-2-1.png","ml-estimation-of-mortality-models-with-nn-r_files/figure-html5/unnamed-chunk-5-1.png","ml-estimation-of-mortality-models-with-nn-r_files/figure-html5/unnamed-chunk-6-1.png","ml-estimation-of-mortality-models-with-nn-r_files/figure-html5/unnamed-chunk-8-1.png","ml-estimation-of-mortality-models-with-nn-r_files/figure-html5/unnamed-chunk-9-1.png","ml-estimation-of-mortality-models-with-nn-r_files/jquery-1.11.3/jquery.min.js","ml-estimation-of-mortality-models-with-nn-r_files/popper-2.6.0/popper.min.js","ml-estimation-of-mortality-models-with-nn-r_files/tippy-6.2.7/tippy-bundle.umd.min.js","ml-estimation-of-mortality-models-with-nn-r_files/tippy-6.2.7/tippy-light-border.css","ml-estimation-of-mortality-models-with-nn-r_files/tippy-6.2.7/tippy.css","ml-estimation-of-mortality-models-with-nn-r_files/tippy-6.2.7/tippy.umd.min.js","ml-estimation-of-mortality-models-with-nn-r_files/webcomponents-2.0.0/webcomponents.js"]}
+  {"type":"character","attributes":{},"value":["what-is-the-likelihood_files/anchor-4.2.2/anchor.min.js","what-is-the-likelihood_files/bowser-1.9.3/bowser.min.js","what-is-the-likelihood_files/distill-2.2.21/template.v2.js","what-is-the-likelihood_files/figure-html5/unnamed-chunk-2-1.png","what-is-the-likelihood_files/jquery-1.11.3/jquery.min.js","what-is-the-likelihood_files/popper-2.6.0/popper.min.js","what-is-the-likelihood_files/tippy-6.2.7/tippy-bundle.umd.min.js","what-is-the-likelihood_files/tippy-6.2.7/tippy-light-border.css","what-is-the-likelihood_files/tippy-6.2.7/tippy.css","what-is-the-likelihood_files/tippy-6.2.7/tippy.umd.min.js","what-is-the-likelihood_files/webcomponents-2.0.0/webcomponents.js"]}
   </script>
   <!--radix_placeholder_navigation_in_header-->
 <meta name="distill:offset" content="../.."/>
@@ -2154,7 +2154,7 @@ d-appendix d-footnote-list a.footnote-backlink {
 <!--radix_placeholder_front_matter-->
 
 <script id="distill-front-matter" type="text/json">
-{"title":"ML estimation of mortality models with NN-R","description":"A short description of the post.","authors":[{"author":"Benjamin Schlüter","authorURL":"#","affiliation":"&nbsp;","affiliationURL":"#","orcidID":""}],"publishedDate":"2022-02-10T00:00:00.000+01:00","citationText":"Schlüter, 2022"}
+{"title":"What is the likelihood ?","description":"Opening the likelihood blackbox, showing its derivation and its use in a demographic context.","authors":[{"author":"Benjamin Schlüter","authorURL":"#","affiliation":"&nbsp;","affiliationURL":"#","orcidID":""}],"publishedDate":"2022-02-11T00:00:00.000+01:00","citationText":"Schlüter, 2022"}
 </script>
 
 <!--/radix_placeholder_front_matter-->
@@ -2177,99 +2177,89 @@ d-appendix d-footnote-list a.footnote-backlink {
 <!--/radix_placeholder_site_before_body-->
 
 <div class="d-title">
-<h1>ML estimation of mortality models with NN-R</h1>
+<h1>What is the likelihood ?</h1>
 <!--radix_placeholder_categories-->
 <!--/radix_placeholder_categories-->
-<p><p>A short description of the post.</p></p>
+<p><p>Opening the likelihood blackbox, showing its derivation and its use in a demographic context.</p></p>
 </div>
 
 <div class="d-byline">
   Benjamin Schlüter  
   
-<br/>02-10-2022
+<br/>02-11-2022
 </div>
 
 <div class="d-article">
-<p>When studying demographic methods for mortality estimations, we encounter the issue of estimating mortality at old ages where data are sparse (fewer deaths and fewer survivors). In this context, D. M. Feehan (2018) advised to estimate mortality models using maximum likelihood for several reasons. One of the reason that is of interest for this post is that estimating parameters by maximizing a likelihood accounts for the data available at each age, giving less influence to older ages in parameter estimates. In what follows, we will look at the difference between parameters estimated in the context of a simple linear model and parameters estimated in the context of a Maximum Likelihood estimation. The MLE will be performed using the Newton-Raphson (N-R) maximization algorithm to estimate parameters for the Gompertz and Log-Quadratic models.</p>
-<p>We will use the Belgian mortality age schedule in 2002 (deaths and exposures from Human Mortality Database) where old age mortality showed “unusual” low mortality rates, most likely due to sparse data at these ages. What we will do in the following is to try to model data points in the rectangle showed on the figure.</p>
 <div class="layout-chunk" data-layout="l-body">
 
 </div>
+<p>In this post, my aim is to explain what the likelihood is and how this concept is used in frequentist statistics to obtain an estimator for a parameter. At the end, we look at a demographic application.</p>
+<h1 id="coin-flips">Coin flips</h1>
+<p>Let’s assume that we are interested in coin flips. Hence, an observation (<span class="math inline">\(y_i\)</span>) is the outcome of a coin flip and our data <span class="math inline">\(\{y_1, y_2, .., y_N\}\)</span> consists of all <span class="math inline">\(N\)</span> coin flips. First thing to do is to assume a distribution for the outcome of a coin flip. The commonly used distribution for a binary observation <span class="math inline">\(y_i\)</span> taking only the following two values</p>
+<p><span class="math display">\[\begin{equation}
+  y_{i} =
+    \begin{cases}
+      1 &amp; \text{if head}\\
+      0 &amp; \text{if tail}
+    \end{cases}       
+\end{equation}\]</span></p>
+<p>is the Bernoulli distribution:</p>
+<p><span class="math display">\[
+\begin{align}
+y_i &amp; \sim Bernoulli(p) \\
+\Leftrightarrow P(y_i) &amp;  = p^{y_i}(1-p)^{1-y_i} = \begin{cases} 
+p &amp; \text{if $y_i$ = 1} \\
+(1-p) &amp; \text{if $y_i$ = 0} \end{cases}
+\end{align}
+\]</span></p>
+<p>where <span class="math inline">\(p\)</span> represents the probability of observing head.</p>
+<p>Ok that’s fine but we are working with a data set and hence, N flips. What is the probability of observing the data set we have ? We can easily say that each coin flip is <strong>i</strong>ndependent and since the coin is always the same, all flips follow the same <strong>i</strong>ndentical Bernoulli <strong>d</strong>istribution (the famous <strong>i.i.d</strong>). These two assumptions are critical (hence their frequent apperearances in stat classes) and allow to express the probability of observing the data as the product of the probability of each flip as follow:</p>
+<p><span class="math display">\[
+\begin{align}
+P(data) &amp; = \prod^N_{i=1} P(y_i) \\
+&amp; = \prod^N_{i=1} p^{y_i}(1-p)^{1-y_i} \\
+&amp; = p^{\sum^N_{i=1} y_i}(1-p)^{\sum^N_{i=1} 1-y_i} \\
+&amp; = p^{Y}(1-p)^{N-Y} 
+\end{align}
+\]</span> and this probability is what is called, the likelihood:</p>
+<p><span class="math display">\[L(p|Y) = p^Y(1-p)^{N-Y}\]</span></p>
+<p><span class="math inline">\(L(p|Y)\)</span> is a function of a parameter <span class="math inline">\(p\)</span> (the probability of heads) given <span class="math inline">\(Y\)</span> (the data). Let’s check that visually by assuming that our data consists of 22 heads out of 60 flips.</p>
 <div class="layout-chunk" data-layout="l-body">
-<p><img src="ml-estimation-of-mortality-models-with-nn-r_files/figure-html5/unnamed-chunk-2-1.png" width="624" /></p>
+<p><img src="what-is-the-likelihood_files/figure-html5/unnamed-chunk-2-1.png" width="624" /></p>
 </div>
-<h1 id="fitting-mortality-models-by-ols">Fitting mortality models by OLS</h1>
-<div class="layout-chunk" data-layout="l-body">
-
-</div>
-<p>One solution sometimes performed (and that is not advisable as you will see) is to fit a linear model on the logarithm of the mortality rates. Gompertz and Log-Quadtric model would then be expressed respectively as follow:</p>
-<p><span class="math inline">\(\begin{aligned}  ln(m_x) &amp; \sim Normal(\alpha_1 + \alpha_2x, \sigma) \\  ln(m_x) &amp; \sim Normal(\alpha_1 + \alpha_2x + \alpha_3x^2, \sigma) \end{aligned}\)</span></p>
-<p>where <span class="math inline">\(x \in \{80, 81, .., A\}\)</span> is age from age 80 years old.</p>
-<h1 id="poisson-log-likelihood">Poisson Log Likelihood</h1>
-<p>Instead we can derive the likelihood assuming deaths <span class="math inline">\(D_x\)</span> follow a poisson distribution. We assume that deaths, <span class="math inline">\(D_x\)</span>, at each age <span class="math inline">\(x \in \{80, 81, .., A\}\)</span> have a Poisson distribution with expected value equal to the observed exposure <span class="math inline">\(N_x\)</span> times the mortality rate:</p>
-<p><span class="math display">\[D_x \sim Poisson(N_x \mu_x)\]</span> The sample likelihood can be expressed as</p>
-<p><span class="math display">\[L(D_x | N_x, \mu_x) = \prod_{x=80}^G \frac{(N_x \mu_X)^{D_x}e^{-(N_x \mu_x)}}{D_x!}\]</span></p>
-<p>Thus the sample log likelihood is</p>
-<p><span class="math display">\[l(\mu_x) = K + \sum_{x=80}^G (D_xln(\mu_x) - \hat{D_x})\]</span></p>
-<p>where <span class="math inline">\(\hat{D_x}=N_x \mu_x\)</span> is the expected number of deaths predicted by the model, <span class="math inline">\(K\)</span> is a constant not depending on <span class="math inline">\(\mu_x\)</span> and <span class="math inline">\(G\)</span> corresponds to the number of age group considered.</p>
-<p>In this post, we will consider two mortality models: Gompertz and Log-Quadratic. In what follows, we show the math for the Gompertz model. Mortality rates are commonly expressed as follow in the Gompertz model</p>
-<p><span class="math display">\[\mu_x = exp(\alpha_1 + \alpha_2x)\]</span> In matrix form we can rewrite that as</p>
-<p><span class="math display">\[\boldsymbol{\lambda} = ln(\boldsymbol{\mu}) = \boldsymbol{X\alpha}\]</span></p>
-<p>where <span class="math inline">\(\boldsymbol{X}\)</span> is a <span class="math inline">\(G \times 2\)</span> design matrix, <span class="math inline">\(\boldsymbol{\alpha}\)</span> is a <span class="math inline">\(2 \times 1\)</span> vector and <span class="math inline">\(ln(\boldsymbol{\mu})\)</span> is a <span class="math inline">\(G \times 1\)</span> vector of log mortality rates.</p>
-<h1 id="maximizing-the-log-likelihood-via-newton-raphson-iteration">Maximizing the Log Likelihood via Newton-Raphson iteration</h1>
-<p>We search <span class="math inline">\(\boldsymbol{\alpha}\)</span> to maximize <span class="math inline">\(\boldsymbol{l(\alpha)}\)</span>. For Newton-Raphson algorithm to do that we need both first and second derivatives of <span class="math inline">\(\boldsymbol{l(\alpha)}\)</span></p>
-<p><span class="math display">\[\frac{\partial \boldsymbol{l(\alpha)}}{ \partial \boldsymbol{\alpha}} = \sum_{x=80}^G(D_x-\hat{D_x})\boldsymbol{x_x} = \boldsymbol{X&#39;(D-\hat{D})} = 0\]</span></p>
-<p>since <span class="math inline">\(\frac{ln(\mu_x)}{\partial \boldsymbol{\alpha}} = \boldsymbol{x_x}\)</span>, <span class="math inline">\(\frac{\partial \mu_x}{\partial \boldsymbol{\alpha}} = \mu_x \boldsymbol{x_x}\)</span> and <span class="math inline">\(\frac{\partial \hat{D_x}}{\partial \boldsymbol{\alpha}} = N_x\mu_x \boldsymbol{x_x} = \hat{D_x}\boldsymbol{x_x}\)</span>.</p>
-<p>The second derivatives are then</p>
-<p><span class="math display">\[\frac{\partial^2 \boldsymbol{l(\alpha)}}{ \partial \boldsymbol{\alpha}\boldsymbol{\alpha&#39;}} = \sum_{x=80}^G(-\frac{\partial \hat{D_x}}{\partial \boldsymbol{\alpha&#39;}}\boldsymbol{x_x}) = \sum_{x=80}^G(\boldsymbol{-x_x&#39; \hat{D_x} x_x}) = -\boldsymbol{X&#39;}diag(\hat{\boldsymbol{D}})\boldsymbol{X}\]</span> The Newton-Raphson algorithm for solving <span class="math inline">\(\frac{\partial \boldsymbol{l(\alpha)}}{ \partial \boldsymbol{\alpha}}=0\)</span> is</p>
-<p><span class="math display">\[\boldsymbol{\alpha_{i+1}} = \boldsymbol{\alpha_i}-[\frac{\partial^2 \boldsymbol{l(\alpha)}}{ \partial \boldsymbol{\alpha}\boldsymbol{\alpha&#39;}}]^{-1}[\frac{\partial \boldsymbol{l(\alpha)}}{ \partial \boldsymbol{\alpha}}]\]</span> which in our case is</p>
-<p><span class="math display">\[\boldsymbol{\alpha_{i+1}} = \boldsymbol{\alpha_i}+[\boldsymbol{X&#39;}diag(\hat{\boldsymbol{D}})\boldsymbol{X}]^{-1}[\boldsymbol{X&#39;(D-\hat{D})}]\]</span></p>
-<p>and is shown in the R-code below</p>
-<div class="layout-chunk" data-layout="l-body">
-<div class="sourceCode">
-<pre class="sourceCode r"><code class="sourceCode r"><span class='co'># Design matrix</span>
-<span class='va'>X</span> <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/matrix.html'>matrix</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/rep.html'>rep</a></span><span class='op'>(</span><span class='fl'>1</span>, <span class='fu'><a href='https://rdrr.io/r/base/dim.html'>dim</a></span><span class='op'>(</span><span class='va'>df</span><span class='op'>)</span><span class='op'>[</span><span class='fl'>1</span><span class='op'>]</span><span class='op'>)</span>, <span class='va'>df</span><span class='op'>$</span><span class='va'>Age</span><span class='op'>)</span>,
-           ncol <span class='op'>=</span> <span class='fl'>2</span><span class='op'>)</span>
-<span class='co'># vector of deaths and exposure</span>
-<span class='va'>D</span> <span class='op'>=</span> <span class='va'>df</span><span class='op'>$</span><span class='va'>D</span>
-<span class='va'>N</span> <span class='op'>=</span> <span class='va'>df</span><span class='op'>$</span><span class='va'>N</span>
-<span class='co'># Expected deaths according to alpha</span>
-<span class='va'>Dhat</span> <span class='op'>=</span> <span class='kw'>function</span><span class='op'>(</span><span class='va'>alpha</span><span class='op'>)</span> <span class='op'>{</span>
-  <span class='va'>lambda.hat</span> <span class='op'>=</span> <span class='va'>X</span> <span class='op'>%*%</span> <span class='va'>alpha</span>
-  <span class='kw'><a href='https://rdrr.io/r/base/function.html'>return</a></span><span class='op'>(</span> <span class='fu'><a href='https://rdrr.io/r/base/numeric.html'>as.numeric</a></span><span class='op'>(</span> <span class='va'>N</span> <span class='op'>*</span> <span class='fu'><a href='https://rdrr.io/r/base/Log.html'>exp</a></span><span class='op'>(</span><span class='va'>lambda.hat</span><span class='op'>)</span><span class='op'>)</span><span class='op'>)</span>
-<span class='op'>}</span>
-<span class='co'># Newton-Raphson algorithm</span>
-<span class='va'>next_alpha</span> <span class='op'>=</span> <span class='kw'>function</span><span class='op'>(</span><span class='va'>alpha</span><span class='op'>)</span> <span class='op'>{</span>
-  <span class='va'>dhat</span> <span class='op'>=</span> <span class='fu'>Dhat</span><span class='op'>(</span><span class='va'>alpha</span><span class='op'>)</span>
-  <span class='va'>M</span> <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/solve.html'>solve</a></span> <span class='op'>(</span> <span class='fu'><a href='https://rdrr.io/r/base/t.html'>t</a></span><span class='op'>(</span><span class='va'>X</span><span class='op'>)</span> <span class='op'>%*%</span> <span class='fu'><a href='https://rdrr.io/r/base/diag.html'>diag</a></span><span class='op'>(</span><span class='va'>dhat</span><span class='op'>)</span> <span class='op'>%*%</span> <span class='va'>X</span><span class='op'>)</span>
-  <span class='va'>v</span> <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/t.html'>t</a></span><span class='op'>(</span><span class='va'>X</span><span class='op'>)</span> <span class='op'>%*%</span> <span class='op'>(</span><span class='va'>D</span> <span class='op'>-</span> <span class='va'>dhat</span><span class='op'>)</span>
-  <span class='kw'><a href='https://rdrr.io/r/base/function.html'>return</a></span><span class='op'>(</span> <span class='va'>alpha</span> <span class='op'>+</span> <span class='va'>M</span> <span class='op'>%*%</span> <span class='va'>v</span><span class='op'>)</span>
-<span class='op'>}</span>
-
-<span class='va'>a</span> <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/matrix.html'>matrix</a></span><span class='op'>(</span><span class='fl'>0</span>, <span class='fl'>2</span>, <span class='fl'>15</span><span class='op'>)</span>
-<span class='kw'>for</span> <span class='op'>(</span><span class='va'>i</span> <span class='kw'>in</span> <span class='fl'>2</span><span class='op'>:</span><span class='fu'><a href='https://rdrr.io/r/base/nrow.html'>ncol</a></span><span class='op'>(</span><span class='va'>a</span><span class='op'>)</span><span class='op'>)</span> <span class='op'>{</span> <span class='va'>a</span><span class='op'>[</span>,<span class='va'>i</span><span class='op'>]</span> <span class='op'>=</span> <span class='fu'>next_alpha</span><span class='op'>(</span><span class='va'>a</span><span class='op'>[</span>,<span class='va'>i</span><span class='op'>-</span><span class='fl'>1</span><span class='op'>]</span><span class='op'>)</span><span class='op'>}</span>
-</code></pre>
-</div>
-</div>
-<p>Alpha values over N-R iterations. Convergence before tenth iteration.</p>
-<div class="layout-chunk" data-layout="l-body">
-<p><img src="ml-estimation-of-mortality-models-with-nn-r_files/figure-html5/unnamed-chunk-5-1.png" width="624" /></p>
-</div>
-<p>Gompertz fit of old age mortality. Regression gives more weights to rates at oldest ages.</p>
-<div class="layout-chunk" data-layout="l-body">
-<p><img src="ml-estimation-of-mortality-models-with-nn-r_files/figure-html5/unnamed-chunk-6-1.png" width="624" /></p>
-</div>
-<div class="layout-chunk" data-layout="l-body">
-
-</div>
-<p>Algorithm only need a third column in design matrix and an additional line in a. Alpha values over N-R iterations. Convergence before tenth iteration.</p>
-<div class="layout-chunk" data-layout="l-body">
-<p><img src="ml-estimation-of-mortality-models-with-nn-r_files/figure-html5/unnamed-chunk-8-1.png" width="624" /></p>
-</div>
-<p>Gompertz and Log-Quadratic fits. Regression outputs more sensitive to outlying value.</p>
-<div class="layout-chunk" data-layout="l-body">
-<p><img src="ml-estimation-of-mortality-models-with-nn-r_files/figure-html5/unnamed-chunk-9-1.png" width="624" /></p>
-</div>
+<p>As it is clear from the above figure, the likelihood is a function of the parameter <span class="math inline">\(p\)</span> (bounded between 0 and 1 as it is a probability).</p>
+<p>Now suppose, as it is commonly the case when performing analyses, that the parameter of interest is not known (here <span class="math inline">\(p\)</span>). The way that frequentist statistics gets an estimator for <span class="math inline">\(p\)</span> is by maximizing the probability of observing the data we have. Which, you now know at this stage of the post, is the likelihood. The obtained estimator is called the maximum likelihood estimator (MLE). Looking at the figure, the highest value reached by <span class="math inline">\(L(p|Y)\)</span> seems to be around <span class="math inline">\(p=0.37\)</span>. In order to obtain its precise value, let’s find the argument (the value of <span class="math inline">\(p\)</span>) that maximizes <span class="math inline">\(L(p|Y)\)</span></p>
+<p><span class="math display">\[p^{MLE} = argmax_p(p^Y(1-p)^{N-Y})\]</span></p>
+<p>As it is usually done to find the maximum of a function, we take its derivative with respect to the parameter of interest and set it to 0. In practice, it is easier to first transform the likelihood into a log-likelihood <span class="math inline">\(l(p|Y)\)</span> (monotonic transformation) and then find the value of the parameter maximizing it. Let’s do that,</p>
+<p><span class="math display">\[
+\begin{align}
+l(p|Y) = log(L(p|Y)) &amp; = log(p^Y(1-p)^{N-Y}) \\
+\Leftrightarrow  &amp; = Ylog(p) + (N-Y)log(1-p) 
+\end{align}
+\]</span></p>
+<p>Taking the derivative and setting it to zero to find the maximum,</p>
+<p><span class="math display">\[
+\begin{align}
+&amp; \frac{\partial l(p|Y)}{\partial p} = \frac{Y}{p} - \frac{N-Y}{1-p} = 0 \\
+&amp; \Leftrightarrow Y(1-p) - (N-Y)p = 0 \\
+&amp; \Rightarrow p^{MLE} = \frac{Y}{N} = \frac{22}{60} = 0.366
+\end{align}
+\]</span></p>
+<p>Having the actual data set and willing to estimate the probability of obtaining head, the answer given by the maximum likelihood machinery is <span class="math inline">\(p^{MLE}=0.366\)</span>.</p>
+<p>The beauty of this statistical machinery is that it can be applied to more complex examples. Let’s make the link with models of mortality to conclude this post.</p>
+<h1 id="deaths-at-age-x">Deaths at age <span class="math inline">\(x\)</span></h1>
+<p>In demography, we commonly assume that deaths at age <span class="math inline">\(x\)</span> (<span class="math inline">\(d_x\)</span>) are Poisson distributed</p>
+<p><span class="math display">\[d_x \sim Poisson(e_x \mu_x)\]</span></p>
+<p>where <span class="math inline">\(e_x\)</span> is the number of person exposed at age <span class="math inline">\(x\)</span> and <span class="math inline">\(\mu_x\)</span> is the force of mortality. Hence, from this assumption, the probability that deaths at age <span class="math inline">\(x\)</span> equal <span class="math inline">\(d_x\)</span> can be expressed as follow</p>
+<p><span class="math display">\[P(deaths=d_x) = \frac{(e_x \mu_x)^{d_x}e^{-(e_x \mu_x)}}{d_x!}\]</span></p>
+<p>What mortality models do is to assume a parametric form for <span class="math inline">\(\mu_x\)</span>.</p>
+<p>How does the likelihood help us here ? It allows us to estimate the parameters of these mortality models. Let’s repeat <strong>exactly</strong> the same steps as before. We already defined the distribution of the outcome of interest, deaths at age <span class="math inline">\(x\)</span>. This step corresponds to the coin flips example where we said that the outcome of a coin flip had a Bernoulli distribution. However, as before, we are interested in all our data (deaths at all ages). We know that the likelihood is the product of the probability of death at all ages (again assuming i.i.d). Thus, we can write the likelihood of our data as</p>
+<p><span class="math display">\[L(\mu_x|d_x, e_x) = \prod^A_{x=0} \frac{(e_x \mu_x)^{d_x}e^{-(e_x \mu_x)}}{d_x!}\]</span></p>
+<p>where <span class="math inline">\(A\)</span> is the highest age considered in our data set. Until here, we did not define any mortality model. Let’s do that ! In the Gompertz model, the force of mortality is expressed as</p>
+<p><span class="math display">\[\mu_x = ae^{bx}\]</span> Hence, the likelihood is obtained by replacing <span class="math inline">\(\mu_x\)</span> by the above expression in <span class="math inline">\(L(\mu_x|d_x, e_x)\)</span>:</p>
+<p><span class="math display">\[L(a, b|d_x, e_x) = \prod^A_{x=0} \frac{(e_x ae^{bx})^{d_x}e^{-(e_x ae^{bx})}}{d_x!}\]</span></p>
+<p>The only thing that remains to obtain an estimated value for <span class="math inline">\(a\)</span> and <span class="math inline">\(b\)</span> is to find their values maximizing the above likelihood. In comparison to the coin flip example, even after taking the logarithm of <span class="math inline">\(L(a, b|d_x, e_x)\)</span>, we can’t obtain an analytical solution for <span class="math inline">\(a\)</span> and <span class="math inline">\(b\)</span>. We then have to use numerical method such as the Iteratively Reweighted Least-Squares (IRLS) algorithm but this goes outside of the scope of this post!</p>
+<p>To conclude, the likelihood is a way to otain estimator for the parameters we care about. Once we have the distribution of our observation it can easily be derived given the i.i.d assumption is fulfilled. In practice, no analytical solution are available for the maximization of the likelihood and we have to use numerical method to obtain parameters’ estimates.</p>
 <div class="sourceCode" id="cb1"><pre class="sourceCode r distill-force-highlighting-css"><code class="sourceCode r"></code></pre></div>
 <!--radix_placeholder_article_footer-->
 <!--/radix_placeholder_article_footer-->

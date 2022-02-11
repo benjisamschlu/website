@@ -44,416 +44,61 @@ pre.numberSource a.sourceLine::before
     -khtml-user-select: none; -moz-user-select: none;
     -ms-user-select: none; user-select: none;
     padding: 0 4px; width: 4em;
-    color: #aaaaaa;
   }
-pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
 div.sourceCode
   {  }
 @media screen {
 a.sourceLine::before { text-decoration: underline; }
 }
-code span.al { color: #ad0000; } /* Alert */
-code span.an { color: #5e5e5e; } /* Annotation */
-code span.at { color: #20794d; } /* Attribute */
-code span.bn { color: #ad0000; } /* BaseN */
-code span.bu { } /* BuiltIn */
-code span.cf { color: #007ba5; } /* ControlFlow */
-code span.ch { color: #20794d; } /* Char */
-code span.cn { color: #8f5902; } /* Constant */
-code span.co { color: #5e5e5e; } /* Comment */
-code span.cv { color: #5e5e5e; font-style: italic; } /* CommentVar */
-code span.do { color: #5e5e5e; font-style: italic; } /* Documentation */
-code span.dt { color: #ad0000; } /* DataType */
-code span.dv { color: #ad0000; } /* DecVal */
-code span.er { color: #ad0000; } /* Error */
-code span.ex { } /* Extension */
-code span.fl { color: #ad0000; } /* Float */
-code span.fu { color: #4758ab; } /* Function */
-code span.im { } /* Import */
-code span.in { color: #5e5e5e; } /* Information */
-code span.kw { color: #007ba5; } /* Keyword */
-code span.op { color: #5e5e5e; } /* Operator */
-code span.ot { color: #007ba5; } /* Other */
-code span.pp { color: #ad0000; } /* Preprocessor */
-code span.sc { color: #20794d; } /* SpecialChar */
-code span.ss { color: #20794d; } /* SpecialString */
-code span.st { color: #20794d; } /* String */
-code span.va { color: #111111; } /* Variable */
-code span.vs { color: #20794d; } /* VerbatimString */
-code span.wa { color: #5e5e5e; font-style: italic; } /* Warning */
+code span.al { font-weight: bold; } /* Alert */
+code span.an { font-style: italic; } /* Annotation */
+code span.cf { font-weight: bold; } /* ControlFlow */
+code span.co { font-style: italic; } /* Comment */
+code span.cv { font-style: italic; } /* CommentVar */
+code span.do { font-style: italic; } /* Documentation */
+code span.dt { text-decoration: underline; } /* DataType */
+code span.er { font-weight: bold; } /* Error */
+code span.in { font-style: italic; } /* Information */
+code span.kw { font-weight: bold; } /* Keyword */
+code span.pp { font-weight: bold; } /* Preprocessor */
+code span.wa { font-style: italic; } /* Warning */
 </style>
 
   <!--radix_placeholder_meta_tags-->
-  <title>Benjamin Schluter: About</title>
+  <title>What is the likelihood ?</title>
+  
+  <meta property="description" itemprop="description" content="Opening the likelihood blackbox, showing its derivation and its use in a demographic context."/>
   
   
-  
+  <!--  https://schema.org/Article -->
+  <meta property="article:published" itemprop="datePublished" content="2022-02-11"/>
+  <meta property="article:created" itemprop="dateCreated" content="2022-02-11"/>
+  <meta name="article:author" content="Benjamin Schlüter"/>
   
   <!--  https://developers.facebook.com/docs/sharing/webmasters#markup -->
-  <meta property="og:title" content="Benjamin Schluter: About"/>
+  <meta property="og:title" content="What is the likelihood ?"/>
   <meta property="og:type" content="article"/>
+  <meta property="og:description" content="Opening the likelihood blackbox, showing its derivation and its use in a demographic context."/>
   <meta property="og:locale" content="en_US"/>
-  <meta property="og:site_name" content="Benjamin Schluter"/>
   
   <!--  https://dev.twitter.com/cards/types/summary -->
   <meta property="twitter:card" content="summary"/>
-  <meta property="twitter:title" content="Benjamin Schluter: About"/>
+  <meta property="twitter:title" content="What is the likelihood ?"/>
+  <meta property="twitter:description" content="Opening the likelihood blackbox, showing its derivation and its use in a demographic context."/>
   
   <!--/radix_placeholder_meta_tags-->
   <!--radix_placeholder_rmarkdown_metadata-->
   
   <script type="text/json" id="radix-rmarkdown-metadata">
-  {"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["title"]}},"value":[{"type":"character","attributes":{},"value":["About"]}]}
+  {"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["title","description","author","date","output"]}},"value":[{"type":"character","attributes":{},"value":["What is the likelihood ?"]},{"type":"character","attributes":{},"value":["Opening the likelihood blackbox, showing its derivation and its use in a demographic context. \n"]},{"type":"list","attributes":{},"value":[{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["name"]}},"value":[{"type":"character","attributes":{},"value":["Benjamin Schlüter"]}]}]},{"type":"character","attributes":{},"value":["02-11-2022"]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["distill::distill_article"]}},"value":[{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["self_contained","highlight"]}},"value":[{"type":"logical","attributes":{},"value":[false]},{"type":"character","attributes":{},"value":["monochrome"]}]}]}]}
   </script>
   <!--/radix_placeholder_rmarkdown_metadata-->
-  <!--radix_placeholder_navigation_in_header-->
-  <meta name="distill:offset" content=""/>
   
-  <script type="application/javascript">
-  
-    window.headroom_prevent_pin = false;
-  
-    window.document.addEventListener("DOMContentLoaded", function (event) {
-  
-      // initialize headroom for banner
-      var header = $('header').get(0);
-      var headerHeight = header.offsetHeight;
-      var headroom = new Headroom(header, {
-        tolerance: 5,
-        onPin : function() {
-          if (window.headroom_prevent_pin) {
-            window.headroom_prevent_pin = false;
-            headroom.unpin();
-          }
-        }
-      });
-      headroom.init();
-      if(window.location.hash)
-        headroom.unpin();
-      $(header).addClass('headroom--transition');
-  
-      // offset scroll location for banner on hash change
-      // (see: https://github.com/WickyNilliams/headroom.js/issues/38)
-      window.addEventListener("hashchange", function(event) {
-        window.scrollTo(0, window.pageYOffset - (headerHeight + 25));
-      });
-  
-      // responsive menu
-      $('.distill-site-header').each(function(i, val) {
-        var topnav = $(this);
-        var toggle = topnav.find('.nav-toggle');
-        toggle.on('click', function() {
-          topnav.toggleClass('responsive');
-        });
-      });
-  
-      // nav dropdowns
-      $('.nav-dropbtn').click(function(e) {
-        $(this).next('.nav-dropdown-content').toggleClass('nav-dropdown-active');
-        $(this).parent().siblings('.nav-dropdown')
-           .children('.nav-dropdown-content').removeClass('nav-dropdown-active');
-      });
-      $("body").click(function(e){
-        $('.nav-dropdown-content').removeClass('nav-dropdown-active');
-      });
-      $(".nav-dropdown").click(function(e){
-        e.stopPropagation();
-      });
-    });
+  <script type="text/json" id="radix-resource-manifest">
+  {"type":"character","attributes":{},"value":["what-is-the-likelihood_files/anchor-4.2.2/anchor.min.js","what-is-the-likelihood_files/bowser-1.9.3/bowser.min.js","what-is-the-likelihood_files/distill-2.2.21/template.v2.js","what-is-the-likelihood_files/figure-html5/unnamed-chunk-2-1.png","what-is-the-likelihood_files/jquery-1.11.3/jquery.min.js","what-is-the-likelihood_files/popper-2.6.0/popper.min.js","what-is-the-likelihood_files/tippy-6.2.7/tippy-bundle.umd.min.js","what-is-the-likelihood_files/tippy-6.2.7/tippy-light-border.css","what-is-the-likelihood_files/tippy-6.2.7/tippy.css","what-is-the-likelihood_files/tippy-6.2.7/tippy.umd.min.js","what-is-the-likelihood_files/webcomponents-2.0.0/webcomponents.js"]}
   </script>
-  
-  <style type="text/css">
-  
-  /* Theme (user-documented overrideables for nav appearance) */
-  
-  .distill-site-nav {
-    color: rgba(255, 255, 255, 0.8);
-    background-color: #0F2E3D;
-    font-size: 15px;
-    font-weight: 300;
-  }
-  
-  .distill-site-nav a {
-    color: inherit;
-    text-decoration: none;
-  }
-  
-  .distill-site-nav a:hover {
-    color: white;
-  }
-  
-  @media print {
-    .distill-site-nav {
-      display: none;
-    }
-  }
-  
-  .distill-site-header {
-  
-  }
-  
-  .distill-site-footer {
-  
-  }
-  
-  
-  /* Site Header */
-  
-  .distill-site-header {
-    width: 100%;
-    box-sizing: border-box;
-    z-index: 3;
-  }
-  
-  .distill-site-header .nav-left {
-    display: inline-block;
-    margin-left: 8px;
-  }
-  
-  @media screen and (max-width: 768px) {
-    .distill-site-header .nav-left {
-      margin-left: 0;
-    }
-  }
-  
-  
-  .distill-site-header .nav-right {
-    float: right;
-    margin-right: 8px;
-  }
-  
-  .distill-site-header a,
-  .distill-site-header .title {
-    display: inline-block;
-    text-align: center;
-    padding: 14px 10px 14px 10px;
-  }
-  
-  .distill-site-header .title {
-    font-size: 18px;
-    min-width: 150px;
-  }
-  
-  .distill-site-header .logo {
-    padding: 0;
-  }
-  
-  .distill-site-header .logo img {
-    display: none;
-    max-height: 20px;
-    width: auto;
-    margin-bottom: -4px;
-  }
-  
-  .distill-site-header .nav-image img {
-    max-height: 18px;
-    width: auto;
-    display: inline-block;
-    margin-bottom: -3px;
-  }
-  
-  
-  
-  @media screen and (min-width: 1000px) {
-    .distill-site-header .logo img {
-      display: inline-block;
-    }
-    .distill-site-header .nav-left {
-      margin-left: 20px;
-    }
-    .distill-site-header .nav-right {
-      margin-right: 20px;
-    }
-    .distill-site-header .title {
-      padding-left: 12px;
-    }
-  }
-  
-  
-  .distill-site-header .nav-toggle {
-    display: none;
-  }
-  
-  .nav-dropdown {
-    display: inline-block;
-    position: relative;
-  }
-  
-  .nav-dropdown .nav-dropbtn {
-    border: none;
-    outline: none;
-    color: rgba(255, 255, 255, 0.8);
-    padding: 16px 10px;
-    background-color: transparent;
-    font-family: inherit;
-    font-size: inherit;
-    font-weight: inherit;
-    margin: 0;
-    margin-top: 1px;
-    z-index: 2;
-  }
-  
-  .nav-dropdown-content {
-    display: none;
-    position: absolute;
-    background-color: white;
-    min-width: 200px;
-    border: 1px solid rgba(0,0,0,0.15);
-    border-radius: 4px;
-    box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.1);
-    z-index: 1;
-    margin-top: 2px;
-    white-space: nowrap;
-    padding-top: 4px;
-    padding-bottom: 4px;
-  }
-  
-  .nav-dropdown-content hr {
-    margin-top: 4px;
-    margin-bottom: 4px;
-    border: none;
-    border-bottom: 1px solid rgba(0, 0, 0, 0.1);
-  }
-  
-  .nav-dropdown-active {
-    display: block;
-  }
-  
-  .nav-dropdown-content a, .nav-dropdown-content .nav-dropdown-header {
-    color: black;
-    padding: 6px 24px;
-    text-decoration: none;
-    display: block;
-    text-align: left;
-  }
-  
-  .nav-dropdown-content .nav-dropdown-header {
-    display: block;
-    padding: 5px 24px;
-    padding-bottom: 0;
-    text-transform: uppercase;
-    font-size: 14px;
-    color: #999999;
-    white-space: nowrap;
-  }
-  
-  .nav-dropdown:hover .nav-dropbtn {
-    color: white;
-  }
-  
-  .nav-dropdown-content a:hover {
-    background-color: #ddd;
-    color: black;
-  }
-  
-  .nav-right .nav-dropdown-content {
-    margin-left: -45%;
-    right: 0;
-  }
-  
-  @media screen and (max-width: 768px) {
-    .distill-site-header a, .distill-site-header .nav-dropdown  {display: none;}
-    .distill-site-header a.nav-toggle {
-      float: right;
-      display: block;
-    }
-    .distill-site-header .title {
-      margin-left: 0;
-    }
-    .distill-site-header .nav-right {
-      margin-right: 0;
-    }
-    .distill-site-header {
-      overflow: hidden;
-    }
-    .nav-right .nav-dropdown-content {
-      margin-left: 0;
-    }
-  }
-  
-  
-  @media screen and (max-width: 768px) {
-    .distill-site-header.responsive {position: relative; min-height: 500px; }
-    .distill-site-header.responsive a.nav-toggle {
-      position: absolute;
-      right: 0;
-      top: 0;
-    }
-    .distill-site-header.responsive a,
-    .distill-site-header.responsive .nav-dropdown {
-      display: block;
-      text-align: left;
-    }
-    .distill-site-header.responsive .nav-left,
-    .distill-site-header.responsive .nav-right {
-      width: 100%;
-    }
-    .distill-site-header.responsive .nav-dropdown {float: none;}
-    .distill-site-header.responsive .nav-dropdown-content {position: relative;}
-    .distill-site-header.responsive .nav-dropdown .nav-dropbtn {
-      display: block;
-      width: 100%;
-      text-align: left;
-    }
-  }
-  
-  /* Site Footer */
-  
-  .distill-site-footer {
-    width: 100%;
-    overflow: hidden;
-    box-sizing: border-box;
-    z-index: 3;
-    margin-top: 30px;
-    padding-top: 30px;
-    padding-bottom: 30px;
-    text-align: center;
-  }
-  
-  /* Headroom */
-  
-  d-title {
-    padding-top: 6rem;
-  }
-  
-  @media print {
-    d-title {
-      padding-top: 4rem;
-    }
-  }
-  
-  .headroom {
-    z-index: 1000;
-    position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
-  }
-  
-  .headroom--transition {
-    transition: all .4s ease-in-out;
-  }
-  
-  .headroom--unpinned {
-    top: -100px;
-  }
-  
-  .headroom--pinned {
-    top: 0;
-  }
-  
-  /* adjust viewport for navbar height */
-  /* helps vertically center bootstrap (non-distill) content */
-  .min-vh-100 {
-    min-height: calc(100vh - 100px) !important;
-  }
-  
-  </style>
-  
-  <script src="site_libs/jquery-1.11.3/jquery.min.js"></script>
-  <link href="site_libs/font-awesome-5.1.0/css/all.css" rel="stylesheet"/>
-  <link href="site_libs/font-awesome-5.1.0/css/v4-shims.css" rel="stylesheet"/>
-  <script src="site_libs/headroom-0.9.4/headroom.min.js"></script>
+  <!--radix_placeholder_navigation_in_header-->
   <!--/radix_placeholder_navigation_in_header-->
   <!--radix_placeholder_distill-->
   
@@ -1768,387 +1413,16 @@ code span.wa { color: #5e5e5e; font-style: italic; } /* Warning */
   
   </script>
   
-  <style type="text/css">
-  /* base variables */
-  
-  /* Edit the CSS properties in this file to create a custom
-     Distill theme. Only edit values in the right column
-     for each row; values shown are the CSS defaults.
-     To return any property to the default,
-     you may set its value to: unset
-     All rows must end with a semi-colon.                      */
-  
-  /* Optional: embed custom fonts here with `@import`          */
-  /* This must remain at the top of this file.                 */
-  
-  
-  
-  html {
-    /*-- Main font sizes --*/
-    --title-size:      50px;
-    --body-size:       1.06rem;
-    --code-size:       14px;
-    --aside-size:      12px;
-    --fig-cap-size:    13px;
-    /*-- Main font colors --*/
-    --title-color:     #000000;
-    --header-color:    rgba(0, 0, 0, 0.8);
-    --body-color:      rgba(0, 0, 0, 0.8);
-    --aside-color:     rgba(0, 0, 0, 0.6);
-    --fig-cap-color:   rgba(0, 0, 0, 0.6);
-    /*-- Specify custom fonts ~~~ must be imported above   --*/
-    --heading-font:    sans-serif;
-    --mono-font:       monospace;
-    --body-font:       sans-serif;
-    --navbar-font:     sans-serif;  /* websites + blogs only */
-  }
-  
-  /*-- ARTICLE METADATA --*/
-  d-byline {
-    --heading-size:    0.6rem;
-    --heading-color:   rgba(0, 0, 0, 0.5);
-    --body-size:       0.8rem;
-    --body-color:      rgba(0, 0, 0, 0.8);
-  }
-  
-  /*-- ARTICLE TABLE OF CONTENTS --*/
-  .d-contents {
-    --heading-size:    18px;
-    --contents-size:   13px;
-  }
-  
-  /*-- ARTICLE APPENDIX --*/
-  d-appendix {
-    --heading-size:    15px;
-    --heading-color:   rgba(0, 0, 0, 0.65);
-    --text-size:       0.8em;
-    --text-color:      rgba(0, 0, 0, 0.5);
-  }
-  
-  /*-- WEBSITE HEADER + FOOTER --*/
-  /* These properties only apply to Distill sites and blogs  */
-  
-  .distill-site-header {
-    --title-size:       18px;
-    --text-color:       rgba(255, 255, 255, 0.8);
-    --text-size:        15px;
-    --hover-color:      white;
-    --bkgd-color:       #0F2E3D;
-  }
-  
-  .distill-site-footer {
-    --text-color:       rgba(255, 255, 255, 0.8);
-    --text-size:        15px;
-    --hover-color:      white;
-    --bkgd-color:       #0F2E3D;
-  }
-  
-  /*-- Additional custom styles --*/
-  /* Add any additional CSS rules below                      */
-  </style>
-  <style type="text/css">
-  /* base variables */
-  
-  /* Edit the CSS properties in this file to create a custom
-     Distill theme. Only edit values in the right column
-     for each row; values shown are the CSS defaults.
-     To return any property to the default,
-     you may set its value to: unset
-     All rows must end with a semi-colon.                      */
-  
-  /* Optional: embed custom fonts here with `@import`          */
-  /* This must remain at the top of this file.                 */
-  @import url(https://fonts.googleapis.com/css?family=Roboto:400,400italic,500,500italic,700,700italic,900,900italic,300italic,300,100italic,100);
-  @import url("https://fonts.googleapis.com/css?family=Roboto|Roboto+Mono|Roboto+Condensed|Open+Sans|Open+Sans+Condensed:300|Open+Sans+Condensed:light|Lato|Lora|Fira+Sans|Fira+Mono");
-  
-  
-  
-  html {
-    /*-- Main font sizes --*/
-    --title-size:      30px;
-    --body-size:       1.06rem;
-    --code-size:       12px;
-    --aside-size:      12px;
-    --fig-cap-size:    13px;
-    /*-- Main font colors --*/
-    --title-color:     rgba(255, 255, 255, 0.8);
-    --header-color:    rgba(255, 255, 255, 0.8);
-    --body-color:      rgba(255, 255, 255, 0.8);
-    --aside-color:     rgba(255, 255, 255, 0.8);
-    --fig-cap-color:   rgba(255, 255, 255, 0.8);
-    /*-- Specify custom fonts ~~~ must be imported above   --*/
-    --heading-font:    "Roboto", sans-serif;
-    --mono-font:       "DM Mono", monospace; /* Font code */
-    --body-font:       "Roboto", sans-serif;
-    --navbar-font:     "Roboto", sans-serif;  /* websites + blogs only */
-  }
-  
-  
-  
-  /*-- ARTICLE METADATA --*/
-  d-byline {
-    --heading-size:    0.6rem;
-    --heading-color:   rgba(255, 255, 255, 0.8);
-    --body-size:       0.8rem;
-    --body-color:      rgba(255, 255, 255, 0.8);
-  }
-  
-  /*-- ARTICLE TABLE OF CONTENTS --*/
-  .d-contents {
-    --heading-size:    18px;
-    --contents-size:   13px;
-  }
-  
-  /*-- ARTICLE APPENDIX --*/
-  d-appendix {
-    --heading-size:    15px;
-    --heading-color:   rgba(255, 255, 255, 0.8);
-    --text-size:       0.8em;
-    --text-color:      rgba(255, 255, 255, 0.8);
-  }
-  
-  /*-- WEBSITE HEADER + FOOTER --*/
-  /* These properties only apply to Distill sites and blogs  */
-  
-  .distill-site-header {
-    --title-size:       30px; /* 18px */
-    --text-color:       rgba(0, 0, 0, 0.8); /* rgba(255, 255, 255, 0.8) */
-    --text-size:        25px; /* 18px */
-    --hover-color:      #263D67; /*color when mouse on it */
-    --bkgd-color:       #7494A4; /* #0F2E3D */
-  }
-  
-  .distill-site-footer {
-    --text-color:       rgba(255, 255, 255, 0.8);
-    --text-size:        15px;
-    --hover-color:      white;
-    --bkgd-color:       #0F2E3D;
-  }
-  
-  
-  /*-- Additional custom styles --*/
-  /* Add any additional CSS rules below   */
-  
-   /*-- Dark theme for website  --*/
-  body {
-    background-color: #212121;
-  }
-  
-  p {  /*-- Description below post title  --*/
-    color: #7494A4;
-  }
-  
-   /*-- Avoid info next to post title to be black --*/
-  div {
-    color: rgba(255, 255, 255, 0.8);
-  }
-  
-  /* Change appearance of headers */
-  h1, h2, h3, h4, h5 {
-      font-weight: 700;
-      color: white;
-  }
-   /*-- Icon section --*/
-  /*-- Done in index.Rmd in fa(fill=..) -- */
-   
-   /*-- Change link appearance  --*/
-  d-article a {
-    border-bottom: 2px solid #7494A4;
-    text-decoration: none;
-  } 
-  
-   /*-- Change list color --*/
-  ul > li > p {
-    color: rgba(255, 255, 255, 0.8);
-  }
-  
-  /* Define appearance of in-line code chunks */
-  /*-- Need to be added in chung! --*/
-  d-article div.sourceCode pre {
-    background-color: #212121;
-  }
-  
-   /*-- Color of r code --*/
-  d-article div.sourceCode code, d-article pre code {
-    color: #537691;
-  }
-  
-   /*-- Might try to re center elements in header navbar --*/
-  
-  
-  .distill-site-nav {
-    font-weight: 900;
-  }
-  
-  
-  
-  
-  
-  
-  </style>
-  <style type="text/css">
-  /* base style */
-  
-  /* FONT FAMILIES */
-  
-  :root {
-    --heading-default: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, "Fira Sans", "Droid Sans", "Helvetica Neue", Arial, sans-serif;
-    --mono-default: Consolas, Monaco, 'Andale Mono', 'Ubuntu Mono', monospace;
-    --body-default: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, "Fira Sans", "Droid Sans", "Helvetica Neue", Arial, sans-serif;
-  }
-  
-  body,
-  .posts-list .post-preview p,
-  .posts-list .description p {
-    font-family: var(--body-font), var(--body-default);
-  }
-  
-  h1, h2, h3, h4, h5, h6,
-  .posts-list .post-preview h2,
-  .posts-list .description h2 {
-    font-family: var(--heading-font), var(--heading-default);
-  }
-  
-  d-article div.sourceCode code,
-  d-article pre code {
-    font-family: var(--mono-font), var(--mono-default);
-  }
-  
-  
-  /*-- TITLE --*/
-  d-title h1,
-  .posts-list > h1 {
-    color: var(--title-color, black);
-  }
-  
-  d-title h1 {
-    font-size: var(--title-size, 50px);
-  }
-  
-  /*-- HEADERS --*/
-  d-article h1,
-  d-article h2,
-  d-article h3,
-  d-article h4,
-  d-article h5,
-  d-article h6 {
-    color: var(--header-color, rgba(0, 0, 0, 0.8));
-  }
-  
-  /*-- BODY --*/
-  d-article > p,  /* only text inside of <p> tags */
-  d-article > ul, /* lists */
-  d-article > ol {
-    color: var(--body-color, rgba(0, 0, 0, 0.8));
-    font-size: var(--body-size, 1.06rem);
-  }
-  
-  
-  /*-- CODE --*/
-  d-article div.sourceCode code,
-  d-article pre code {
-    font-size: var(--code-size, 14px);
-  }
-  
-  /*-- ASIDE --*/
-  d-article aside {
-    font-size: var(--aside-size, 12px);
-    color: var(--aside-color, rgba(0, 0, 0, 0.6));
-  }
-  
-  /*-- FIGURE CAPTIONS --*/
-  figure .caption,
-  figure figcaption,
-  .figure .caption {
-    font-size: var(--fig-cap-size, 13px);
-    color: var(--fig-cap-color, rgba(0, 0, 0, 0.6));
-  }
-  
-  /*-- METADATA --*/
-  d-byline h3 {
-    font-size: var(--heading-size, 0.6rem);
-    color: var(--heading-color, rgba(0, 0, 0, 0.5));
-  }
-  
-  d-byline {
-    font-size: var(--body-size, 0.8rem);
-    color: var(--body-color, rgba(0, 0, 0, 0.8));
-  }
-  
-  d-byline a,
-  d-article d-byline a {
-    color: var(--body-color, rgba(0, 0, 0, 0.8));
-  }
-  
-  /*-- TABLE OF CONTENTS --*/
-  .d-contents nav h3 {
-    font-size: var(--heading-size, 18px);
-  }
-  
-  .d-contents nav a {
-    font-size: var(--contents-size, 13px);
-  }
-  
-  /*-- APPENDIX --*/
-  d-appendix h3 {
-    font-size: var(--heading-size, 15px);
-    color: var(--heading-color, rgba(0, 0, 0, 0.65));
-  }
-  
-  d-appendix {
-    font-size: var(--text-size, 0.8em);
-    color: var(--text-color, rgba(0, 0, 0, 0.5));
-  }
-  
-  d-appendix d-footnote-list a.footnote-backlink {
-    color: var(--text-color, rgba(0, 0, 0, 0.5));
-  }
-  
-  /*-- WEBSITE HEADER + FOOTER --*/
-  .distill-site-header .title {
-    font-size: var(--title-size, 18px);
-    font-family: var(--navbar-font), var(--heading-default);
-  }
-  
-  .distill-site-header a,
-  .nav-dropdown .nav-dropbtn {
-    font-family: var(--navbar-font), var(--heading-default);
-  }
-  
-  .nav-dropdown .nav-dropbtn {
-    color: var(--text-color, rgba(255, 255, 255, 0.8));
-    font-size: var(--text-size, 15px);
-  }
-  
-  .distill-site-header a:hover,
-  .nav-dropdown:hover .nav-dropbtn {
-    color: var(--hover-color, white);
-  }
-  
-  .distill-site-header {
-    font-size: var(--text-size, 15px);
-    color: var(--text-color, rgba(255, 255, 255, 0.8));
-    background-color: var(--bkgd-color, #0F2E3D);
-  }
-  
-  .distill-site-footer {
-    font-size: var(--text-size, 15px);
-    color: var(--text-color, rgba(255, 255, 255, 0.8));
-    background-color: var(--bkgd-color, #0F2E3D);
-  }
-  
-  .distill-site-footer a:hover {
-    color: var(--hover-color, white);
-  }</style>
   <!--/radix_placeholder_distill-->
-  <script src="site_libs/popper-2.6.0/popper.min.js"></script>
-  <link href="site_libs/tippy-6.2.7/tippy.css" rel="stylesheet" />
-  <link href="site_libs/tippy-6.2.7/tippy-light-border.css" rel="stylesheet" />
-  <script src="site_libs/tippy-6.2.7/tippy.umd.min.js"></script>
-  <script src="site_libs/anchor-4.2.2/anchor.min.js"></script>
-  <script src="site_libs/bowser-1.9.3/bowser.min.js"></script>
-  <script src="site_libs/webcomponents-2.0.0/webcomponents.js"></script>
-  <script src="site_libs/distill-2.2.21/template.v2.js"></script>
+  <script src="what-is-the-likelihood_files/jquery-1.11.3/jquery.min.js"></script>
+  <script src="what-is-the-likelihood_files/popper-2.6.0/popper.min.js"></script>
+  <link href="what-is-the-likelihood_files/tippy-6.2.7/tippy.css" rel="stylesheet" />
+  <link href="what-is-the-likelihood_files/tippy-6.2.7/tippy-light-border.css" rel="stylesheet" />
+  <script src="what-is-the-likelihood_files/tippy-6.2.7/tippy.umd.min.js"></script>
+  <script src="what-is-the-likelihood_files/anchor-4.2.2/anchor.min.js"></script>
+  <script src="what-is-the-likelihood_files/bowser-1.9.3/bowser.min.js"></script>
+  <script src="what-is-the-likelihood_files/webcomponents-2.0.0/webcomponents.js"></script>
+  <script src="what-is-the-likelihood_files/distill-2.2.21/template.v2.js"></script>
   <!--radix_placeholder_site_in_header-->
   <!--/radix_placeholder_site_in_header-->
 
@@ -2160,51 +1434,99 @@ code span.wa { color: #5e5e5e; font-style: italic; } /* Warning */
 <!--radix_placeholder_front_matter-->
 
 <script id="distill-front-matter" type="text/json">
-{"title":"About","authors":[]}
+{"title":"What is the likelihood ?","description":"Opening the likelihood blackbox, showing its derivation and its use in a demographic context.","authors":[{"author":"Benjamin Schlüter","authorURL":"#","affiliation":"&nbsp;","affiliationURL":"#","orcidID":""}],"publishedDate":"2022-02-11T00:00:00.000+01:00","citationText":"Schlüter, 2022"}
 </script>
 
 <!--/radix_placeholder_front_matter-->
 <!--radix_placeholder_navigation_before_body-->
-<header class="header header--fixed" role="banner">
-<nav class="distill-site-nav distill-site-header">
-<div class="nav-left">
-<a href="index.html" class="title">Benjamin Schluter</a>
-</div>
-<div class="nav-right">
-<a href="index.html">Home</a>
-<a href="blog.html">Blog</a>
-<a href="about.html">About</a>
-<a href="javascript:void(0);" class="nav-toggle">&#9776;</a>
-</div>
-</nav>
-</header>
 <!--/radix_placeholder_navigation_before_body-->
 <!--radix_placeholder_site_before_body-->
 <!--/radix_placeholder_site_before_body-->
 
 <div class="d-title">
-<h1>About</h1>
+<h1>What is the likelihood ?</h1>
 <!--radix_placeholder_categories-->
 <!--/radix_placeholder_categories-->
-
+<p><p>Opening the likelihood blackbox, showing its derivation and its use in a demographic context.</p></p>
 </div>
 
+<div class="d-byline">
+  Benjamin Schlüter  
+  
+<br/>02-11-2022
+</div>
 
 <div class="d-article">
-<h1 id="bio">Bio</h1>
-<p>I am a PhD student at <a href="https://uclouvain.be/fr/index.html">UCLouvain</a>, Belgium in the demography department <a href="https://uclouvain.be/en/research-institutes/iacchos/demo">(DEMO)</a>. My thesis focuses on mortality estimation at the subnational level using Bayesian methods. I am interested in statistics, applied mathematics, R, data visualization and science of science.</p>
-<p>Outside of work, I am interested in cycling, trekking, basket balling and accordeon playing.</p>
-<h1 id="experience">Experience</h1>
-<p>Before starting my PhD, I worked at the <a href="https://www.cred.be/">Centre for Research on the Epidemiology of Disasters</a> (CRED) where I conducted statistical analyses on different research projects: evaluating health profiles and health needs of non-EU migrants arriving in Greece with Médecins du Monde data; assessing the impact of the 2015 Earthquake on hospital admissions in Kathmandu (Nepal) using Tribhuvan University Teaching Hospital data; estimating the civilian mortality during the Syrian conflict focusing on deaths recorded by the Syrian Violation Documentation Center (VDC).</p>
-<h1 id="education">Education</h1>
-<p>I did my master in quantitative economics at the Free University Brussels (ULB). I trained myself further in statistics by first following an <a href="https://micromasters.mit.edu/ds/">online micromaster</a> in Statistics and Data Science at the Massachusetts Institute of Technology (MIT) and then, by validating statistics courses at UCLouvain.</p>
-<p>I also had the opportunity to follow several workshops (usually 1 week long):</p>
-<ul>
-<li><p><em><a href="https://sciencesmaths-paris.fr/f/actualites-fr/cours-raftery">Statistical Demography</a></em> by Adrian E. Raftery at the Fondation des Sciences Mathématiques de Paris (FSMP) in 2021</p></li>
-<li><p><em>Bayesian Spatio-Temporal health Modeling</em> by Andrew B. Lawson at the Medical University of South Carolina (online) in 2021</p></li>
-<li><p><em><a href="https://populationsciences.berkeley.edu/population-center/annual-workshop-on-formal-demography/">Berkeley Formal Demography</a></em> at Berkeley University (online) in 2021</p></li>
-<li><p><em><a href="https://www.demogr.mpg.de/en/career_6122/international_advanced_studies_in_demography_6682/courses_6931/smoothing_demographic_data_flexible_models_in_population_studies_7174/">Smoothing Demographic Data</a></em> by Carlo Giovanni Camarda at the Max Planck Institute for Demographic Research (online) in 2020</p></li>
-</ul>
+<div class="layout-chunk" data-layout="l-body">
+
+</div>
+<p>In this post, my aim is to explain what the likelihood is and how this concept is used in frequentist statistics to obtain an estimator for a parameter. At the end, we look at a demographic application.</p>
+<h1 id="coin-flips">Coin flips</h1>
+<p>Let’s assume that we are interested in coin flips. Hence, an observation (<span class="math inline">\(y_i\)</span>) is the outcome of a coin flip and our data <span class="math inline">\(\{y_1, y_2, .., y_N\}\)</span> consists of all <span class="math inline">\(N\)</span> coin flips. First thing to do is to assume a distribution for the outcome of a coin flip. The commonly used distribution for a binary observation <span class="math inline">\(y_i\)</span> taking only the following two values</p>
+<p><span class="math display">\[\begin{equation}
+  y_{i} =
+    \begin{cases}
+      1 &amp; \text{if head}\\
+      0 &amp; \text{if tail}
+    \end{cases}       
+\end{equation}\]</span></p>
+<p>is the Bernoulli distribution:</p>
+<p><span class="math display">\[
+\begin{align}
+y_i &amp; \sim Bernoulli(p) \\
+\Leftrightarrow P(y_i) &amp;  = p^{y_i}(1-p)^{1-y_i} = \begin{cases} 
+p &amp; \text{if $y_i$ = 1} \\
+(1-p) &amp; \text{if $y_i$ = 0} \end{cases}
+\end{align}
+\]</span></p>
+<p>where <span class="math inline">\(p\)</span> represents the probability of observing head.</p>
+<p>Ok that’s fine but we are working with a data set and hence, N flips. What is the probability of observing the data set we have ? We can easily say that each coin flip is <strong>i</strong>ndependent and since the coin is always the same, all flips follow the same <strong>i</strong>ndentical Bernoulli <strong>d</strong>istribution (the famous <strong>i.i.d</strong>). These two assumptions are critical (hence their frequent apperearances in stat classes) and allow to express the probability of observing the data as the product of the probability of each flip as follow:</p>
+<p><span class="math display">\[
+\begin{align}
+P(data) &amp; = \prod^N_{i=1} P(y_i) \\
+&amp; = \prod^N_{i=1} p^{y_i}(1-p)^{1-y_i} \\
+&amp; = p^{\sum^N_{i=1} y_i}(1-p)^{\sum^N_{i=1} 1-y_i} \\
+&amp; = p^{Y}(1-p)^{N-Y} 
+\end{align}
+\]</span> and this probability is what is called, the likelihood:</p>
+<p><span class="math display">\[L(p|Y) = p^Y(1-p)^{N-Y}\]</span></p>
+<p><span class="math inline">\(L(p|Y)\)</span> is a function of a parameter <span class="math inline">\(p\)</span> (the probability of heads) given <span class="math inline">\(Y\)</span> (the data). Let’s check that visually by assuming that our data consists of 22 heads out of 60 flips.</p>
+<div class="layout-chunk" data-layout="l-body">
+<p><img src="what-is-the-likelihood_files/figure-html5/unnamed-chunk-2-1.png" width="624" /></p>
+</div>
+<p>As it is clear from the above figure, the likelihood is a function of the parameter <span class="math inline">\(p\)</span> (bounded between 0 and 1 as it is a probability).</p>
+<p>Now suppose, as it is commonly the case when performing analyses, that the parameter of interest is not known (here <span class="math inline">\(p\)</span>). The way that frequentist statistics gets an estimator for <span class="math inline">\(p\)</span> is by maximizing the probability of observing the data we have. Which, you now know at this stage of the post, is the likelihood. The obtained estimator is called the maximum likelihood estimator (MLE). Looking at the figure, the highest value reached by <span class="math inline">\(L(p|Y)\)</span> seems to be around <span class="math inline">\(p=0.37\)</span>. In order to obtain its precise value, let’s find the argument (the value of <span class="math inline">\(p\)</span>) that maximizes <span class="math inline">\(L(p|Y)\)</span></p>
+<p><span class="math display">\[p^{MLE} = argmax_p(p^Y(1-p)^{N-Y})\]</span></p>
+<p>As it is usually done to find the maximum of a function, we take its derivative with respect to the parameter of interest and set it to 0. In practice, it is easier to first transform the likelihood into a log-likelihood <span class="math inline">\(l(p|Y)\)</span> (monotonic transformation) and then find the value of the parameter maximizing it. Let’s do that,</p>
+<p><span class="math display">\[
+\begin{align}
+l(p|Y) = log(L(p|Y)) &amp; = log(p^Y(1-p)^{N-Y}) \\
+\Leftrightarrow  &amp; = Ylog(p) + (N-Y)log(1-p) 
+\end{align}
+\]</span></p>
+<p>Taking the derivative and setting it to zero to find the maximum,</p>
+<p><span class="math display">\[
+\begin{align}
+&amp; \frac{\partial l(p|Y)}{\partial p} = \frac{Y}{p} - \frac{N-Y}{1-p} = 0 \\
+&amp; \Leftrightarrow Y(1-p) - (N-Y)p = 0 \\
+&amp; \Rightarrow p^{MLE} = \frac{Y}{N} = \frac{22}{60} = 0.366
+\end{align}
+\]</span></p>
+<p>Having the actual data set and willing to estimate the probability of obtaining head, the answer given by the maximum likelihood machinery is <span class="math inline">\(p^{MLE}=0.366\)</span>.</p>
+<p>The beauty of this statistical machinery is that it can be applied to more complex examples. Let’s make the link with models of mortality to conclude this post.</p>
+<h1 id="deaths-at-age-x">Deaths at age <span class="math inline">\(x\)</span></h1>
+<p>In demography, we commonly assume that deaths at age <span class="math inline">\(x\)</span> (<span class="math inline">\(d_x\)</span>) are Poisson distributed</p>
+<p><span class="math display">\[d_x \sim Poisson(e_x \mu_x)\]</span></p>
+<p>where <span class="math inline">\(e_x\)</span> is the number of person exposed at age <span class="math inline">\(x\)</span> and <span class="math inline">\(\mu_x\)</span> is the force of mortality. Hence, from this assumption, the probability that deaths at age <span class="math inline">\(x\)</span> equal <span class="math inline">\(d_x\)</span> can be expressed as follow</p>
+<p><span class="math display">\[P(deaths=d_x) = \frac{(e_x \mu_x)^{d_x}e^{-(e_x \mu_x)}}{d_x!}\]</span></p>
+<p>What mortality models do is to assume a parametric form for <span class="math inline">\(\mu_x\)</span>.</p>
+<p>How does the likelihood help us here ? It allows us to estimate the parameters of these mortality models. Let’s repeat <strong>exactly</strong> the same steps as before. We already defined the distribution of the outcome of interest, deaths at age <span class="math inline">\(x\)</span>. This step corresponds to the coin flips example where we said that the outcome of a coin flip had a Bernoulli distribution. However, as before, we are interested in all our data (deaths at all ages). We know that the likelihood is the product of the probability of death at all ages (again assuming i.i.d). Thus, we can write the likelihood of our data as</p>
+<p><span class="math display">\[L(\mu_x|d_x, e_x) = \prod^A_{x=0} \frac{(e_x \mu_x)^{d_x}e^{-(e_x \mu_x)}}{d_x!}\]</span></p>
+<p>where <span class="math inline">\(A\)</span> is the highest age considered in our data set. Until here, we did not define any mortality model. Let’s do that ! In the Gompertz model, the force of mortality is expressed as</p>
+<p><span class="math display">\[\mu_x = ae^{bx}\]</span> Hence, the likelihood is obtained by replacing <span class="math inline">\(\mu_x\)</span> by the above expression in <span class="math inline">\(L(\mu_x|d_x, e_x)\)</span>:</p>
+<p><span class="math display">\[L(a, b|d_x, e_x) = \prod^A_{x=0} \frac{(e_x ae^{bx})^{d_x}e^{-(e_x ae^{bx})}}{d_x!}\]</span></p>
+<p>The only thing that remains to obtain an estimated value for <span class="math inline">\(a\)</span> and <span class="math inline">\(b\)</span> is to find their values maximizing the above likelihood. In comparison to the coin flip example, even after taking the logarithm of <span class="math inline">\(L(a, b|d_x, e_x)\)</span>, we can’t obtain an analytical solution for <span class="math inline">\(a\)</span> and <span class="math inline">\(b\)</span>. We then have to use numerical method such as the Iteratively Reweighted Least-Squares (IRLS) algorithm but this goes outside of the scope of this post!</p>
+<p>To conclude, the likelihood is a way to otain estimator for the parameters we care about. Once we have the distribution of our observation it can easily be derived given the i.i.d assumption is fulfilled. In practice, no analytical solution are available for the maximization of the likelihood and we have to use numerical method to obtain parameters’ estimates.</p>
 <div class="sourceCode" id="cb1"><pre class="sourceCode r distill-force-highlighting-css"><code class="sourceCode r"></code></pre></div>
 <!--radix_placeholder_article_footer-->
 <!--/radix_placeholder_article_footer-->
@@ -2213,6 +1535,15 @@ code span.wa { color: #5e5e5e; font-style: italic; } /* Warning */
 <div class="d-appendix">
 </div>
 
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
 
 <!--radix_placeholder_site_after_body-->
 <!--/radix_placeholder_site_after_body-->
