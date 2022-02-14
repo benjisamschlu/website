@@ -52,7 +52,7 @@ $$
 where $p$ represents the probability of observing head.
 
 
-Ok that's fine but we are working with a data set and hence, N flips. What is the probability of observing the data set we have ? We can easily say that each coin flip is **i**ndependent and since the coin is always the same, all flips follow the same **i**ndentical Bernoulli **d**istribution (the famous **i.i.d**). These two assumptions are critical (hence their frequent apperearances in stat classes) and allow to express the probability of observing the data as the product of the probability of each flip as follow:
+Ok that's fine but we are working with a data set and hence, N flips. What is the probability of observing the data set we have ? We can easily say that each coin flip is **i**ndependent and since the coin used is always the same, all flips follow the same **i**ndentical Bernoulli **d**istribution (the famous **i.i.d**). These two assumptions are critical (hence their frequent apperearances in stat classes) and allow to express the probability of observing the data as the product of the probability of each coin flip as follow:
 
 $$
 \begin{align}
@@ -139,6 +139,10 @@ Hence, the likelihood is obtained by replacing $\mu_x$ by the above expression i
 
 $$L(a, b|d_x, e_x) = \prod^A_{x=0} \frac{(e_x ae^{bx})^{d_x}e^{-(e_x ae^{bx})}}{d_x!}$$
 
-The only thing that remains to obtain an estimated value for $a$ and $b$ is to find their values maximizing the above likelihood. In comparison to the coin flip example, even after taking the logarithm of $L(a, b|d_x, e_x)$, we can't obtain an analytical solution for $a$ and $b$. We then have to use numerical method such as the Iteratively Reweighted Least-Squares (IRLS) algorithm but this goes outside of the scope of this post!
+The only thing that remains to obtain an estimated value for $a$ and $b$ is to find their values maximizing the above likelihood. In comparison to the coin flip example, even after taking the logarithm of $L(a, b|d_x, e_x)$, we can't obtain an analytical solution for $a$ and $b$ that would maximize the log-likelihood. In this context, we have to use numerical method such as the Iteratively Reweighted Least-Squares (IRLS) algorithm but this goes outside the scope of this post!
 
-To conclude, the likelihood is a way to otain estimator for the parameters we care about. Once we have the distribution of our observation it can easily be derived given the i.i.d assumption is fulfilled. In practice, no analytical solution are available for the maximization of the likelihood and we have to use numerical method to obtain parameters' estimates.
+
+
+# Summary
+
+The likelihood is a way to otain estimates for model's parameters. Once we have assumed a distribution for our observations (i.e Poisson) and a mathematical expression of our model (ie Gompertz), it can easily be derived given that the i.i.d assumption is fulfilled. In practice, it is frequent that analytical solutions are not available when trying to maximize the likelihood.  In such situation, we apply numerical method (ie IRLS) on the log-likelihood to obtain parameters' estimates.
