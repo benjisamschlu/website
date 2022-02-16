@@ -82,7 +82,7 @@ ggplot(df, aes(x = p, y = l)) +
              y = "L(p|Y)")
 ```
 
-As it is clear from the above figure, the likelihood is a function of the parameter $p$ (bounded between 0 and 1 as it is a probability). 
+As it is clear from the above figure, the likelihood is a function of the parameter $p$ (bounded between 0 and 1 as it is a probability). Despite the fact that it looks like a probability distribution, it is not. The area under the likelihood curve does not sum to one.
 
 Now suppose, as it is commonly the case when performing analyses, that the parameter of interest is not known (here $p$). The way that frequentist statistics gets an estimator for $p$ is by maximizing the probability of observing the data we have. Which, you now know at this stage of the post, is the likelihood. The obtained estimator is called the maximum likelihood estimator (MLE). Looking at the figure, the highest value reached by $L(p|Y)$ seems to be around $p=0.37$. In order to obtain its precise value, let's find the argument (the value of $p$) that maximizes $L(p|Y)$
 
