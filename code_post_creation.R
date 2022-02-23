@@ -6,7 +6,7 @@ library(distill)
 
 # Don't put ¨ on the u --> creates bug
 create_post(
-        "Mortality standardization", # mandatory
+        "Calling bullshit", # mandatory
         author = "Benjamin Schluter",
         date = Sys.Date(),
         date_prefix = Sys.Date(),
