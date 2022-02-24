@@ -1,43 +1,28 @@
 data {
-  int<lower=0> N; // number of lines
-  int<lower=0> T_pts; // number of time points
-  
-  int<lower=0, upper=1> y[N]; // success/failure
-  int<lower=1, upper=81> t[N]; // time point of success/failure
+  int<lower=0> T; // nber of time points
+  int<lower=0> n[T]; // population
+  int y[T]; // individual with disease
 }
-
 parameters {
-  real alpha;
-  vector[T_pts] phi;
+  real a;
+  vector[T] phi;
   real<lower=0> sigma;
 }
-
 transformed parameters {
-  vector[T_pts] eta;
-  vector[T_pts] p_hat;
+  vector[T] eta;
 
-
-  // ones = rep_vector(1, t);
-  eta = alpha + phi;
-  
-  for (i in 1:T_pts){
-      p_hat[i] = 1/(1+exp(-eta[i]));
-  }
-  
+  eta = a + phi;
 }
-
 model {
+  // Likelihood
+  y ~ binomial_logit(n, eta);
   
-  // priors
-  alpha ~ normal(0, 10);
+  // Priors
+  a ~ normal(0, 10);
   phi[1] ~ normal(0, 10);
-  phi[2:T_pts] ~ normal(phi[1:(T_pts-1)], sigma);
+  phi[2:T] ~ normal(phi[1:(T-1)], sigma);
   sigma ~ normal(0, 10);
-  
-  // likelihood
-  for (i in 1:N) {
-      y[i] ~ bernoulli_logit(eta[ t[i] ]);
-
-  }
 }
-
+generated quantities {
+    vector[T] p_hat = 1 ./ (1+exp(-eta));
+}

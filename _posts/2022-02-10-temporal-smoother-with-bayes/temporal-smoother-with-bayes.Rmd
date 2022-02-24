@@ -1,7 +1,7 @@
 ---
-title: "Temporal smoother with Bayes"
+title: "Easy smoothing with Bayes"
 description: |
-  A short description of the post.
+  Showing that Bayesian modeling makes it straightforward to implement smoothing.
 author:
   - name: Benjamin Schlüter
 date: 02-10-2022
@@ -18,15 +18,24 @@ knitr::opts_chunk$set(echo = FALSE)
 
 See slides 13, 30-32 from part 2 Wakefield to defines the topics of this post.
 
-Sample prevalence in a area (small- medium size: impact on variation of proportion)
+In this post, I would like to show how convenient Bayesian modeling is for implementing smoothing. Note that this post has been inspired by the course "*Bayesian subnational estimation using complex survey data*" given by Jon Wakefield and Richard Li available [online](https://iussp.org/en/small-area-estimation-training-materials). 
 
-BAYESIAN formula good for smoothing (prior)
+
+# Prevalence over time
+
+
+Suppose that we are interested in the population's proportion having a specific characteric at a given time point (called the prevalence). Further assume that it would be too costly or too time consuming to survey all individuals in the population of interest. Hence, only a sample of the population is surveyed to assess the prevalence over time. 
+
+The figure below shows points reflecting the sampled prevalence over time with the true population's prevalence characterized by an exponential decay. 
+
+
 
 ```{r, echo=FALSE}
-require(tidyverse)
-require(scales)
-require(viridis)
+library(tidyverse)
+library(scales)
+library(viridis)
 library(rstan)
+library(tidybayes)
 
 source("./modeling/function/theme_dark_blue.R")
 ```
@@ -37,19 +46,18 @@ source("./modeling/function/theme_dark_blue.R")
 # Sim decading proportion
 exp_decay = function(A, k, t) A*exp(-k*t) + 0.05
 t = 0:80
-set.seed(1)
+set.seed(2)
 
 df = tibble(
         t = rep(t, 2),
         p = exp_decay(A = 0.2, k = 0.06, t = t)) 
 df = df %>% 
         mutate(n = c(rep(100, 81), rep(1000, 81)),
-               sim = rbinom(162, n, p),
-               p.sim = sim/n)
+               y = rbinom(162, n, p),
+               p.sim = y/n)
 
 ```
 
-Proportion of individuals with a characteristic over time.
 
 ```{r, echo=FALSE}
 df %>% 
@@ -57,39 +65,67 @@ df %>%
                           levels = c(100, 1000),
                           labels = c("n = 100", "n = 1000"))) %>% 
         ggplot(aes(x = t, y = p)) +
-        geom_line(aes(col = "true proportion"),
+        geom_line(aes(col = "true prevalence"),
                   linetype = "dashed",
                   size = 1.5) +
-        geom_point(aes(x = t, y = p.sim, col = "sampled proportion"), alpha = 0.6) +
+        geom_point(aes(x = t, y = p.sim, col = "sampled prevalence"), alpha = 0.6) +
         theme_dark_blue() +
         theme(legend.position = "bottom",
               legend.direction = "horizontal") +
-        scale_color_manual(values = c("true proportion" = "#238A8DFF",
-                                      "sampled proportion" = "#FCA007FF")) +
-        labs(y = "Proportion", 
+        scale_color_manual(values = c("true prevalence" = "#238A8DFF",
+                                      "sampled prevalence" = "#FCA007FF")) +
+        labs(y = "Prevalence Estimate", 
              x = "Time") +
         facet_wrap( ~ n)
 ```
 
-Estimating RW(1) model
+The size of the sample has a big impact on the precision we have about the prevalence. This is clear from the picture with points much more spread around the true prevalence when $n=100$ in comparison to $n=1000$. In real life, due to constraints during the surveying process (time, budget,..), we usually end up with prevalence estimates that might be varying over time, just due to the sampling variation. In this context, smoothing/penalization helps in estimating a quantity over time when we expect that the true underlying prevalence in a population exhibit some degree of smoothness.
+
+
+# Bayesian formula and smoothing
+
+The Bayes theorem can be expressed as follow
+
+$$p(\theta|y) \propto L(\theta|y) \times \pi(\theta)$$
+where we have from left to right, the posterior distribution, the likelihood and the prior distribution. The likelihood describes the distribution of the data, depending on unknown parameters $\theta$. The prior distribution expresses beliefs about $\theta$ and, of main interest for this post, provides a mechanism by which smoothing can be imposed.
+
+# Modelling the prevalence
+
+
+The likelihood should describe the distribution of a prevalence. It is common to model such type of variable with a logistic regression since the outcome variable is binary (an individual has a characteristic or not). This assumption leads to model the logit of $p$ with a linear equation. Let's write what we assumed so far
+
+$$
+\begin{align}
+& y_t|p_t \sim Binomial(n, p_t) \\
+& log(\frac{p_t}{1-p_t}) = a + \phi_t 
+\end{align}
+$$
+
+where $y_t$ is the number of individuals having the characteristic at time $t$ out of $n=100$ sampled individuals (fixed over time), $p_t$ is the prevalence we want to estimate, $a$ consists of an intercept and $\phi_t$ is a parameter that changes over time. Here comes the prior distribution as a mechanism to impose smoothing: we will assume that $\phi_t$ is distributed as a random walk of order one. This assumption encourages $\phi_t$ at $t$ to be similar to its neighbors. The prior can thus be expressed as
+
+$$
+\begin{align}
+\pi(\phi) & \sim RW1 \\
+\Leftrightarrow \phi_t|\phi_{t-1}, \phi_{t+1}, \sigma^2 & \sim \mathcal{N}(\frac{1}{2}(\phi_{t-1} + \phi_{t+1}), \frac{\sigma^2}{2})
+\end{align}
+$$
+
+Values of $\phi$ close to $\frac{1}{2}(\phi_{t-1} + \phi_{t+1})$ are favored. From the above expression, it is clear that $\sigma^2$ can be seen as a smoothing parameter. Small (large) value enforces strong (weak) smoothing. 
+
+Let's now estimate this model in STAN
 
 ```{r, echo=FALSE}
 # STAN data
-# create data matrix
-event_list = sapply(1:81, function(i){
-  c(rep(1, df$sim[i]), rep(0, df$n[i] - df$sim[i]))
-})
-event_vector = as.vector(event_list)
-time_vector = rep(1:81, each = 100)
 
+# Only look at noisy case (n=100)
+df.stan <- df %>% 
+  filter(n == 100)
 
 
 stan_data = list(
-  t = time_vector,
-  y = event_vector,
-  N = length(time_vector),
-  T_pts = length(0:80)
-  )
+  T = length(t),
+  n = df.stan$n,
+  y = df.stan$y)
 
 ```
 
@@ -97,51 +133,51 @@ stan_data = list(
 ```{r, eval=FALSE, echo=TRUE}
 # STAN code
 data {
-  int<lower=0> N; // number of lines
-  int<lower=0> T_pts; // number of time points
-  
-  int<lower=0, upper=1> y[N]; // success/failure
-  int<lower=1, upper=81> t[N]; // time point of success/failure
+  int<lower=0> T; // nber of time points
+  int<lower=0> n[T]; // population
+  int y[T]; // individual with disease
 }
 parameters {
-  real alpha;
-  vector[T_pts] phi;
+  real a;
+  vector[T] phi;
   real<lower=0> sigma;
 }
 transformed parameters {
-  vector[T_pts] eta;
-  vector[T_pts] p_hat;
+  vector[T] eta;
 
-  eta = alpha + phi;
-  
-  for (i in 1:T_pts){
-      p_hat[i] = 1/(1+exp(-eta[i]));
-  }
+  eta = a + phi;
 }
 model {
+  // Likelihood
+  y ~ binomial_logit(n, eta);
   
-  alpha ~ normal(0, 10);
-  phi[1] ~ normal(0, 10);
-  phi[2:T_pts] ~ normal(phi[1:(T_pts-1)], sigma);
+  // Priors
+  a ~ normal(0, 10);
+  
+  phi[1] ~ normal(0, 10); // Random walk 1 for phi
+  phi[2:T] ~ normal(phi[1:(T-1)], sigma); // Random walk 1 for phi
   sigma ~ normal(0, 10);
-  
-  for (i in 1:N) {
-      y[i] ~ bernoulli_logit(eta[ t[i] ]);
-  }
+}
+generated quantities {
+    vector[T] p_hat = 1 ./ (1+exp(-eta));
 }
 ```
 
-
+In the figure below we show the estimated prevalence (with 95\% credible interval) where we imposed different priors on $\sigma$ . On the left, we assumed that $\sigma \sim \mathcal{N}^+(0,10)$ while one the right we imposed more smoothing by setting $\sigma \sim \mathcal{N}^+(0,0.01)$.
 
 ```{r, echo=FALSE, eval=FALSE}
 # fit model
-
 # options(mc.cores = parallel::detectCores()-1)
 # 
 # fit = stan("./modeling/stan/temp_smooth_rw.stan",
 #            iter = 2000,
 #            data = stan_data)
 # saveRDS(fit, "./modeling/estimates/temp_smooth_rw1.rda")
+# 
+# fit.pen = stan("./modeling/stan/temp_smooth_rw_pen.stan",
+#            iter = 2000,
+#            data = stan_data)
+# saveRDS(fit.pen, "./modeling/estimates/temp_smooth_rw1_pen.rda")
 
 ```
 
@@ -152,22 +188,30 @@ model {
 
 # load estimates
 fit = readRDS("./modeling/estimates/temp_smooth_rw1.rda")
+fit.pen = readRDS("./modeling/estimates/temp_smooth_rw1_pen.rda")
 
 # exctract estimates
-p_hat = as.matrix(fit, "p_hat")
-df.est = apply(p_hat, 2, quantile, probs = c(0.025, 0.5, 0.975)) %>% 
-  as.data.frame.table() %>% 
-  pivot_wider(names_from = Var1, values_from = Freq) %>% 
-  rename("lower" = "2.5%",
-         "median" = "50%",
-         "upper" = "97.5%") %>% 
-  mutate(t = 0:80)
-# plot fitted vs observed
-df.fitted = df %>% 
-  filter(n == 100) %>% 
-  left_join(df.est %>% 
-              select(!parameters),
+sigma.hat <- as.matrix(fit, "sigma") %>% median()
+sigma.hat.pen <- as.matrix(fit.pen, "sigma") %>% median()
+
+# Best way to merge info?
+df.fit.unp <- fit %>% 
+  spread_draws(p_hat[t]) %>% 
+  median_qi() %>% 
+  mutate(type = "sigma~N(0,10)")
+df.fit.pen <- fit.pen %>% 
+  spread_draws(p_hat[t]) %>% 
+  median_qi() %>% 
+  mutate(type = "sigma~N(0,0.01)")
+
+df.fit <- bind_rows(df.fit.unp, 
+                    df.fit.pen) %>% 
+  mutate(type = factor(type,
+                       levels = c("sigma~N(0,10)", "sigma~N(0,0.01)"))) %>% 
+  left_join(df.stan %>% 
+              select(t, p, p.sim),
             by = "t")
+  
  
 ```
 
@@ -175,26 +219,31 @@ df.fitted = df %>%
 
 ```{r, echo=FALSE}
 
-df.fitted %>% 
+df.fit %>% 
         ggplot(aes(x = t, y = p)) +
-        geom_ribbon(aes(ymin = lower, ymax = upper, col = "RW(1) fit", 
-                        fill = "RW(1) fit"),
+        geom_ribbon(aes(ymin = .lower, ymax = .upper, col = "RW(1) fit", 
+                        fill = "RW(1) fit 95% CI"),
                   alpha = 0.2) +
         geom_line(aes(col = "true proportion"),
                   linetype = "dashed",
                   size = 1.5) +
-        geom_line(aes(y = median, col = "RW(1) fit"),
+        geom_line(aes(y = p_hat, col = "RW(1) fit"),
                   size = 1.5) +
         
         geom_point(aes(x = t, y = p.sim, col = "sampled proportion")) +
         theme_dark_blue() +
-        theme(legend.position = c(0.7, 0.79),
+        theme(legend.position = c(0.9, 0.7),
               legend.title = element_blank()) +
         scale_color_manual(values = c("true proportion" = "#238A8DFF",
                                       "sampled proportion" = "#FCA007FF",
                                       "RW(1) fit" = "black")) +
-        labs(y = "Proportion", 
-             x = "Time")
+      scale_fill_manual(values = c("RW(1) fit 95% CI" = "darkgray")) +
+        labs(y = "Prevalence Estimate", 
+             x = "Time") +
+        facet_wrap( ~ type)
 ```
  
  
+# Summary
+
+Concluding remarks

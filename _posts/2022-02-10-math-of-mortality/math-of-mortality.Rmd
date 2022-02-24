@@ -68,5 +68,5 @@ From earlier derivation of $h(x)$ we can obtain a math expression for the death 
 
 $$\boxed{f(x) = h(x)S(x)}$$
 
-Let's check these identities visually.
+Let's check these identities visually or model a survival model with STAN ?
 
