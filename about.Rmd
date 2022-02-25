@@ -8,7 +8,7 @@ knitr::opts_chunk$set(echo = FALSE)
 
 # Bio
 
-I am a PhD student at [UCLouvain](https://uclouvain.be/fr/index.html), Belgium in the demography department [(DEMO)](https://uclouvain.be/en/research-institutes/iacchos/demo). My thesis focuses on mortality estimation at the subnational level using Bayesian methods. I am interested in statistics, applied mathematics, R, data visualization and science of science. 
+I am a PhD student at [UCLouvain](https://uclouvain.be/fr/index.html), Belgium in the demography department [(DEMO)](https://uclouvain.be/en/research-institutes/iacchos/demo). My thesis focuses on mortality estimation at the subnational level using Bayesian methods. I am interested in statistics, applied mathematics, R, data visualization, open science and science of science. 
 
 Outside of work, I am interested in cycling, trekking, basket balling and accordeon playing.
 
@@ -23,6 +23,8 @@ Before starting my PhD, I worked at the [Centre for Research on the Epidemiology
 I did my master in quantitative economics at the Free University Brussels (ULB). I trained myself further in statistics by first following an [online micromaster](https://micromasters.mit.edu/ds/) in Statistics and Data Science at the Massachusetts Institute of Technology (MIT) and then, by validating statistics courses at UCLouvain.
 
 I also had the opportunity to follow several workshops (usually 1 week long):
+
+* *[Advances in Mortality Forecasting](https://www.demogr.mpg.de/en/career_6122/international_advanced_studies_in_demography_6682/courses_6931/advances_in_mortality_forecasting_9992/)* by Carlo Giovanni Camarda and Ugofilippo Basellini at the Max Planck Institute for Demographic Research (online) in 2022
 
 * *[Statistical Demography](https://sciencesmaths-paris.fr/f/actualites-fr/cours-raftery)* by Adrian E. Raftery at the Fondation des Sciences Mathématiques de Paris (FSMP) in 2021 
 
