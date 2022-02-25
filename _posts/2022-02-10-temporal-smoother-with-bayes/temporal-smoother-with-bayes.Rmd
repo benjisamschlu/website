@@ -1,7 +1,7 @@
 ---
 title: "Easy smoothing with Bayes"
 description: |
-  Showing that Bayesian modeling makes it straightforward to implement smoothing.
+  Post demonstrating that Bayesian modeling makes it straightforward to implement smoothing.
 author:
   - name: Benjamin Schlüter
 date: 02-10-2022
@@ -24,9 +24,9 @@ In this post, I would like to show how convenient Bayesian modeling is for imple
 # Prevalence over time
 
 
-Suppose that we are interested in the population's proportion having a specific characteric at a given time point (called the prevalence). Further assume that it would be too costly or too time consuming to survey all individuals in the population of interest. Hence, only a sample of the population is surveyed to assess the prevalence over time. 
+Suppose that we are interested in the population's proportion having a specific characteric at a given time point (called the prevalence). Further assume that it would be too costly or too time consuming to survey all individuals in the population of interest at each time point. Hence, only a sample of the population is surveyed over 81 time points to assess the prevalence over time. 
 
-The figure below shows points reflecting the sampled prevalence over time with the true population's prevalence characterized by an exponential decay. 
+The figure below shows points reflecting the sampled prevalence over time. On the left, the sample size is fixed at $n=100$ while on the right it is $n=1000$. The dashed line represents the true population's prevalence characterized by an exponential decay as time progress. 
 
 
 
@@ -79,7 +79,7 @@ df %>%
         facet_wrap( ~ n)
 ```
 
-The size of the sample has a big impact on the precision we have about the prevalence. This is clear from the picture with points much more spread around the true prevalence when $n=100$ in comparison to $n=1000$. In real life, due to constraints during the surveying process (time, budget,..), we usually end up with prevalence estimates that might be varying over time, just due to the sampling variation. In this context, smoothing/penalization helps in estimating a quantity over time when we expect that the true underlying prevalence in a population exhibit some degree of smoothness.
+The size of the sample has a big impact on the precision we have about the prevalence. This is clear from the picture with points much more spread around the true prevalence when $n=100$ in comparison to $n=1000$. In real life, due to constraints during the surveying process (time, budget,..), we usually end up with prevalence estimates that might be varying over time, just due to the sampling variation. In this context, smoothing/penalization helps in estimating a quantity over time, when we expect that the true underlying prevalence in a population exhibits some degree of smoothness.
 
 
 # Bayesian formula and smoothing
@@ -92,7 +92,7 @@ where we have from left to right, the posterior distribution, the likelihood and
 # Modelling the prevalence
 
 
-The likelihood should describe the distribution of a prevalence. It is common to model such type of variable with a logistic regression since the outcome variable is binary (an individual has a characteristic or not). This assumption leads to model the logit of $p$ with a linear equation. Let's write what we assumed so far
+The likelihood should describe the distribution of a prevalence. It is common to model such type of variable with a logistic regression since the outcome variable is binary (an individual has a characteristic or not). This assumption leads to model the logit of $p$ -where $p$ is the prevalence we want to estimate- with a linear equation. Let's write what we assumed so far
 
 $$
 \begin{align}
@@ -101,7 +101,7 @@ $$
 \end{align}
 $$
 
-where $y_t$ is the number of individuals having the characteristic at time $t$ out of $n=100$ sampled individuals (fixed over time), $p_t$ is the prevalence we want to estimate, $a$ consists of an intercept and $\phi_t$ is a parameter that changes over time. Here comes the prior distribution as a mechanism to impose smoothing: we will assume that $\phi_t$ is distributed as a random walk of order one. This assumption encourages $\phi_t$ at $t$ to be similar to its neighbors. The prior can thus be expressed as
+where $y_t$ is the number of individuals having the characteristic at time $t$ out of $n=100$ sampled individuals (note that $n$ is fixed over time), $p_t$ is the prevalence we want to estimate, $a$ consists of an intercept and $\phi_t$ is a parameter that changes over time. **Here comes the prior distribution as a mechanism to impose smoothing:** we will assume that $\phi_t$ is distributed as a random walk of order one. This assumption encourages $\phi_t$ at $t$ to be similar to its neighbors. The prior can thus be expressed as
 
 $$
 \begin{align}
@@ -110,7 +110,7 @@ $$
 \end{align}
 $$
 
-Values of $\phi$ close to $\frac{1}{2}(\phi_{t-1} + \phi_{t+1})$ are favored. From the above expression, it is clear that $\sigma^2$ can be seen as a smoothing parameter. Small (large) value enforces strong (weak) smoothing. 
+According to the selected prior distribution, values of $\phi_t$ close to $\frac{1}{2}(\phi_{t-1} + \phi_{t+1})$ are favored. It is clear from that distribution that $\sigma^2$ can be seen as a smoothing parameter since it defines the spread around $\frac{1}{2}(\phi_{t-1} + \phi_{t+1})$. Small (large) value of $\sigma$ enforces strong (weak) smoothing. 
 
 Let's now estimate this model in STAN
 
@@ -163,7 +163,7 @@ generated quantities {
 }
 ```
 
-In the figure below we show the estimated prevalence (with 95\% credible interval) where we imposed different priors on $\sigma$ . On the left, we assumed that $\sigma \sim \mathcal{N}^+(0,10)$ while one the right we imposed more smoothing by setting $\sigma \sim \mathcal{N}^+(0,0.01)$.
+In the figure below we show the estimated prevalence (with 95\% credible interval) where we imposed different priors on $\sigma$ . On the left, we assumed that $\sigma \sim \mathcal{N}^+(0,10)$ while one the right, we imposed more smoothing by setting $\sigma \sim \mathcal{N}^+(0,0.01)$.
 
 ```{r, echo=FALSE, eval=FALSE}
 # fit model
@@ -243,6 +243,7 @@ df.fit %>%
         facet_wrap( ~ type)
 ```
  
+The figure clearly shows that prior can be used to increase smoothing of our estimated prevalence. Indeed, the right side of the plot show much less wiggle than on the left when $\sigma \sim \mathcal{N}(0,10)$.
  
 # Summary
 
