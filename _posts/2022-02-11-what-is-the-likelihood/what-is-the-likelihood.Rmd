@@ -1,7 +1,7 @@
 ---
 title: "What is the likelihood ?"
 description: |
-  Opening the likelihood blackbox, showing its derivation and its use in a demographic context. 
+  Post opening the likelihood blackbox, showing its derivation and its use in a demographic context. 
 author:
   - name: Benjamin Schlüter
 date: 02-11-2022

@@ -2232,7 +2232,7 @@ d-appendix d-footnote-list a.footnote-backlink {
 <div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb1-1" title="1"><span class="co"># STAN code</span></a>
 <a class="sourceLine" id="cb1-2" title="2">data {</a>
 <a class="sourceLine" id="cb1-3" title="3">  int<span class="op">&lt;</span>lower=<span class="dv">0</span><span class="op">&gt;</span><span class="st"> </span>T; <span class="op">/</span><span class="er">/</span><span class="st"> </span>nber of time points</a>
-<a class="sourceLine" id="cb1-4" title="4">  int<span class="op">&lt;</span>lower=<span class="dv">0</span><span class="op">&gt;</span><span class="st"> </span>n[T]; <span class="op">/</span><span class="er">/</span><span class="st"> </span>population</a>
+<a class="sourceLine" id="cb1-4" title="4">  int<span class="op">&lt;</span>lower=<span class="dv">0</span><span class="op">&gt;</span><span class="st"> </span>n[T]; <span class="op">/</span><span class="er">/</span><span class="st"> </span>sample <span class="kw">size</span> (fixed at <span class="dv">100</span>)</a>
 <a class="sourceLine" id="cb1-5" title="5">  int y[T]; <span class="op">/</span><span class="er">/</span><span class="st"> </span>individual with disease</a>
 <a class="sourceLine" id="cb1-6" title="6">}</a>
 <a class="sourceLine" id="cb1-7" title="7">parameters {</a>
@@ -2257,7 +2257,7 @@ d-appendix d-footnote-list a.footnote-backlink {
 <a class="sourceLine" id="cb1-26" title="26">  sigma <span class="op">~</span><span class="st"> </span><span class="kw">normal</span>(<span class="dv">0</span>, <span class="dv">10</span>);</a>
 <a class="sourceLine" id="cb1-27" title="27">}</a>
 <a class="sourceLine" id="cb1-28" title="28">generated quantities {</a>
-<a class="sourceLine" id="cb1-29" title="29">    vector[T] p_hat =<span class="st"> </span><span class="dv">1</span> .<span class="op">/</span><span class="st"> </span>(<span class="dv">1</span><span class="op">+</span><span class="kw">exp</span>(<span class="op">-</span>eta));</a>
+<a class="sourceLine" id="cb1-29" title="29">    vector[T] p_hat =<span class="st"> </span><span class="dv">1</span> .<span class="op">/</span><span class="st"> </span>(<span class="dv">1</span><span class="op">+</span><span class="kw">exp</span>(<span class="op">-</span>eta)); <span class="op">/</span><span class="er">/</span><span class="st"> </span>estimated prevalence</a>
 <a class="sourceLine" id="cb1-30" title="30">}</a></code></pre></div>
 </div>
 <p>In the figure below we show the estimated prevalence (with 95% credible interval) where we imposed different priors on <span class="math inline">\(\sigma\)</span> . On the left, we assumed that <span class="math inline">\(\sigma \sim \mathcal{N}^+(0,10)\)</span> while one the right, we imposed more smoothing by setting <span class="math inline">\(\sigma \sim \mathcal{N}^+(0,0.01)\)</span>.</p>

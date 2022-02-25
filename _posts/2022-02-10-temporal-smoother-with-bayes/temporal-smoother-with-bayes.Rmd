@@ -134,7 +134,7 @@ stan_data = list(
 # STAN code
 data {
   int<lower=0> T; // nber of time points
-  int<lower=0> n[T]; // population
+  int<lower=0> n[T]; // sample size (fixed at 100)
   int y[T]; // individual with disease
 }
 parameters {
@@ -159,7 +159,7 @@ model {
   sigma ~ normal(0, 10);
 }
 generated quantities {
-    vector[T] p_hat = 1 ./ (1+exp(-eta));
+    vector[T] p_hat = 1 ./ (1+exp(-eta)); // estimated prevalence
 }
 ```
 
