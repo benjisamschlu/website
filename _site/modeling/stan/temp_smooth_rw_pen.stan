@@ -19,9 +19,9 @@ model {
   
   // Priors
   a ~ normal(0, 10);
-  phi[1] ~ normal(0, 10);
+  phi[1] ~ normal(0, sigma);
   phi[2:T] ~ normal(phi[1:(T-1)], sigma);
-  sigma ~ normal(0, 0.01);
+  sigma ~ normal(0, 0.05);
 }
 generated quantities {
     vector[T] p_hat = 1 ./ (1+exp(-eta));

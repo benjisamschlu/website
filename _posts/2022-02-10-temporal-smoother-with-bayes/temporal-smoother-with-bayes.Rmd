@@ -16,7 +16,6 @@ output:
 knitr::opts_chunk$set(echo = FALSE)
 ```
 
-See slides 13, 30-32 from part 2 Wakefield to defines the topics of this post.
 
 In this post, I would like to show how convenient Bayesian modeling is for implementing smoothing. Note that this post has been inspired by the course "*Bayesian subnational estimation using complex survey data*" given by Jon Wakefield and Richard Li available [online](https://iussp.org/en/small-area-estimation-training-materials). 
 
@@ -24,9 +23,9 @@ In this post, I would like to show how convenient Bayesian modeling is for imple
 # Prevalence over time
 
 
-Suppose that we are interested in the population's proportion having a specific characteric at a given time point (called the prevalence). Further assume that it would be too costly or too time consuming to survey all individuals in the population of interest at each time point. Hence, only a sample of the population is surveyed over 81 time points to assess the prevalence over time. 
+Suppose that we are interested in the population's proportion having a specific characteric at a given time point (called the prevalence). Further assume that it would be too costly or too time consuming to survey all individuals in the population of interest at each time point. Hence, only a sample of the population is surveyed over 81 time points to assess the prevalence's evolution over time. 
 
-The figure below shows points reflecting the sampled prevalence over time. On the left, the sample size is fixed at $n=100$ while on the right it is $n=1000$. The dashed line represents the true population's prevalence characterized by an exponential decay as time progress. 
+The figure below shows points reflecting the sampled prevalence over time (using `rbinom()` function). The sample size is fixed at $n=100$ and $n=1,000$ on the left and right side, respectively. The dashed line represents the true population's prevalence characterized by an exponential decay as time progresses. 
 
 
 
@@ -79,7 +78,7 @@ df %>%
         facet_wrap( ~ n)
 ```
 
-The size of the sample has a big impact on the precision we have about the prevalence. This is clear from the picture with points much more spread around the true prevalence when $n=100$ in comparison to $n=1000$. In real life, due to constraints during the surveying process (time, budget,..), we usually end up with prevalence estimates that might be varying over time, just due to the sampling variation. In this context, smoothing/penalization helps in estimating a quantity over time, when we expect that the true underlying prevalence in a population exhibits some degree of smoothness.
+The size of the sample has a big impact on the precision we have about the prevalence. This is clear from the picture with points much more spread around the true prevalence when $n=100$ in comparison to $n=1000$. In real life, due to constraints during the surveying process (time, budget,..), we can't have hughe sample size and thus, we usually end up with prevalence estimates that might be varying over time, just due to the sampling variation (high point to point variation on the left figure). In this context, smoothing/penalization helps in estimating a quantity over time, when we expect that the true underlying prevalence in a population exhibits some degree of smoothness.
 
 
 # Bayesian formula and smoothing
@@ -87,12 +86,12 @@ The size of the sample has a big impact on the precision we have about the preva
 The Bayes theorem can be expressed as follow
 
 $$p(\theta|y) \propto L(\theta|y) \times \pi(\theta)$$
-where we have from left to right, the posterior distribution, the likelihood and the prior distribution. The likelihood describes the distribution of the data, depending on unknown parameters $\theta$. The prior distribution expresses beliefs about $\theta$ and, of main interest for this post, provides a mechanism by which smoothing can be imposed.
+where we have from left to right, the posterior distribution, the likelihood and the prior distribution. The likelihood describes the distribution of the data, depending on unknown parameters $\theta$ (see this [post](https://benjaminschluter.netlify.app/posts/2022-02-11-what-is-the-likelihood/)). The prior distribution expresses beliefs about $\theta$ and this beliefs can be expressed in such a way that they provide a mechanism by which smoothing can be imposed.
 
 # Modelling the prevalence
 
 
-The likelihood should describe the distribution of a prevalence. It is common to model such type of variable with a logistic regression since the outcome variable is binary (an individual has a characteristic or not). This assumption leads to model the logit of $p$ -where $p$ is the prevalence we want to estimate- with a linear equation. Let's write what we assumed so far
+In our example, the likelihood should describe the distribution of a prevalence. It is common to model such type of variable with a logistic regression since the outcome variable is binary (an individual has a characteristic or not). This assumption leads to model the logit of $p$ -where $p$ is the prevalence we want to estimate- with a linear equation. Let's write what we assumed so far
 
 $$
 \begin{align}
@@ -101,7 +100,7 @@ $$
 \end{align}
 $$
 
-where $y_t$ is the number of individuals having the characteristic at time $t$ out of $n=100$ sampled individuals (note that $n$ is fixed over time), $p_t$ is the prevalence we want to estimate, $a$ consists of an intercept and $\phi_t$ is a parameter that changes over time. **Here comes the prior distribution as a mechanism to impose smoothing:** we will assume that $\phi_t$ is distributed as a random walk of order one. This assumption encourages $\phi_t$ at $t$ to be similar to its neighbors. The prior can thus be expressed as
+where $y_t$ is the number of individuals having the characteristic at time $t$ out of $n=100$ sampled individuals ($n$ fixed over time), $p_t$ is the prevalence we want to estimate, $a$ consists of an intercept and $\phi_t$ is a parameter that changes over time. **Here comes the prior distribution as a mechanism to impose smoothing:** we will assume that $\phi_t$ is distributed as a random walk of order one. This assumption encourages $\phi_t$ at $t$ to be similar to its neighbors. The prior is expressed as
 
 $$
 \begin{align}
@@ -110,7 +109,43 @@ $$
 \end{align}
 $$
 
-According to the selected prior distribution, values of $\phi_t$ close to $\frac{1}{2}(\phi_{t-1} + \phi_{t+1})$ are favored. It is clear from that distribution that $\sigma^2$ can be seen as a smoothing parameter since it defines the spread around $\frac{1}{2}(\phi_{t-1} + \phi_{t+1})$. Small (large) value of $\sigma$ enforces strong (weak) smoothing. 
+According to the selected prior distribution, values of $\phi_t$ close to $\frac{1}{2}(\phi_{t-1} + \phi_{t+1})$ are favored. It is clear from that distribution that $\sigma$ can be seen as a smoothing parameter since it defines the spread around $\frac{1}{2}(\phi_{t-1} + \phi_{t+1})$, which is the middle point between $\phi_t$'s two neighbors. The figue below makes it clear that small (large) value of $\sigma$ enforces strong (weak) smoothing on $\phi_t$.
+
+
+```{r, echo=FALSE, warning = FALSE}
+# Impact of sigma
+phi.sim <- seq(-2, 2, 0.01)
+facet.names <- c(
+  "low sigma" = expression("low"~sigma),
+  "high sigma" = expression("high"~sigma))
+df.phi.sim <- tibble(x = rep(phi.sim, 2),
+                     f = c(dnorm(phi.sim,mean = 0, sd = 0.2),
+                              dnorm(phi.sim, mean = 0, sd = 1)),
+                     type = c(rep("high sigma", length(phi.sim)),
+                              rep("low sigma", length(phi.sim)))
+                     ) %>% 
+            mutate(type = factor(type,
+                                 labels = facet.names))
+df.phi.sim %>% 
+        ggplot(aes(x = x, y = f)) +
+        geom_line(col = "white") +
+        annotate("text",
+                 label = expression(frac(1,2)~"("~phi[t-1]+phi[t+1]~")"),
+                 x = 0,
+                 y = 0.05,
+                 size = 3.5,
+                 col = "white") +
+  geom_segment(x=0, xend = 0, 
+               y=-0.97, yend = -0.01,
+               col = "white") +
+        theme_dark_blue() +
+        theme(axis.title.x = element_blank(),
+              axis.text.x = element_blank()) +
+        labs(y = expression("f("~phi[t]~"|"~ phi[t-1]~","~phi[t+1]~","~sigma~")")) +
+        facet_wrap( ~ type, labeller = label_parsed)
+
+```
+
 
 Let's now estimate this model in STAN
 
@@ -154,28 +189,28 @@ model {
   // Priors
   a ~ normal(0, 10);
   
-  phi[1] ~ normal(0, 10); // Random walk 1 for phi
+  phi[1] ~ normal(0, sigma); // Random walk 1 for phi
   phi[2:T] ~ normal(phi[1:(T-1)], sigma); // Random walk 1 for phi
-  sigma ~ normal(0, 10);
+  sigma ~ normal(0.5, 0.05);
 }
 generated quantities {
     vector[T] p_hat = 1 ./ (1+exp(-eta)); // estimated prevalence
 }
 ```
 
-In the figure below we show the estimated prevalence (with 95\% credible interval) where we imposed different priors on $\sigma$ . On the left, we assumed that $\sigma \sim \mathcal{N}^+(0,10)$ while one the right, we imposed more smoothing by setting $\sigma \sim \mathcal{N}^+(0,0.01)$.
+In the figure below we show the estimated posterior prevalence (with 95\% credible interval) where we imposed different priors on $\sigma$ . On the left, we assumed that $\sigma \sim \mathcal{N}^+(0.5,0.05)$ while one the right, we imposed more smoothing by setting $\sigma \sim \mathcal{N}^+(0,0.05)$.
 
 ```{r, echo=FALSE, eval=FALSE}
 # fit model
 # options(mc.cores = parallel::detectCores()-1)
 # 
 # fit = stan("./modeling/stan/temp_smooth_rw.stan",
-#            iter = 2000,
+#            iter = 4000,
 #            data = stan_data)
 # saveRDS(fit, "./modeling/estimates/temp_smooth_rw1.rda")
 # 
 # fit.pen = stan("./modeling/stan/temp_smooth_rw_pen.stan",
-#            iter = 2000,
+#            iter = 4000,
 #            data = stan_data)
 # saveRDS(fit.pen, "./modeling/estimates/temp_smooth_rw1_pen.rda")
 
@@ -198,16 +233,16 @@ sigma.hat.pen <- as.matrix(fit.pen, "sigma") %>% median()
 df.fit.unp <- fit %>% 
   spread_draws(p_hat[t]) %>% 
   median_qi() %>% 
-  mutate(type = "sigma~N(0,10)")
+  mutate(type = "sigma~N(0.5,0.05)")
 df.fit.pen <- fit.pen %>% 
   spread_draws(p_hat[t]) %>% 
   median_qi() %>% 
-  mutate(type = "sigma~N(0,0.01)")
+  mutate(type = "sigma~N(0,0.05)")
 
 df.fit <- bind_rows(df.fit.unp, 
                     df.fit.pen) %>% 
   mutate(type = factor(type,
-                       levels = c("sigma~N(0,10)", "sigma~N(0,0.01)"))) %>% 
+                       levels = c("sigma~N(0.5,0.05)", "sigma~N(0,0.05)"))) %>% 
   left_join(df.stan %>% 
               select(t, p, p.sim),
             by = "t")
@@ -243,8 +278,9 @@ df.fit %>%
         facet_wrap( ~ type)
 ```
  
-The figure clearly shows that prior can be used to increase smoothing of our estimated prevalence. Indeed, the right side of the plot show much less wiggle than on the left when $\sigma \sim \mathcal{N}(0,10)$.
+The figure clearly shows that prior can be used to increase smoothing of our estimated posterior prevalence. Indeed, the right side of the figure, where we assumed that $\sigma$'s distribution is centered on 0, shows much less wiggle than on the left.
  
 # Summary
 
-Concluding remarks
+In Bayesian statistics, the posterior distribution of the parameters of interest is proportional to the product of the likelihood and the prior. In this post, it has been showned that the prior can be used as a mechanism to impose smoothing on the estimated quantity. This makes it straightforward to smooth estimates in a Bayesian estimation framework.
+
