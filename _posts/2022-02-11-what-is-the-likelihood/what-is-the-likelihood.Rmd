@@ -1,5 +1,5 @@
 ---
-title: "What is the likelihood ?"
+title: "You said the likelihood ?"
 description: |
   Post opening the likelihood blackbox, showing its derivation and its use in a demographic context. 
 author:

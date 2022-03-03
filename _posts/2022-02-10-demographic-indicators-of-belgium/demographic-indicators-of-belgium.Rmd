@@ -38,3 +38,69 @@ Male to Female ratio over age
 
 Mortality ?
 
+
+
+```{r, echo = FALSE}
+library(ggplot2)
+library(tidyverse)
+library(scales)
+library(viridis)
+
+source("./modeling/function/theme_dark_blue.R")
+
+```
+
+
+
+```{r, echo = FALSE}
+df <- openxlsx::read.xlsx("./modeling/data/pop_statbel_2021.xlsx")
+df <- df %>% 
+        mutate(age.gp = cut(CD_AGE,
+                            breaks = c(0,1, seq(5, 100, 5), Inf),
+                            labels = c(paste(c(0,1, seq(5, 95, 5)),
+                                           c(1, seq(5, 100, 5)),
+                                           sep = "-"),
+                                       "100+"),
+                            right = FALSE)
+               ) %>% 
+  rename(sex = CD_SEX) %>% 
+  group_by(sex, age.gp) %>% 
+  summarise(N = sum(MS_POPULATION)) %>% 
+  ungroup()
+```
+
+
+
+```{r, echo = FALSE}
+df %>% 
+  mutate(N = ifelse(sex == "M", -N, N)) %>% 
+  ggplot( aes(x = age.gp, y = N, 
+              fill = sex, color = sex, group = sex)) +
+  geom_bar(stat = "identity") +
+  scale_y_continuous(breaks = seq(-400000, 400000, 200000),
+                     labels = paste0(as.character(c(seq(400, 0, -200), seq(200, 400, 200))), "k")) +
+  coord_flip()+
+  scale_fill_manual(values = c("M" = "#238A8DFF",
+                               "F" = "#FCA007FF")) +
+  theme_dark_blue() +
+  labs(x = "Age")
+```
+
+
+
+```{r, echo = FALSE}
+
+df %>% 
+  pivot_wider(names_from = sex, values_from = N) %>% 
+  mutate(ratio = M/F) %>% 
+  ggplot(aes(x = age.gp, y = ratio, group = 1)) +
+        geom_line(col = "#53596CFF", size = 1.5) +
+        geom_hline(yintercept = 1,
+                   linetype = "dashed",
+                   col = "white") +
+        theme_dark_blue() +
+  theme(axis.text.x = element_text(angle = -45)) +
+  labs(y = expression(frac(N[M], N[F])),
+       x = "Age")
+```
+

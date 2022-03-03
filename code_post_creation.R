@@ -6,7 +6,7 @@ library(distill)
 
 # Don't put ¨ on the u --> creates bug
 create_post(
-        "Calling bullshit", # mandatory
+        "Reproducibility in data-centric analysis", # mandatory
         author = "Benjamin Schluter",
         date = Sys.Date(),
         date_prefix = Sys.Date(),
