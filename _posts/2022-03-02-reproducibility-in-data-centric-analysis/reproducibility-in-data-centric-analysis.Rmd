@@ -9,6 +9,7 @@ output:
   distill::distill_article:
     self_contained: false
     highlight: monochrome
+preview: false
 ---
 
 
@@ -35,7 +36,7 @@ This structure allows the project to evolve from data cleaning to submission, wh
 
 # Project history
 
-I try to maintain a project history over the life of the project in the form of a markdown file containing:
+In order to be transparent about the research process, I try to maintain a project history over the life of the project in the form of a markdown file (easy formatting for the web). It contains the following elements:
 
 * Research questions
 
@@ -188,4 +189,4 @@ The explanation above is all what you need to start having your projects on Gith
 
 # Summary
 
-I presented some advises on how to conduct a research project while making it reproducible. In practice, it is frequently not as easy as presented in this post. Nonetheless, keeping these elements in mind still allows to converge towards reproducibility in data-centric analyses. 
+I presented some advises on how to conduct a research project while making it reproducible. In practice, it is frequently not as easy as presented in this post. Conducting research is more a circular process than a linear one. Nonetheless, keeping these elements in mind still allows to converge towards reproducibility in data-centric analyses. 

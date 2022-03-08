@@ -92,12 +92,12 @@ code span.wa { font-style: italic; } /* Warning */
   <!--radix_placeholder_rmarkdown_metadata-->
 
 <script type="text/json" id="radix-rmarkdown-metadata">
-{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["title","description","author","date","output"]}},"value":[{"type":"character","attributes":{},"value":["Reproducibility in data-centric analyses"]},{"type":"character","attributes":{},"value":["Post highlighting good practices for reproducibility presented during the DEMO council."]},{"type":"list","attributes":{},"value":[{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["name"]}},"value":[{"type":"character","attributes":{},"value":["Benjamin Schlüter"]}]}]},{"type":"character","attributes":{},"value":["02-10-2022"]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["distill::distill_article"]}},"value":[{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["self_contained","highlight"]}},"value":[{"type":"logical","attributes":{},"value":[false]},{"type":"character","attributes":{},"value":["monochrome"]}]}]}]}
+{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["title","description","author","date","output","preview"]}},"value":[{"type":"character","attributes":{},"value":["Reproducibility in data-centric analyses"]},{"type":"character","attributes":{},"value":["Post highlighting good practices for reproducibility presented during the DEMO council."]},{"type":"list","attributes":{},"value":[{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["name"]}},"value":[{"type":"character","attributes":{},"value":["Benjamin Schlüter"]}]}]},{"type":"character","attributes":{},"value":["02-10-2022"]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["distill::distill_article"]}},"value":[{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["self_contained","highlight"]}},"value":[{"type":"logical","attributes":{},"value":[false]},{"type":"character","attributes":{},"value":["monochrome"]}]}]},{"type":"logical","attributes":{},"value":[false]}]}
 </script>
 <!--/radix_placeholder_rmarkdown_metadata-->
   
   <script type="text/json" id="radix-resource-manifest">
-  {"type":"character","attributes":{},"value":["clean_files.PNG","coding.PNG","data.PNG","messy_code.PNG","messy_files.jpg","vcs.png"]}
+  {"type":"character","attributes":{},"value":["clean_files.PNG","coding.PNG","data.PNG","messy_code.PNG","messy_files.jpg","reproducibility-in-data-centric-analysis_files/anchor-4.2.2/anchor.min.js","reproducibility-in-data-centric-analysis_files/bowser-1.9.3/bowser.min.js","reproducibility-in-data-centric-analysis_files/distill-2.2.21/template.v2.js","reproducibility-in-data-centric-analysis_files/jquery-1.11.3/jquery.min.js","reproducibility-in-data-centric-analysis_files/popper-2.6.0/popper.min.js","reproducibility-in-data-centric-analysis_files/tippy-6.2.7/tippy-bundle.umd.min.js","reproducibility-in-data-centric-analysis_files/tippy-6.2.7/tippy-light-border.css","reproducibility-in-data-centric-analysis_files/tippy-6.2.7/tippy.css","reproducibility-in-data-centric-analysis_files/tippy-6.2.7/tippy.umd.min.js","reproducibility-in-data-centric-analysis_files/webcomponents-2.0.0/webcomponents.js","vcs.png"]}
   </script>
   <!--radix_placeholder_navigation_in_header-->
 <meta name="distill:offset" content="../.."/>
@@ -2217,7 +2217,7 @@ Figure 2: .. and the do
 </div>
 <p>This structure allows the project to evolve from data cleaning to submission, while maintaining a constant structure. At minimum, <code>code</code> has a subfolder called <code>function</code>, where I store R functions created for the project. I also add a <code>stan</code> subfolder for my Stan scripts. Each R code has a specific aim, for example, there will be one R code for data cleaning, one for exploratory data analysis (EDA) and so on. In the <code>product</code> folder, I usually store reports on EDA and manuscript drafts. I also write a mardown file for the project history. Note also that I locate my R project associated to that reseach in the folder (bottom of the screen shot).</p>
 <h1 id="project-history">Project history</h1>
-<p>I try to maintain a project history over the life of the project in the form of a markdown file containing:</p>
+<p>In order to be transparent about the research process, I try to maintain a project history over the life of the project in the form of a markdown file (easy formatting for the web). It contains the following elements:</p>
 <ul>
 <li><p>Research questions</p></li>
 <li><p>Methodology</p></li>
@@ -2344,7 +2344,7 @@ Figure 6: Version Control System (VCS)
 <li><p>If you made you repository public, colleagues have the possibility to extract your repo on their laptop. This means more commands but opens the door to collaboration.</p></li>
 </ul>
 <h1 id="summary">Summary</h1>
-<p>I presented some advises on how to conduct a research project while making it reproducible. In practice, it is frequently not as easy as presented in this post. Nonetheless, keeping these elements in mind still allows to converge towards reproducibility in data-centric analyses.</p>
+<p>I presented some advises on how to conduct a research project while making it reproducible. In practice, it is frequently not as easy as presented in this post. Conducting research is more a circular process than a linear one. Nonetheless, keeping these elements in mind still allows to converge towards reproducibility in data-centric analyses.</p>
 <div class="sourceCode" id="cb3"><pre class="sourceCode r distill-force-highlighting-css"><code class="sourceCode r"></code></pre></div>
 <!--radix_placeholder_article_footer-->
 <!--/radix_placeholder_article_footer-->

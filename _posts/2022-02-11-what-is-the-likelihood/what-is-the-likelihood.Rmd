@@ -24,7 +24,7 @@ source("./modeling/function/theme_dark_blue.R")
 ```
 
 
-In this post, my aim is to explain what the likelihood is and how this concept is used in frequentist statistics to obtain an estimator for a parameter. At the end, we look at a demographic application.
+In this post, my aim is to explain what the likelihood is and to describe how this concept is used in frequentist statistics to obtain an estimator for a parameter. At the end of the post, we will look at a demographic application.
 
 # Coin flips
 
@@ -52,7 +52,7 @@ $$
 where $p$ represents the probability of observing head.
 
 
-Ok that's fine but we are working with a data set and hence, N flips. What is the probability of observing the data set we have ? We can easily say that each coin flip is **i**ndependent and since the coin used is always the same, all flips follow the same **i**ndentical Bernoulli **d**istribution (the famous **i.i.d**). These two assumptions are critical (hence their frequent apperearances in stat classes) and allow to express the probability of observing the data as the product of the probability of each coin flip as follow:
+Ok that's fine but we are working with a data set and hence, N flips. What is the probability of observing the data set we have ? We can easily say that each coin flip is **i**ndependent and since the coin used is always the same, all flips follow the same **i**dentical Bernoulli **d**istribution (the famous **i.i.d**). These two assumptions are critical (hence their frequent apperearances in stat classes) and allow to express the probability of observing the data as the product of the probability of each coin flip as follow:
 
 $$
 \begin{align}
@@ -62,7 +62,7 @@ P(data) & = \prod^N_{i=1} P(y_i) \\
 & = p^{Y}(1-p)^{N-Y} 
 \end{align}
 $$
-and this probability is what is called, the likelihood: 
+and this quantity is called, the likelihood: 
 
 $$L(p|Y) = p^Y(1-p)^{N-Y}$$
 
@@ -82,7 +82,7 @@ ggplot(df, aes(x = p, y = l)) +
              y = "L(p|Y)")
 ```
 
-As it is clear from the above figure, the likelihood is a function of the parameter $p$ (bounded between 0 and 1 as it is a probability). Despite the fact that it looks like a probability distribution, it is not. The area under the likelihood curve does not sum to one.
+As it is clear from the above figure, the likelihood is a function of the parameter $p$ (bounded between 0 and 1 as it is a probability) given the observed data. Despite the fact that it looks like a probability distribution, it is not. The area under the likelihood curve does not sum to one.
 
 Now suppose, as it is commonly the case when performing analyses, that the parameter of interest is not known (here $p$). The way that frequentist statistics gets an estimator for $p$ is by maximizing the probability of observing the data we have. Which, you now know at this stage of the post, is the likelihood. The obtained estimator is called the maximum likelihood estimator (MLE). Looking at the figure, the highest value reached by $L(p|Y)$ seems to be around $p=0.37$. In order to obtain its precise value, let's find the argument (the value of $p$) that maximizes $L(p|Y)$
 
@@ -126,7 +126,7 @@ where $e_x$ is the number of person exposed at age $x$ and $\mu_x$ is the force 
 $$P(deaths=d_x) = \frac{(e_x \mu_x)^{d_x}e^{-(e_x \mu_x)}}{d_x!}$$
 
 
-What mortality models do is to assume a parametric form for $\mu_x$. 
+In general, mortality models assume a parametric form for $\mu_x$. 
 
 How does the likelihood help us here ? It allows us to estimate the parameters of these mortality models. Let's repeat **exactly** the same steps as before. We already defined the distribution of the outcome of interest, deaths at age $x$. This step corresponds to the coin flips example where we said that the outcome of a coin flip had a Bernoulli distribution. However, as before, we are interested in all our data (deaths at all ages). We know that the likelihood is the product of the probability of death at all ages (again assuming i.i.d). Thus, we can write the likelihood of our data as
 

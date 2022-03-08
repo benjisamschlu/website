@@ -2198,7 +2198,7 @@ d-appendix d-footnote-list a.footnote-backlink {
 <div class="layout-chunk" data-layout="l-body">
 
 </div>
-<p>In this post, my aim is to explain what the likelihood is and how this concept is used in frequentist statistics to obtain an estimator for a parameter. At the end, we look at a demographic application.</p>
+<p>In this post, my aim is to explain what the likelihood is and to describe how this concept is used in frequentist statistics to obtain an estimator for a parameter. At the end of the post, we will look at a demographic application.</p>
 <h1 id="coin-flips">Coin flips</h1>
 <p>Let’s assume that we are interested in coin flips. Hence, an observation (<span class="math inline">\(y_i\)</span>) is the outcome of a coin flip and our data <span class="math inline">\(\{y_1, y_2, .., y_N\}\)</span> consists of all <span class="math inline">\(N\)</span> coin flips. First thing to do is to assume a distribution for the outcome of a coin flip. The commonly used distribution for a binary observation <span class="math inline">\(y_i\)</span> taking only the following two values</p>
 <p><span class="math display">\[\begin{equation}
@@ -2218,7 +2218,7 @@ p &amp; \text{if $y_i$ = 1} \\
 \end{align}
 \]</span></p>
 <p>where <span class="math inline">\(p\)</span> represents the probability of observing head.</p>
-<p>Ok that’s fine but we are working with a data set and hence, N flips. What is the probability of observing the data set we have ? We can easily say that each coin flip is <strong>i</strong>ndependent and since the coin used is always the same, all flips follow the same <strong>i</strong>ndentical Bernoulli <strong>d</strong>istribution (the famous <strong>i.i.d</strong>). These two assumptions are critical (hence their frequent apperearances in stat classes) and allow to express the probability of observing the data as the product of the probability of each coin flip as follow:</p>
+<p>Ok that’s fine but we are working with a data set and hence, N flips. What is the probability of observing the data set we have ? We can easily say that each coin flip is <strong>i</strong>ndependent and since the coin used is always the same, all flips follow the same <strong>i</strong>dentical Bernoulli <strong>d</strong>istribution (the famous <strong>i.i.d</strong>). These two assumptions are critical (hence their frequent apperearances in stat classes) and allow to express the probability of observing the data as the product of the probability of each coin flip as follow:</p>
 <p><span class="math display">\[
 \begin{align}
 P(data) &amp; = \prod^N_{i=1} P(y_i) \\
@@ -2226,13 +2226,13 @@ P(data) &amp; = \prod^N_{i=1} P(y_i) \\
 &amp; = p^{\sum^N_{i=1} y_i}(1-p)^{\sum^N_{i=1} 1-y_i} \\
 &amp; = p^{Y}(1-p)^{N-Y} 
 \end{align}
-\]</span> and this probability is what is called, the likelihood:</p>
+\]</span> and this quantity is called, the likelihood:</p>
 <p><span class="math display">\[L(p|Y) = p^Y(1-p)^{N-Y}\]</span></p>
 <p><span class="math inline">\(L(p|Y)\)</span> is a function of a parameter <span class="math inline">\(p\)</span> (the probability of heads) given <span class="math inline">\(Y\)</span> (the data). Let’s check that visually by assuming that our data consists of 22 heads out of 60 flips.</p>
 <div class="layout-chunk" data-layout="l-body">
 <p><img src="what-is-the-likelihood_files/figure-html5/unnamed-chunk-2-1.png" width="624" /></p>
 </div>
-<p>As it is clear from the above figure, the likelihood is a function of the parameter <span class="math inline">\(p\)</span> (bounded between 0 and 1 as it is a probability). Despite the fact that it looks like a probability distribution, it is not. The area under the likelihood curve does not sum to one.</p>
+<p>As it is clear from the above figure, the likelihood is a function of the parameter <span class="math inline">\(p\)</span> (bounded between 0 and 1 as it is a probability) given the observed data. Despite the fact that it looks like a probability distribution, it is not. The area under the likelihood curve does not sum to one.</p>
 <p>Now suppose, as it is commonly the case when performing analyses, that the parameter of interest is not known (here <span class="math inline">\(p\)</span>). The way that frequentist statistics gets an estimator for <span class="math inline">\(p\)</span> is by maximizing the probability of observing the data we have. Which, you now know at this stage of the post, is the likelihood. The obtained estimator is called the maximum likelihood estimator (MLE). Looking at the figure, the highest value reached by <span class="math inline">\(L(p|Y)\)</span> seems to be around <span class="math inline">\(p=0.37\)</span>. In order to obtain its precise value, let’s find the argument (the value of <span class="math inline">\(p\)</span>) that maximizes <span class="math inline">\(L(p|Y)\)</span></p>
 <p><span class="math display">\[p^{MLE} = argmax_p(p^Y(1-p)^{N-Y})\]</span></p>
 <p>As it is usually done to find the maximum of a function, we take its derivative with respect to the parameter of interest and set it to 0. In practice, it is easier to first transform the likelihood into a log-likelihood <span class="math inline">\(l(p|Y)\)</span> (monotonic transformation) and then find the value of the parameter maximizing it. Let’s do that,</p>
@@ -2257,7 +2257,7 @@ l(p|Y) = log(L(p|Y)) &amp; = log(p^Y(1-p)^{N-Y}) \\
 <p><span class="math display">\[d_x \sim Poisson(e_x \mu_x)\]</span></p>
 <p>where <span class="math inline">\(e_x\)</span> is the number of person exposed at age <span class="math inline">\(x\)</span> and <span class="math inline">\(\mu_x\)</span> is the force of mortality. Hence, from this assumption, the probability that deaths at age <span class="math inline">\(x\)</span> equal <span class="math inline">\(d_x\)</span> can be expressed as follow</p>
 <p><span class="math display">\[P(deaths=d_x) = \frac{(e_x \mu_x)^{d_x}e^{-(e_x \mu_x)}}{d_x!}\]</span></p>
-<p>What mortality models do is to assume a parametric form for <span class="math inline">\(\mu_x\)</span>.</p>
+<p>In general, mortality models assume a parametric form for <span class="math inline">\(\mu_x\)</span>.</p>
 <p>How does the likelihood help us here ? It allows us to estimate the parameters of these mortality models. Let’s repeat <strong>exactly</strong> the same steps as before. We already defined the distribution of the outcome of interest, deaths at age <span class="math inline">\(x\)</span>. This step corresponds to the coin flips example where we said that the outcome of a coin flip had a Bernoulli distribution. However, as before, we are interested in all our data (deaths at all ages). We know that the likelihood is the product of the probability of death at all ages (again assuming i.i.d). Thus, we can write the likelihood of our data as</p>
 <p><span class="math display">\[L(\mu_x|d_x, e_x) = \prod^A_{x=0} \frac{(e_x \mu_x)^{d_x}e^{-(e_x \mu_x)}}{d_x!}\]</span></p>
 <p>where <span class="math inline">\(A\)</span> is the highest age considered in our data set. Until here, we did not define any mortality model. Let’s do that ! In the Gompertz model, the force of mortality is expressed as</p>

@@ -1,7 +1,7 @@
 ---
 title: "Math of mortality"
 description: |
-  A short description of the post.
+  Post showing the derivations of some mathematical identities used in mortality estimation with a simulation and estimation in STAN.
 author:
   - name: Benjamin Schlüter
 date: 02-10-2022
@@ -50,15 +50,17 @@ $$
 \end{align}
 $$
 
-and re-arranging that equation we expressed the survival probability at age t as
+and re-arranging that equation we express the survival probability at age x as
 
-$$\boxed{S(t) = e^{-\int^t_0h(x)dx} = e^{-H(t)}}$$
-
-or also
-
-$$S(t+n) = S(t)e^{-\int^{t+n}_{t}h(x)dx}$$
+$$\boxed{S(x) = e^{-\int^x_0h(t)dt} = e^{-H(x)}}$$
 
 where $H(t)$ is called the cumulative hazard.
+
+We can further express $S(x+n)$ as
+
+$$S(x+n) = S(x)e^{-\int^{x+n}_{x}h(t)dt}$$
+
+
 
 Note that when $h(x)$ is constant, 
 
@@ -69,4 +71,256 @@ From earlier derivation of $h(x)$ we can obtain a math expression for the death 
 $$\boxed{f(x) = h(x)S(x)}$$
 
 Let's check these identities visually or model a survival model with STAN ?
+
+
+```{r obtain_a_b, eval = FALSE, include = FALSE}
+library(ggplot2)
+library(tidyverse)
+# Select a and b according to BEL data in 2015
+dth = read.delim("./modeling/data/dthBE_1x1.txt", 
+                 skip = 1,
+                 sep = "", 
+                 stringsAsFactors=FALSE,
+                 header = TRUE)
+
+exp = read.delim("./modeling/data/expBE_1x1.txt", 
+                 skip = 1,
+                 sep = "", 
+                 stringsAsFactors=FALSE,
+                 header = TRUE)
+
+df.dth = dth %>% 
+  filter(Year == 2015) %>% 
+  select(Year, Age, Female) %>% 
+  mutate(Female = as.numeric(Female))
+
+df.exp = exp %>% 
+  filter(Year == 2015) %>% 
+  select(Year, Age, Female)
+
+df = df.dth %>% 
+  left_join(df.exp, 
+            by = c("Year", "Age")) %>% 
+  rename("D" = Female.x,
+         "N" = Female.y) %>% 
+  mutate(mx = D/N,
+         Age = ifelse(Age == "110+", 110, Age),
+         Age = as.numeric(Age))
+
+df %>% 
+  filter(Age >= 85, 
+         Age < 100) %>% 
+  ggplot(aes(x = Age, y = mx)) +
+  geom_line()
+# mx close to 0.02 at 85 yo
+
+# create data from age 85
+df <- df %>% 
+  filter(Age >= 85, 
+         Age < 100) %>% 
+  mutate(age = Age - 85)
+
+# important that age start at 0
+fit.gomp <- lm(log(mx) ~ 1 + age,
+               data = df )
+fit.gomp$coef
+
+df %>% 
+  mutate(fit = fit.gomp$coef[1] + fit.gomp$coef[2]*age) %>% 
+  ggplot(aes(x = age, y = log(mx))) +
+  geom_line() +
+  geom_line(aes(x = age, y = fit))
+
+a <- exp(fit.gomp$coef[1])
+b <- fit.gomp$coef[2]
+
+df %>% 
+  mutate(fit = a * exp(b*age)) %>% 
+  ggplot(aes(x = age, y = mx)) +
+  geom_line() +
+  geom_line(aes(x = age, y = fit))
+
+```
+
+
+```{r stan_sim, eval = FALSE, include = FALSE}
+library(rstan)
+
+writeLines(readLines("./modeling/stan/simu_gomp.stan"))
+
+# sample size
+N <- 2e4
+
+stan_data <- list("N" = N,
+                  "a" = a,
+                  "b" = b)
+
+simu <- stan(file="./modeling/stan/simu_gomp.stan", data=stan_data,
+             iter=1, chains=1, seed=411991,
+             algorithm="Fixed_param")
+
+t <- array(extract(simu)$t[1,])
+
+```
+
+
+
+```{r simulation, eval = FALSE, include = FALSE}
+
+# By setting nu really low and d0 to b0 there is not truncation to test estimation
+
+# entry time, when an individual reaches 85 yo: b_0=0 ; b_max=10
+bi <- runif(N, 0, 10)
+
+# censoring time with ICDF from exponential
+u <- runif(N, 0, 1)
+nu <- 1e-6 # strength of censoring, higher more censoring. 
+ci <- -log(1-u)/nu
+
+# timing of death wit ICDF of gompertz
+# a and b define with real data
+# --> model in STAN
+# u <- runif(N, 0, 1)
+# ti <- (1/b)*log(1-((b/a)*log(1-u))) # t >= 0 as age start at 85 thanks to par a
+
+# observed exit time
+gamma <- t < ci
+yi <- pmin(t, ci)
+# sum(gamma == TRUE)/N: % whose death are observed
+
+# date of exit when an individual reaches 85 yo (bi) + age at death/censoring (yi)
+di <- bi + yi 
+
+# beginning of follow-up 
+d0 <- 0
+
+# left-truncation: individuals exits before the follow-up
+# new sample
+yi <- yi[di>d0]
+
+# enter before d0 and survive start of the follow-up: wi is entry age (105+wi)
+wi <- d0 - bi
+
+# individual entering after d0, enter age 105
+wi[wi<0] <- 0
+
+```
+
+
+```{r estimation, eval = FALSE, include = FALSE}
+# does yi look like gompertz ?
+
+# let's first plot the true density of yi
+grid <- seq(0, ceiling(max(yi)), 0.05)
+df <- tibble(x = grid,
+             h = a*exp(b*grid),
+             S = exp((a/b)*(1-exp(b*grid))),
+             pi = h*S)
+
+# hazard
+ggplot(df, aes(x = x, y = log(h))) +
+  geom_line() +
+  labs(y = "ln(h(x))")
+
+# density
+ggplot(df, aes(x = x, y = pi)) +
+  geom_line()
+
+# compare with histogram
+ggplot() +
+  geom_histogram(data = tibble(x = yi), 
+                 aes(x = x, y = ..density..), 
+                 breaks = seq(0, ceiling(max(yi)), 0.05)) +
+  geom_line(data = df, 
+            aes(x = x, y = pi),
+            col = "red")
+
+# see if capable to estimate with Poisson model
+eps <- 0.05
+dth <- c()
+exp <- c()
+
+brks <- seq(0, ceiling(max(yi)), eps)
+for (i in 1:(length(brks)-1)){
+    # dth
+    d <- sum( (yi >= brks[i] & yi < brks[i+1]) )
+    # time lived by those dying
+    e_d <- yi[yi >= brks[i] & yi < brks[i+1]] - brks[i]
+    e <- sum(yi >= brks[i])*eps + sum(e_d)
+  dth <- c(dth, d)
+  exp <- c(exp, e)
+  
+}
+
+# df raw estimates
+df.poi <- tibble(cut_off = head(brks, -1),
+                 dth = dth,
+                 exp = exp) %>%
+  mutate(mx =dth/exp)
+
+ggplot() +
+  geom_point(data = df.poi, aes(x = cut_off, y = mx))
+  
+brks <- head(brks, -1)
+dth <- dth[exp > 0]
+brks <- brks[exp > 0]
+exp <- exp[exp > 0]
+fit <- glm(dth ~ 1 + brks, offset = log(exp),
+           family = "poisson")
+
+ggplot(data = df.poi %>% 
+         mutate(fit = exp(fit$coefficients[1])*exp(fit$coefficients[2]*cut_off) )) +
+  geom_point(aes(x = cut_off, y = mx)) +
+  geom_line(aes(x = cut_off, y = fit))
+
+# Do we find the parameter back ? YES
+abs(exp(fit$coefficients[1]) - a)
+abs(fit$coefficients[2] - b)
+```
+
+
+
+```{r, eval = FALSE, include = FALSE}
+ # Poisson estimation with STAN
+stan_data <- list(
+  "A" = length(brks),
+  "age" = brks,
+  "n" = round(exp,0),
+  "d" = dth
+  )
+
+options(mc.cores = parallel::detectCores()-1)
+
+fit = stan("./modeling/stan/poi_for_gomp.stan",
+           iter = 4000,
+           data = stan_data)
+
+library(tidybayes)
+
+df.fit.ab <- fit %>% 
+  spread_draws(a, b) %>% 
+  median_qi() 
+
+df.fit <- fit %>% 
+  spread_draws(eta[i]) %>% 
+  median_qi() %>% 
+  mutate(age = i-1,
+         mx = exp(eta),
+         # check pdf of t when assuming d~Poisson
+         pi = mx*exp(-mx*age)) 
+
+ggplot() +
+  geom_line(data = df.fit, aes(x = age, y = eta))
+# pdf of t when assuming d~poisson
+# and compare with truth
+ggplot() +
+  geom_line(data = df.fit, aes(x = age, y = pi)) +
+  geom_line(data = df, aes(x = x, y = pi), col = "blue")
+
+df.fit.d <- fit %>% 
+  spread_draws(pred_h[i]) %>% 
+  median_qi() %>% 
+  mutate(age = i-1)
+
+```
 
