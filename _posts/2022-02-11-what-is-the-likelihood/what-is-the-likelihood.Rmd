@@ -1,7 +1,7 @@
 ---
 title: "You said the likelihood ?"
 description: |
-  Post opening the likelihood blackbox, showing its derivation and its use in a demographic context. 
+  Post explaining the likelihood, showing its derivation and its use in a demographic context. 
 author:
   - name: Benjamin Schlüter
 date: 02-11-2022
@@ -24,7 +24,7 @@ source("./modeling/function/theme_dark_blue.R")
 ```
 
 
-In this post, my aim is to explain what the likelihood is and to describe how this concept is used in frequentist statistics to obtain an estimator for a parameter. At the end of the post, we will look at a demographic application.
+In this post, my aim is to explain what the likelihood is and describe how this concept is used in frequentist statistics to obtain an estimator for a parameter. At the end of the post, we will look at a demographic application.
 
 # Coin flips
 
@@ -52,7 +52,7 @@ $$
 where $p$ represents the probability of observing head.
 
 
-Ok that's fine but we are working with a data set and hence, N flips. What is the probability of observing the data set we have ? We can easily say that each coin flip is **i**ndependent and since the coin used is always the same, all flips follow the same **i**dentical Bernoulli **d**istribution (the famous **i.i.d**). These two assumptions are critical (hence their frequent apperearances in stat classes) and allow to express the probability of observing the data as the product of the probability of each coin flip as follow:
+Ok that's fine but we are working with a data set and thus, N coin flips. What is the probability of observing the N coin flips we obtained ? We can easily say that each coin flip is **i**ndependent and since the coin used is always the same, all flips follow the same **i**dentical Bernoulli **d**istribution (the famous **i.i.d**). These two assumptions are critical (hence their frequent apperearances in stat classes) and allow to express the probability of observing the data as the product of the probability of each coin flip:
 
 $$
 \begin{align}
@@ -62,24 +62,24 @@ P(data) & = \prod^N_{i=1} P(y_i) \\
 & = p^{Y}(1-p)^{N-Y} 
 \end{align}
 $$
-and this quantity is called, the likelihood: 
+We need to multiply the above expression by $\binom{N}{Y}$ to account for the fact that Y heads could have been observed in different order out of N coin flips. The obtained quantity is the likelihood: 
 
-$$L(p|Y) = p^Y(1-p)^{N-Y}$$
+$$L(p|Y) = \binom{N}{Y}p^Y(1-p)^{N-Y}$$
 
-$L(p|Y)$ is a function of a parameter $p$ (the probability of heads) given $Y$ (the  data). Let's check that visually by assuming that our data consists of 22 heads out of 60 flips.
+$L(p|Y)$ is a function of a parameter $p$ (the probability of heads) given $Y$ (the  data). It represents how likely it is to observe the actual data set according to the possible $p$ values. Let's check that visually by assuming that our data consists of 22 heads out of 60 flips.
 
 
 ```{r, echo = FALSE}
-l_fct <- function(p, Y, N) {p^Y * (1-p)^(N-Y)}
+ll <- sapply(seq(0, 1, 0.01), function(x) dbinom(22, 60, x))
 df <- tibble(p = seq(0, 1, 0.01),
-             l = l_fct(p = p, Y = 22, N = 60))
+             l = ll)
 
 ggplot(df, aes(x = p, y = l)) +
-        geom_line(col = "#F5DD4DFF") +
+        geom_line(col = "skyblue3",
+                  size = 1.5) +
         theme_dark_blue() +
         theme(plot.title = element_text(size = 16, face = "bold",hjust = 0.5)) +
-        labs(title = "Likelihood of 22 heads out of 60 flips",
-             y = "L(p|Y)")
+        labs(y = "L(p|Y)")
 ```
 
 As it is clear from the above figure, the likelihood is a function of the parameter $p$ (bounded between 0 and 1 as it is a probability) given the observed data. Despite the fact that it looks like a probability distribution, it is not. The area under the likelihood curve does not sum to one.
@@ -88,7 +88,7 @@ Now suppose, as it is commonly the case when performing analyses, that the param
 
 $$p^{MLE} = argmax_p(p^Y(1-p)^{N-Y})$$
 
-As it is usually done to find the maximum of a function, we take its derivative with respect to the parameter of interest and set it to 0. In practice, it is easier to first transform the likelihood into a log-likelihood $l(p|Y)$ (monotonic transformation) and then find the value of the parameter maximizing it. Let's do that,
+The above expression does not contain $\binom{N}{Y}$ as it does not depend on $p$ and hence will not play a role in the optimization. To find the maximum of a function, we take its derivative with respect to the parameter of interest and set it to 0. In practice, it is easier to first transform the likelihood into a log-likelihood $l(p|Y)$ (monotonic transformation) and then find the value of the parameter maximizing it. Let's do that,
 
 
 $$
@@ -110,7 +110,7 @@ $$
 
 Having the actual data set and willing to estimate the probability of obtaining head, the answer given by the maximum likelihood machinery is $p^{MLE}=0.366$.
 
-The beauty of this statistical machinery is that it can be applied to more complex examples. Let's make the link with models of mortality to conclude this post. 
+The beauty of this statistical machinery is that it can be applied to more complex examples. Let's now make the link with models of mortality to conclude this post. 
 
 
 
@@ -123,7 +123,7 @@ $$d_x \sim Poisson(e_x \mu_x)$$
 
 where $e_x$ is the number of person exposed at age $x$ and $\mu_x$ is the force of mortality. Hence, from this assumption, the probability that deaths at age $x$ equal $d_x$ can be expressed as follow
 
-$$P(deaths=d_x) = \frac{(e_x \mu_x)^{d_x}e^{-(e_x \mu_x)}}{d_x!}$$
+$$P(deaths~at~age~x=d_x) = \frac{(e_x \mu_x)^{d_x}e^{-(e_x \mu_x)}}{d_x!}$$
 
 
 In general, mortality models assume a parametric form for $\mu_x$. 
@@ -139,10 +139,10 @@ Hence, the likelihood is obtained by replacing $\mu_x$ by the above expression i
 
 $$L(a, b|d_x, e_x) = \prod^A_{x=0} \frac{(e_x ae^{bx})^{d_x}e^{-(e_x ae^{bx})}}{d_x!}$$
 
-The only thing that remains to obtain an estimated value for $a$ and $b$ is to find their values maximizing the above likelihood. In comparison to the coin flip example, even after taking the logarithm of $L(a, b|d_x, e_x)$, we can't obtain an analytical solution for $a$ and $b$ that would maximize the log-likelihood. In this context, we have to use numerical method such as the Iteratively Reweighted Least-Squares (IRLS) algorithm but this goes outside the scope of this post!
+The only thing that remains to be done in order to obtain an estimated value for $a$ and $b$ is to find their values maximizing the above likelihood. In comparison to the coin flip example, even after taking the logarithm of $L(a, b|d_x, e_x)$, we can't obtain an analytical solution for $a$ and $b$ that would maximize the log-likelihood. In this context, we have to use a numerical method such as the Iteratively Reweighted Least-Squares (IRLS) algorithm but this goes outside the scope of this post!
 
 
 
 # Summary
 
-The likelihood is a way to otain estimates for model's parameters. Once we have assumed a distribution for our observations (i.e Poisson) and a mathematical expression of our model (ie Gompertz), it can easily be derived given that the i.i.d assumption is fulfilled. In practice, it is frequent that analytical solutions are not available when trying to maximize the likelihood.  In such situation, we apply numerical method (ie IRLS) on the log-likelihood to obtain parameters' estimates.
+The likelihood is a way to obtain estimates for model's parameters. Once we have assumed a distribution for our observations (i.e Poisson) and a mathematical expression of our model (ie Gompertz), it can easily be derived given that the i.i.d assumption is fulfilled. In practice, it is frequent that analytical solutions are not available when trying to maximize the likelihood.  In such situations, we apply a numerical method (ie IRLS) on the log-likelihood to obtain estimates for parameters of interest.

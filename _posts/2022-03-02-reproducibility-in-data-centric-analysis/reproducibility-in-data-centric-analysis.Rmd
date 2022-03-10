@@ -84,7 +84,7 @@ As I already mentioned, I usually write one script per task
 
 I also add a short description at the top of each script, write clear commenting and define sections in the script for better visibility. 
 
-```{r, echo = FALSE, fig.cap="One example", preview=TRUE}
+```{r, echo = FALSE, fig.cap="One example"}
 knitr::include_graphics(path = "C:/Users/bschluter/Desktop/website/_posts/2022-03-02-reproducibility-in-data-centric-analysis/coding.png")
 ```
    

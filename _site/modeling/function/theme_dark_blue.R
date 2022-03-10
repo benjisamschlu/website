@@ -3,6 +3,7 @@ theme_dark_blue <- function(legend.title = FALSE) {
                                         size = rel(1.2), 
                                         hjust = 0.5, 
                                         margin = margin(0,0,20,0)),
+              plot.subtitle = element_text(colour = 'white'),
               panel.background = element_rect(colour = NA, fill = '#282C33'),
               plot.background = element_rect(colour = NA, fill = '#282C33'),
               panel.grid.major = element_line(colour="#343840"),

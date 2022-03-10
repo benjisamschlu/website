@@ -1,7 +1,7 @@
 ---
-title: "Demographic indicators of Belgium"
+title: "Demographic indicators in Belgium"
 description: |
-  A short description of the post.
+  Post presenting some demographic indicators of Belgium
 author:
   - name: Benjamin Schlüter
 date: 02-10-2022
@@ -20,23 +20,14 @@ knitr::opts_chunk$set(echo = FALSE)
 
 ```
 
-Population evolution over time
 
-Median age of Belgian
-
-Population pyramid on 3 time points
-
-+65 share variation across districts/commune?
-
-Dependency ratio on the same time points
+While doing my PhD, I realised that I was working on such specific things that I was not capable of giving basic demographic facts of Belgium when discussing with friends or relatives. This post looks at Belgium with a demographic lens.
 
 Fertility (age at first birth, ASFR, PASFR)
 
 Seasonality of death
 
-Male to Female ratio over age
-
-Mortality ?
+Mortality rate, life expectancy
 
 
 
@@ -45,62 +36,275 @@ library(ggplot2)
 library(tidyverse)
 library(scales)
 library(viridis)
+library(HMDHFDplus)
 
 source("./modeling/function/theme_dark_blue.R")
 
+userID <- "benjamin-samuel.schluter@uclouvain.be"
+pwd <- "Marieke0917"
+
+
 ```
 
 
 
 ```{r, echo = FALSE}
-df <- openxlsx::read.xlsx("./modeling/data/pop_statbel_2021.xlsx")
+
+df <- readHMDweb("BEL", "Population", userID, pwd) %>%
+  select(Year, Age, Female1, Male1) %>% 
+  pivot_longer(Female1:Male1, names_to = "sex", values_to = "N") %>% 
+  mutate(sex = factor(sex,
+                      levels = c("Female1", "Male1"),
+                      labels = c("F", "M")))
+
+
+```
+
+
+```{r}
+# evolution of population
+df.tot.pop <- df %>% 
+  filter(Year >= 1920) %>% 
+  group_by(Year) %>% 
+  summarise(N = sum(N))
+
+pop2020 <- df.tot.pop %>% filter(Year == 2020) %>% mutate(N_B = N/1e6) %>% pull(N_B) %>% round(.,2)
+
+```
+
+
+In 2020, belgian's population equals `r pop2020` millions.
+
+```{r, echo = FALSE}
+ggplot(df.tot.pop, aes(x = Year, y = N)) +
+  geom_line(col = "skyblue3", size = 1.5) +
+  theme_dark_blue() +
+  scale_y_continuous(breaks = seq(7e6, 12e6, 1e6),
+                     labels = paste0(as.character(seq(7,12,1)), " M"),
+                     limits = c(7e6, 12e6)) +
+  labs(y = "Total population")
+```
+
+# Population structure
+
+From 1930 to 2020, we clearly see that the bottom of the population's pyramid has narrowed. The number of individuals aged more than 65 (dashed white line) has also experienced an important growth.
+
+
+```{r, echo = FALSE}
+# Population pyramid
 df <- df %>% 
-        mutate(age.gp = cut(CD_AGE,
-                            breaks = c(0,1, seq(5, 100, 5), Inf),
-                            labels = c(paste(c(0,1, seq(5, 95, 5)),
-                                           c(1, seq(5, 100, 5)),
-                                           sep = "-"),
-                                       "100+"),
-                            right = FALSE)
-               ) %>% 
-  rename(sex = CD_SEX) %>% 
-  group_by(sex, age.gp) %>% 
-  summarise(N = sum(MS_POPULATION)) %>% 
-  ungroup()
-```
-
-
-
-```{r, echo = FALSE}
+  filter(Year %in% seq(1930, 2020, 30))  
+  
 df %>% 
   mutate(N = ifelse(sex == "M", -N, N)) %>% 
-  ggplot( aes(x = age.gp, y = N, 
+  ggplot( aes(x = Age, y = N, 
               fill = sex, color = sex, group = sex)) +
   geom_bar(stat = "identity") +
-  scale_y_continuous(breaks = seq(-400000, 400000, 200000),
-                     labels = paste0(as.character(c(seq(400, 0, -200), seq(200, 400, 200))), "k")) +
+  geom_vline(xintercept = 65, 
+             col = "white",
+             linetype = "dashed") +
+  scale_y_continuous(breaks = seq(-100000, 100000, 50000),
+                     labels = paste0(as.character(c(seq(100, 0, -50), seq(50, 100, 50))), "k")) +
   coord_flip()+
   scale_fill_manual(values = c("M" = "#238A8DFF",
                                "F" = "#FCA007FF")) +
   theme_dark_blue() +
-  labs(x = "Age")
+  labs(x = "Age") + 
+  facet_wrap( ~ Year)
 ```
 
 
+```{r, echo = FALSE}
+# Median age in 2020
+median_age <- df %>%
+  filter(Year == 2020) %>% 
+  group_by(Age) %>% 
+  summarise(N = sum(N)) %>% 
+  ungroup() %>% 
+  mutate(cumpop = cumsum(N),
+         cumprop = (cumpop/sum(N))*100) %>% 
+  filter(cumprop >= 49,
+         cumprop < 51) %>% 
+  pull(Age)
+  
+# Population +65 yo
+share65 <- df %>%
+  filter(Year == 2020) %>% 
+  group_by(Age) %>% 
+  summarise(N = sum(N)) %>% 
+  ungroup() %>% 
+  mutate(cumpop = cumsum(N),
+         cumprop = (cumpop/sum(N))*100) %>% 
+  filter(Age == 65) %>% 
+  mutate(share65 = 100-cumprop) %>% 
+  pull(share65) %>% 
+  round(.,1)
+
+# Dependency ratio
+ratio.dep <- df %>%
+  filter(Year == 2020) %>% 
+  mutate(type = case_when(Age < 15 | Age >= 65 ~ "inactive",
+                            TRUE ~ "active")) %>% 
+  group_by(type) %>% 
+  summarise(N = sum(N)) %>% 
+  ungroup() %>% 
+  pivot_wider(names_from = type, values_from = N) %>% 
+  mutate(ratio = inactive/active) %>% 
+  pull(ratio) %>% 
+  round(., 2)
+
+
+```
+
+In 2020, the median age of the belgian population is `r median_age` years old and the share of individuals aged more than 65 equals `r share65`%.
 
 ```{r, echo = FALSE}
+# Population +65 yo
+df %>%
+  filter(Year == 2020) %>% 
+  group_by(Age) %>% 
+  summarise(N = sum(N)) %>% 
+  ungroup() %>% 
+  mutate(cumpop = cumsum(N),
+         cumprop = (cumpop/sum(N))*100) %>% 
+  ggplot(aes(x = Age, y = cumprop)) +
+  geom_line(col = "skyblue3", size = 1.5) +
+  geom_segment(aes(x = median_age, xend = median_age, y = 0, yend = 50), col = "#1F968BFF",
+             linetype = "dashed", size = 1.3) +
+  geom_segment(aes(x = 0, xend = median_age, y = 50, yend = 50), col = "#1F968BFF",
+             linetype = "dashed", size = 1.3) +
+  geom_segment(aes(x = 65, xend = 65, y = 0, yend = 100-share65), col = "#908B79FF",
+             linetype = "dashed", size = 1.3) +
+  geom_segment(aes(x = 0, xend = 65, y = 100-share65, yend = 100-share65), col = "#908B79FF",
+             linetype = "dashed", size = 1.3) +
+  annotate("text",
+           label = paste0("Median age=", median_age,"yo"),
+           x = 27,
+           y = 60, col = "#1F968BFF",
+           size = 5) +
+  annotate("text",
+           label = paste0("Share >65yo=", share65,"%"),
+           x = 55,
+           y = 93, col = "#908B79FF",
+           size = 5) +
+    theme_dark_blue() +
+  labs(y = "Cum. share of population (%)",
+       subtitle = "2020")
 
+```
+
+In general, there are 105 male births for 100 female births which explains why the ratio is close to 1.05 for the [0-5) age group. The ratio gets closer to 1 during the 30ies due to what is called the mortality hump (violent mortality), higher for male. As we move to older age groups, the ratio converge quickly to zero.
+
+```{r, echo = FALSE}
+# Sex ratio
 df %>% 
+  filter(Year == 2020) %>% 
+  mutate(age.gp = cut(Age,
+                      breaks = c(seq(0, 110, 5), Inf),
+                      labels = c(paste(seq(0, 105, 5), seq(5, 110, 5), sep="-"), "110+"),
+                      right = FALSE)) %>% 
+  group_by(age.gp, sex) %>% 
+  summarise(N = sum(N)) %>% 
+  ungroup() %>% 
   pivot_wider(names_from = sex, values_from = N) %>% 
   mutate(ratio = M/F) %>% 
   ggplot(aes(x = age.gp, y = ratio, group = 1)) +
-        geom_line(col = "#53596CFF", size = 1.5) +
+        geom_line(col = "skyblue3", size = 1.5) +
         geom_hline(yintercept = 1,
                    linetype = "dashed",
                    col = "white") +
         theme_dark_blue() +
   theme(axis.text.x = element_text(angle = -45)) +
-  labs(y = expression(frac(N[M], N[F])),
-       x = "Age")
+  labs(y = "Ratio Male / Female",
+       x = "Age",
+       subtitle = "2020") 
 ```
+
+
+# Fertility
+
+
+```{r, echo = FALSE}
+df.daily.birth <- openxlsx::read.xlsx("./modeling/data/birth_daily_be.xlsx",
+                                      startRow = 1, 
+                                      detectDates = TRUE)
+
+df.daily.birth <- df.daily.birth %>% 
+  mutate(year = substr(DT_DATE, 1, 4) %>% as.numeric(),
+         month = substr(DT_DATE, 6, 7) %>% as.numeric(),
+         day = weekdays(DT_DATE),
+         we = ifelse(day %in% c("Saturday", "Sunday"), "weekend", "week"))
+
+av.birth.2020 <- df.daily.birth %>% 
+  filter(year == 2020,
+         we == "week") %>%
+  pull(MS_NUM_BIRTHS) %>% 
+  mean(.) %>% 
+  round(.,0)
+```
+
+
+The figure below shows the daily number of births over the year 2020. There is substantial variation between week days and the week-end. The average number of daily births during the week is `r av.birth.2020`.
+
+```{r, echo = FALSE}
+
+df.daily.birth %>% 
+  filter(year == 2020) %>% 
+  ggplot(aes(x = DT_DATE, y = MS_NUM_BIRTHS)) +
+  geom_point(aes(col = we)) +
+  theme_dark_blue() +
+  theme(axis.title.x = element_blank(),
+        legend.position = c(0.85, 1.05),
+        legend.direction = "horizontal") +
+  scale_color_manual(values = c("week" = "#238A8DFF",
+                               "weekend" = "#FCA007FF")) +
+  labs(y = "Daily births")
+
+
+```
+
+
+```{r, echo = FALSE}
+
+df.birth <- openxlsx::read.xlsx("./modeling/data/birth_2019_be.xlsx") %>% 
+  group_by(age) %>% 
+  summarise(birth = sum(birth)) %>% 
+  ungroup()
+
+# function for exp
+get.exp <- function(x, ...) {
+  tmp <- x
+  exp <- tibble(exp = mean(tmp$N))
+  return(exp)
+}
+df.f.pop <- readHMDweb("BEL", "Population", userID, pwd) %>%
+  select(Year, Age, Female1) %>% 
+  rename("N" = Female1,
+         "age" = Age) %>% 
+  filter(Year %in% 2019:2020,
+         age >= 14,
+         age <= 50) %>% 
+  group_by(age) %>% 
+  group_modify(get.exp) 
+  
+df.fx <- df.f.pop %>% 
+  left_join(df.birth, 
+            by = "age") %>% 
+  mutate(fx = birth/exp)
+
+
+
+```
+
+
+```{r, echo = FALSE}
+ggplot(df.fx, aes(x = age, y = fx)) +
+  geom_line(col = "skyblue3",
+            size = 1.5) +
+  theme_dark_blue()
+
+```
+
+
+# Mortality
 
