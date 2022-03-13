@@ -1,5 +1,5 @@
 data {
-  int<lower=0> A; // nber of age 
+  int<lower=0> A; // nber of intervals 
   vector<lower=0>[A] age; // age-85
   int<lower=0> n[A]; // exposure
   int d[A]; // deaths

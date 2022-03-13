@@ -68,7 +68,7 @@ code span.wa { font-style: italic; } /* Warning */
   <!--radix_placeholder_meta_tags-->
 <title>Benjamin Schluter: Easy smoothing with Bayes</title>
 
-<meta property="description" itemprop="description" content="Post demonstrating that Bayesian modeling makes it straightforward to implement smoothing."/>
+<meta property="description" itemprop="description" content="Post demonstrating that Bayesian modeling makes it straightforward to smooth estimates."/>
 
 
 <!--  https://schema.org/Article -->
@@ -79,20 +79,20 @@ code span.wa { font-style: italic; } /* Warning */
 <!--  https://developers.facebook.com/docs/sharing/webmasters#markup -->
 <meta property="og:title" content="Benjamin Schluter: Easy smoothing with Bayes"/>
 <meta property="og:type" content="article"/>
-<meta property="og:description" content="Post demonstrating that Bayesian modeling makes it straightforward to implement smoothing."/>
+<meta property="og:description" content="Post demonstrating that Bayesian modeling makes it straightforward to smooth estimates."/>
 <meta property="og:locale" content="en_US"/>
 <meta property="og:site_name" content="Benjamin Schluter"/>
 
 <!--  https://dev.twitter.com/cards/types/summary -->
 <meta property="twitter:card" content="summary"/>
 <meta property="twitter:title" content="Benjamin Schluter: Easy smoothing with Bayes"/>
-<meta property="twitter:description" content="Post demonstrating that Bayesian modeling makes it straightforward to implement smoothing."/>
+<meta property="twitter:description" content="Post demonstrating that Bayesian modeling makes it straightforward to smooth estimates."/>
 
 <!--/radix_placeholder_meta_tags-->
   <!--radix_placeholder_rmarkdown_metadata-->
 
 <script type="text/json" id="radix-rmarkdown-metadata">
-{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["title","description","author","date","output"]}},"value":[{"type":"character","attributes":{},"value":["Easy smoothing with Bayes"]},{"type":"character","attributes":{},"value":["Post demonstrating that Bayesian modeling makes it straightforward to implement smoothing."]},{"type":"list","attributes":{},"value":[{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["name"]}},"value":[{"type":"character","attributes":{},"value":["Benjamin Schlüter"]}]}]},{"type":"character","attributes":{},"value":["02-10-2022"]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["distill::distill_article"]}},"value":[{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["self_contained","highlight"]}},"value":[{"type":"logical","attributes":{},"value":[false]},{"type":"character","attributes":{},"value":["monochrome"]}]}]}]}
+{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["title","description","author","date","output"]}},"value":[{"type":"character","attributes":{},"value":["Easy smoothing with Bayes"]},{"type":"character","attributes":{},"value":["Post demonstrating that Bayesian modeling makes it straightforward to smooth estimates."]},{"type":"list","attributes":{},"value":[{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["name"]}},"value":[{"type":"character","attributes":{},"value":["Benjamin Schlüter"]}]}]},{"type":"character","attributes":{},"value":["02-10-2022"]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["distill::distill_article"]}},"value":[{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["self_contained","highlight"]}},"value":[{"type":"logical","attributes":{},"value":[false]},{"type":"character","attributes":{},"value":["monochrome"]}]}]}]}
 </script>
 <!--/radix_placeholder_rmarkdown_metadata-->
   
@@ -2159,7 +2159,7 @@ d-appendix d-footnote-list a.footnote-backlink {
 <!--radix_placeholder_front_matter-->
 
 <script id="distill-front-matter" type="text/json">
-{"title":"Easy smoothing with Bayes","description":"Post demonstrating that Bayesian modeling makes it straightforward to implement smoothing.","authors":[{"author":"Benjamin Schlüter","authorURL":"#","affiliation":"&nbsp;","affiliationURL":"#","orcidID":""}],"publishedDate":"2022-02-10T00:00:00.000+01:00","citationText":"Schlüter, 2022"}
+{"title":"Easy smoothing with Bayes","description":"Post demonstrating that Bayesian modeling makes it straightforward to smooth estimates.","authors":[{"author":"Benjamin Schlüter","authorURL":"#","affiliation":"&nbsp;","affiliationURL":"#","orcidID":""}],"publishedDate":"2022-02-10T00:00:00.000+01:00","citationText":"Schlüter, 2022"}
 </script>
 
 <!--/radix_placeholder_front_matter-->
@@ -2185,7 +2185,7 @@ d-appendix d-footnote-list a.footnote-backlink {
 <h1>Easy smoothing with Bayes</h1>
 <!--radix_placeholder_categories-->
 <!--/radix_placeholder_categories-->
-<p><p>Post demonstrating that Bayesian modeling makes it straightforward to implement smoothing.</p></p>
+<p><p>Post demonstrating that Bayesian modeling makes it straightforward to smooth estimates.</p></p>
 </div>
 
 <div class="d-byline">
@@ -2211,7 +2211,7 @@ d-appendix d-footnote-list a.footnote-backlink {
 <p>The size of the sample has a big impact on the precision we have about the prevalence. This is clear from the picture with points much more spread around the true prevalence when <span class="math inline">\(n=100\)</span> in comparison to <span class="math inline">\(n=1000\)</span>. In real life, due to constraints during the surveying process (time, budget,..), we can’t have hughe sample size and thus, we usually end up with prevalence estimates that might be varying over time, just due to the sampling variation (high point to point variation on the left figure). In this context, smoothing/penalization helps in estimating a quantity over time, when we expect that the true underlying prevalence in a population exhibits some degree of smoothness.</p>
 <h1 id="bayesian-formula-and-smoothing">Bayesian formula and smoothing</h1>
 <p>The Bayes theorem can be expressed as follow</p>
-<p><span class="math display">\[p(\theta|y) \propto L(\theta|y) \times \pi(\theta)\]</span> where we have from left to right, the posterior distribution, the likelihood and the prior distribution. The likelihood describes the distribution of the data, depending on unknown parameters <span class="math inline">\(\theta\)</span> (see this <a href="https://benjaminschluter.netlify.app/posts/2022-02-11-what-is-the-likelihood/">post</a>). The prior distribution expresses beliefs about <span class="math inline">\(\theta\)</span> and this beliefs can be expressed in such a way that they provide a mechanism by which smoothing can be imposed.</p>
+<p><span class="math display">\[p(\theta|y) \propto L(\theta|y) \times \pi(\theta)\]</span> where we have from left to right, the posterior distribution, the likelihood and the prior distribution. The likelihood describes the distribution of the data, depending on unknown parameters <span class="math inline">\(\theta\)</span> (see this <a href="https://benjaminschluter/posts/2022-02-11-what-is-the-likelihood/">post</a>). The prior distribution expresses beliefs about <span class="math inline">\(\theta\)</span> and this beliefs can be expressed in such a way that they provide a mechanism by which smoothing can be imposed.</p>
 <h1 id="modelling-the-prevalence">Modelling the prevalence</h1>
 <p>In our example, the likelihood should describe the distribution of a prevalence. It is common to model such type of variable with a logistic regression since the outcome variable is binary (an individual has a characteristic or not). This assumption leads to model the logit of <span class="math inline">\(p\)</span> -where <span class="math inline">\(p\)</span> is the prevalence we want to estimate- with a linear equation. Let’s write what we assumed so far</p>
 <p><span class="math display">\[

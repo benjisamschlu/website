@@ -2227,25 +2227,25 @@ P(data) &amp; = \prod^N_{i=1} P(y_i) \\
 &amp; = p^{Y}(1-p)^{N-Y} 
 \end{align}
 \]</span> We need to multiply the above expression by <span class="math inline">\(\binom{N}{Y}\)</span> to account for the fact that Y heads could have been observed in different order out of N coin flips. The obtained quantity is the likelihood:</p>
-<p><span class="math display">\[L(p|Y) = \binom{N}{Y}p^Y(1-p)^{N-Y}\]</span></p>
-<p><span class="math inline">\(L(p|Y)\)</span> is a function of a parameter <span class="math inline">\(p\)</span> (the probability of heads) given <span class="math inline">\(Y\)</span> (the data). It represents how likely it is to observe the actual data set according to the possible <span class="math inline">\(p\)</span> values. Let’s check that visually by assuming that our data consists of 22 heads out of 60 flips.</p>
+<p><span class="math display">\[L(p|Y,N) = \binom{N}{Y}p^Y(1-p)^{N-Y}\]</span></p>
+<p><span class="math inline">\(L(p|Y,N)\)</span> is a function of a parameter <span class="math inline">\(p\)</span> (the probability of heads) given <span class="math inline">\(Y\)</span> and <span class="math inline">\(N\)</span> (the data). It represents how likely it is to observe the actual data set according to the possible <span class="math inline">\(p\)</span> values. Let’s check that visually by assuming that our data consists of 22 heads out of 60 flips.</p>
 <div class="layout-chunk" data-layout="l-body">
 <p><img src="what-is-the-likelihood_files/figure-html5/unnamed-chunk-2-1.png" width="624" /></p>
 </div>
 <p>As it is clear from the above figure, the likelihood is a function of the parameter <span class="math inline">\(p\)</span> (bounded between 0 and 1 as it is a probability) given the observed data. Despite the fact that it looks like a probability distribution, it is not. The area under the likelihood curve does not sum to one.</p>
-<p>Now suppose, as it is commonly the case when performing analyses, that the parameter of interest is not known (here <span class="math inline">\(p\)</span>). The way that frequentist statistics gets an estimator for <span class="math inline">\(p\)</span> is by maximizing the probability of observing the data we have. Which, you now know at this stage of the post, is the likelihood. The obtained estimator is called the maximum likelihood estimator (MLE). Looking at the figure, the highest value reached by <span class="math inline">\(L(p|Y)\)</span> seems to be around <span class="math inline">\(p=0.37\)</span>. In order to obtain its precise value, let’s find the argument (the value of <span class="math inline">\(p\)</span>) that maximizes <span class="math inline">\(L(p|Y)\)</span></p>
+<p>Now suppose, as it is commonly the case when performing analyses, that the parameter of interest is not known (here <span class="math inline">\(p\)</span>). The way that frequentist statistics gets an estimator for <span class="math inline">\(p\)</span> is by maximizing the probability of observing the data we have. Which, you now know at this stage of the post, is the likelihood. The obtained estimator is called the maximum likelihood estimator (MLE). Looking at the figure, the highest value reached by <span class="math inline">\(L(p|Y,N)\)</span> seems to be around <span class="math inline">\(p=0.37\)</span>. In order to obtain its precise value, let’s find the argument (the value of <span class="math inline">\(p\)</span>) that maximizes <span class="math inline">\(L(p|Y,N)\)</span></p>
 <p><span class="math display">\[p^{MLE} = argmax_p(p^Y(1-p)^{N-Y})\]</span></p>
-<p>The above expression does not contain <span class="math inline">\(\binom{N}{Y}\)</span> as it does not depend on <span class="math inline">\(p\)</span> and hence will not play a role in the optimization. To find the maximum of a function, we take its derivative with respect to the parameter of interest and set it to 0. In practice, it is easier to first transform the likelihood into a log-likelihood <span class="math inline">\(l(p|Y)\)</span> (monotonic transformation) and then find the value of the parameter maximizing it. Let’s do that,</p>
+<p>The above expression does not contain <span class="math inline">\(\binom{N}{Y}\)</span> as it does not depend on <span class="math inline">\(p\)</span> and hence will not play a role in the optimization. To find the maximum of a function, we take its derivative with respect to the parameter of interest and set it to 0. In practice, it is easier to first transform the likelihood into a log-likelihood <span class="math inline">\(l(p|Y,N)\)</span> (monotonic transformation) and then find the value of the parameter maximizing it. Let’s do that,</p>
 <p><span class="math display">\[
 \begin{align}
-l(p|Y) = log(L(p|Y)) &amp; = log(p^Y(1-p)^{N-Y}) \\
+l(p|Y,N) = log(L(p|Y,N)) &amp; = log(p^Y(1-p)^{N-Y}) \\
 \Leftrightarrow  &amp; = Ylog(p) + (N-Y)log(1-p) 
 \end{align}
 \]</span></p>
 <p>Taking the derivative and setting it to zero to find the maximum,</p>
 <p><span class="math display">\[
 \begin{align}
-&amp; \frac{\partial l(p|Y)}{\partial p} = \frac{Y}{p} - \frac{N-Y}{1-p} = 0 \\
+&amp; \frac{\partial l(p|Y,N)}{\partial p} = \frac{Y}{p} - \frac{N-Y}{1-p} = 0 \\
 &amp; \Leftrightarrow Y(1-p) - (N-Y)p = 0 \\
 &amp; \Rightarrow p^{MLE} = \frac{Y}{N} = \frac{22}{60} = 0.366
 \end{align}
@@ -2263,7 +2263,7 @@ l(p|Y) = log(L(p|Y)) &amp; = log(p^Y(1-p)^{N-Y}) \\
 <p>where <span class="math inline">\(A\)</span> is the highest age considered in our data set. Until here, we did not define any mortality model. Let’s do that ! In the Gompertz model, the force of mortality is expressed as</p>
 <p><span class="math display">\[\mu_x = ae^{bx}\]</span> Hence, the likelihood is obtained by replacing <span class="math inline">\(\mu_x\)</span> by the above expression in <span class="math inline">\(L(\mu_x|d_x, e_x)\)</span>:</p>
 <p><span class="math display">\[L(a, b|d_x, e_x) = \prod^A_{x=0} \frac{(e_x ae^{bx})^{d_x}e^{-(e_x ae^{bx})}}{d_x!}\]</span></p>
-<p>The only thing that remains to be done in order to obtain an estimated value for <span class="math inline">\(a\)</span> and <span class="math inline">\(b\)</span> is to find their values maximizing the above likelihood. In comparison to the coin flip example, even after taking the logarithm of <span class="math inline">\(L(a, b|d_x, e_x)\)</span>, we can’t obtain an analytical solution for <span class="math inline">\(a\)</span> and <span class="math inline">\(b\)</span> that would maximize the log-likelihood. In this context, we have to use a numerical method such as the Iteratively Reweighted Least-Squares (IRLS) algorithm but this goes outside the scope of this post!</p>
+<p>The only thing that remains to be done in order to obtain an estimated value for <span class="math inline">\(a\)</span> and <span class="math inline">\(b\)</span> is to find their values maximizing the above likelihood. In comparison to the coin flip example, even after taking the logarithm of <span class="math inline">\(L(a, b|d_x, e_x)\)</span>, we can’t obtain an analytical solution for <span class="math inline">\(a\)</span> and <span class="math inline">\(b\)</span> that would maximize the log-likelihood. In this context, we have to use a numerical method such as the Iteratively Reweighted Least-Squares (IRLS) algorithm but this goes outside the scope of this post ..</p>
 <h1 id="summary">Summary</h1>
 <p>The likelihood is a way to obtain estimates for model’s parameters. Once we have assumed a distribution for our observations (i.e Poisson) and a mathematical expression of our model (ie Gompertz), it can easily be derived given that the i.i.d assumption is fulfilled. In practice, it is frequent that analytical solutions are not available when trying to maximize the likelihood. In such situations, we apply a numerical method (ie IRLS) on the log-likelihood to obtain estimates for parameters of interest.</p>
 <div class="sourceCode" id="cb1"><pre class="sourceCode r distill-force-highlighting-css"><code class="sourceCode r"></code></pre></div>

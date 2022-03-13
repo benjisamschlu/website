@@ -64,9 +64,9 @@ P(data) & = \prod^N_{i=1} P(y_i) \\
 $$
 We need to multiply the above expression by $\binom{N}{Y}$ to account for the fact that Y heads could have been observed in different order out of N coin flips. The obtained quantity is the likelihood: 
 
-$$L(p|Y) = \binom{N}{Y}p^Y(1-p)^{N-Y}$$
+$$L(p|Y,N) = \binom{N}{Y}p^Y(1-p)^{N-Y}$$
 
-$L(p|Y)$ is a function of a parameter $p$ (the probability of heads) given $Y$ (the  data). It represents how likely it is to observe the actual data set according to the possible $p$ values. Let's check that visually by assuming that our data consists of 22 heads out of 60 flips.
+$L(p|Y,N)$ is a function of a parameter $p$ (the probability of heads) given $Y$ and $N$ (the  data). It represents how likely it is to observe the actual data set according to the possible $p$ values. Let's check that visually by assuming that our data consists of 22 heads out of 60 flips.
 
 
 ```{r, echo = FALSE}
@@ -79,21 +79,21 @@ ggplot(df, aes(x = p, y = l)) +
                   size = 1.5) +
         theme_dark_blue() +
         theme(plot.title = element_text(size = 16, face = "bold",hjust = 0.5)) +
-        labs(y = "L(p|Y)")
+        labs(y = "L(p|Y,N)")
 ```
 
 As it is clear from the above figure, the likelihood is a function of the parameter $p$ (bounded between 0 and 1 as it is a probability) given the observed data. Despite the fact that it looks like a probability distribution, it is not. The area under the likelihood curve does not sum to one.
 
-Now suppose, as it is commonly the case when performing analyses, that the parameter of interest is not known (here $p$). The way that frequentist statistics gets an estimator for $p$ is by maximizing the probability of observing the data we have. Which, you now know at this stage of the post, is the likelihood. The obtained estimator is called the maximum likelihood estimator (MLE). Looking at the figure, the highest value reached by $L(p|Y)$ seems to be around $p=0.37$. In order to obtain its precise value, let's find the argument (the value of $p$) that maximizes $L(p|Y)$
+Now suppose, as it is commonly the case when performing analyses, that the parameter of interest is not known (here $p$). The way that frequentist statistics gets an estimator for $p$ is by maximizing the probability of observing the data we have. Which, you now know at this stage of the post, is the likelihood. The obtained estimator is called the maximum likelihood estimator (MLE). Looking at the figure, the highest value reached by $L(p|Y,N)$ seems to be around $p=0.37$. In order to obtain its precise value, let's find the argument (the value of $p$) that maximizes $L(p|Y,N)$
 
 $$p^{MLE} = argmax_p(p^Y(1-p)^{N-Y})$$
 
-The above expression does not contain $\binom{N}{Y}$ as it does not depend on $p$ and hence will not play a role in the optimization. To find the maximum of a function, we take its derivative with respect to the parameter of interest and set it to 0. In practice, it is easier to first transform the likelihood into a log-likelihood $l(p|Y)$ (monotonic transformation) and then find the value of the parameter maximizing it. Let's do that,
+The above expression does not contain $\binom{N}{Y}$ as it does not depend on $p$ and hence will not play a role in the optimization. To find the maximum of a function, we take its derivative with respect to the parameter of interest and set it to 0. In practice, it is easier to first transform the likelihood into a log-likelihood $l(p|Y,N)$ (monotonic transformation) and then find the value of the parameter maximizing it. Let's do that,
 
 
 $$
 \begin{align}
-l(p|Y) = log(L(p|Y)) & = log(p^Y(1-p)^{N-Y}) \\
+l(p|Y,N) = log(L(p|Y,N)) & = log(p^Y(1-p)^{N-Y}) \\
 \Leftrightarrow  & = Ylog(p) + (N-Y)log(1-p) 
 \end{align}
 $$
@@ -102,7 +102,7 @@ Taking the derivative and setting it to zero to find the maximum,
 
 $$
 \begin{align}
-& \frac{\partial l(p|Y)}{\partial p} = \frac{Y}{p} - \frac{N-Y}{1-p} = 0 \\
+& \frac{\partial l(p|Y,N)}{\partial p} = \frac{Y}{p} - \frac{N-Y}{1-p} = 0 \\
 & \Leftrightarrow Y(1-p) - (N-Y)p = 0 \\
 & \Rightarrow p^{MLE} = \frac{Y}{N} = \frac{22}{60} = 0.366
 \end{align}
@@ -139,7 +139,7 @@ Hence, the likelihood is obtained by replacing $\mu_x$ by the above expression i
 
 $$L(a, b|d_x, e_x) = \prod^A_{x=0} \frac{(e_x ae^{bx})^{d_x}e^{-(e_x ae^{bx})}}{d_x!}$$
 
-The only thing that remains to be done in order to obtain an estimated value for $a$ and $b$ is to find their values maximizing the above likelihood. In comparison to the coin flip example, even after taking the logarithm of $L(a, b|d_x, e_x)$, we can't obtain an analytical solution for $a$ and $b$ that would maximize the log-likelihood. In this context, we have to use a numerical method such as the Iteratively Reweighted Least-Squares (IRLS) algorithm but this goes outside the scope of this post!
+The only thing that remains to be done in order to obtain an estimated value for $a$ and $b$ is to find their values maximizing the above likelihood. In comparison to the coin flip example, even after taking the logarithm of $L(a, b|d_x, e_x)$, we can't obtain an analytical solution for $a$ and $b$ that would maximize the log-likelihood. In this context, we have to use a numerical method such as the Iteratively Reweighted Least-Squares (IRLS) algorithm but this goes outside the scope of this post ..
 
 
 

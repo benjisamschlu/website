@@ -1,7 +1,7 @@
 ---
 title: "Calling bullshit"
 description: |
-  Post summarizing the course "Calling bullshit in the age of big data" which offers tools to enhance our reviewing skills.
+  Post summarizing the course "Calling bullshit in the age of big data" of interest when reviewing articles.
 author:
   - name: Benjamin Schlüter
 date: 02-10-2022
@@ -14,7 +14,7 @@ preview: false
 
 Carl Bergstrom and Jevin West wrote the book ["Calling Bullshit - the art of skepticism in a data-driven world"](https://www.penguinrandomhouse.com/books/563882/calling-bullshit-by-carl-t-bergstrom-and-jevin-d-west/) based on a course they taught in 2017, entitled ["Calling Bullshit in the age of big data" ](https://www.callingbullshit.org/videos.html). The aim of their course is to learn how to spot bullshit and effectively calling it, focusing on claims, not people. They are particularly seeing bullshit in the guise of big data and fancy algorithms which is the specific type of bullshit they are adressing in the course. 
 
-The topics seemed to me of primary importance as a researcher for two reasons. First, I was seeing more and more "innovative machine learning" or "state-of-the art machine-learning methods" in proposals without further description. It is as if it was sufficient to invoke these two words to gain credibility. Second, in my opinion, reviewing is the central piece of research. The key element that gives us our credibility as a community. However, reviewing is not always easy due to all methodological complexity and rapid methodological developments. This course gives techniques and advises on how to spot inconsistencies, and hence, indirectly helps to become a better scientist/reviewer. Here below is a summary of points raised during their course that seemed important to me to remember as a researcher.
+The topics seemed to me of primary importance as a researcher for two reasons. First, I was seeing more and more "innovative machine learning" or "state-of-the art machine-learning methods" in proposals without further description. It seems that it was sufficient to invoke these two words to gain credibility. Second, in my opinion, reviewing is one of the central piece of research. The key element that gives us our credibility as a community. However, reviewing is not always easy due to all methodological complexities and rapid methodological developments. Their course gives techniques and advises on how to spot inconsistencies, and hence, indirectly helps to become a better scientist/reviewer. Here below is a summary of points raised during their course that seemed important to me to share and to remember.
 
 
 
@@ -22,7 +22,7 @@ The topics seemed to me of primary importance as a researcher for two reasons. F
 
 According to Carl and Jevin, bullshit can be defined as follow:
 
-*Bullshit involves language, statistical figures, data graphics, and other forms of presentation intended to impress, overwhelm, or persuade -presented with a blatant disregard for truth, logical coherence, or what information is actually being conveyed.*
+*"Bullshit involves language, statistical figures, data graphics, and other forms of presentation intended to impress, overwhelm, or persuade -presented with a blatant disregard for truth, logical coherence, or what information is actually being conveyed."*
 
 Following this definition, Alberto Brandolini's Bullshit asymmetry principle is presented: 
 
@@ -62,14 +62,73 @@ Even when we don't know how an algorithm or statistical test works, we can spot 
 
 
 
-# Correlation and causation
+# Correlation and causation (no super usefull)
+
+They differentiate causation and correlation by giving their definitions:
+
+*"Two variables are correlated when knowing the value of one gives you information about the likely value of the other."*
+
+*"Two states are causally related when on state influences the other via a cause-and-effect process."*
+
+When looking at correlation, they encourage us to always ask ourselves, is it causation or coincidence (spurious correlation) ? If there is causation, which way does causality go? Is this causality direct or mediated by a common cause ?
 
 
 # Statistical traps and trickery
 
+
+When we don't know an algorithm or statistical test: what comes in and what comes out? 
+
+Right censoring
+
+Average caution: what is the underlying distribution, extreme values, type of data
+
+Convenience sampling
+
+P-values (the prosecutor's fallacy) (4.3)
+
+
 # Big data
 
+Data exhaust: by-product of human activity
+
+Science methods is not dead
+
+Machines are not bias-free
+
+Garbage in, garbage out
+
+Fallibility of machines
+
+Algorithmic ethics
+
+Big data hubris: these methods should be complement not supplement
+
+Big data is not always better data
+
+Overfitting
+
+Machine learning: bias enter through training data
+Not knowing an algorithm, look at what goes in or not: is training data free of any bias?
+
+
+
+
 # Data Visualization
+
+
+Popular media do not frequently use multiple variables data visualizations. However, charts become more and more popular over time and they become more and more complicated. (Interaction with data visualization stick to your mind).
+
+
+Misleading axes: Truncating the y-axis (comparison and not starting at 0).
+
+Manipulating bin sizes: completely change the figure we observe
+
+Style don't have to go in the way of information
+
+Glass Slippers: structure of data defines visualization's form used. Fancy != information 
+
+The principle of proportional ink: "when a sheded ..."
+
 
 # Publication bias
 

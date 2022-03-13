@@ -12,8 +12,12 @@ output:
 preview: false
 ---
 
+```{r, echo = FALSE}
+knitr::opts_chunk$set(out.width=400, out.height=300, fig.align = "center")
+```
 
-In this post, I will summarise a talk I made to the members of my research center ([DEMO](https://uclouvain.be/en/research-institutes/iacchos/demo)), promoting reproducibility. I focused on **computation reproducibility** which requires that someone else should be able to reproduce your results with the materials (data, codes, guidance) you provided. The key elements I will go through should be seen as minimal requirements for reproducibility. I am sharing my own practice but there are of course other (better) way to do.
+
+In this post, I will summarise a talk I made to the members of my research center ([DEMO](https://uclouvain.be/en/research-institutes/iacchos/demo)), promoting reproducibility. I focused on **computation reproducibility** which requires that someone else should be able to reproduce your results with the materials (data, codes, guidance) you provided. This transaprency is necessary as our research results are used to inform public and health policies. The key elements I will go through should be seen as minimal requirements for reproducibility. I am sharing my own practice but there are of course other (better) ways to do.
 
 
 # Folder's structure
@@ -31,12 +35,12 @@ My actual practice is to structure my project folder, here named "*5-15 mortalit
 knitr::include_graphics(path = "C:/Users/bschluter/Desktop/website/_posts/2022-03-02-reproducibility-in-data-centric-analysis/clean_files.png")
 ```
 
-This structure allows the project to evolve from data cleaning to submission, while maintaining a constant structure. At minimum, `code` has a subfolder called `function`, where I store R functions created for the project. I also add a `stan` subfolder for my Stan scripts. Each R code has a specific aim, for example, there will be one R code for data cleaning, one for exploratory data analysis (EDA) and so on. In the `product` folder, I usually store reports on EDA and manuscript drafts. I also write a mardown file for the project history. Note also that I locate my R project associated to that reseach in the folder (bottom of the screen shot).
+This structure allows the project to evolve from data cleaning to submission, while maintaining a constant structure. At minimum, `code` has a subfolder called `function`, where I store R functions created for the project. I also add a `stan` subfolder for my Stan scripts. Each R code has a specific aim, for example, there will be one R code for data cleaning, one for exploratory data analysis (EDA) and so on. In the `product` folder, I usually store reports on EDA and manuscript drafts. I also write a mardown file for the project history. Note also that I locate my R project associated to that reseach project in the folder (bottom of the screen shot). It makes it easy to load data and functions, store data etc..
 
 
 # Project history
 
-In order to be transparent about the research process, I try to maintain a project history over the life of the project in the form of a markdown file (easy formatting for the web). It contains the following elements:
+In order to be transparent about the research process, I try to maintain a project history over the life of the project in the form of a markdown file (relevant format for the web). It contains the following elements:
 
 * Research questions
 
@@ -78,8 +82,6 @@ As I already mentioned, I usually write one script per task
 
 * Modeling
 
-* Figures creation
-
 * ..
 
 I also add a short description at the top of each script, write clear commenting and define sections in the script for better visibility. 
@@ -101,13 +103,13 @@ knitr::include_graphics(path = "C:/Users/bschluter/Desktop/website/_posts/2022-0
 
 Version control is a system that records changes to a file or set of files over time so that you can recall specific versions later. It also allows other to look at analyses you have performed and maybe, reproduce them.
 
-Personally, I use github which is free and is frequently used by the research community. Having an account allows you at least to
+Personally, I use Github which is free and is frequently used by the research community. Having an account allows you at least to
 
 * Share your code online
 
 * Back-up every version of your code
 
-* Collaborate with colleagues (historically was a tool for software developpers)
+* Collaborate with colleagues (historically it was a tool for software developpers)
 
 It requires to use the command line (Git Bash) but you only need some commands to start and maintain a project on your own.
 
@@ -116,7 +118,7 @@ It requires to use the command line (Git Bash) but you only need some commands t
 
 1) Create an account on Github's [website](https://github.com/).
 
-2) Create a repository for a project (set a repo name, decide if public or private) and keep the page open.
+2) Create a repository for a project (set a repo name, decide if public or private) and keep the obtained page open.
 
 3) Download [Git Bash](https://git-scm.com/downloads) on your computer
 
@@ -138,7 +140,7 @@ git status
 
 # Adding file(s)
 git add "filename.extension"		
-# Alternatively, the command "git add ." will add all folders present in the repo.
+# Alternatively, the command "git add ." will add all folders and files present in the repo.
 
 # Add a brief message explaining what have been the changes .
 git commit -m "your brief message here"
@@ -166,7 +168,7 @@ The initialization is done. Let's now focus on how it works when progressing on 
 
 ```{r, eval = FALSE}
 # Running the command "git status" will tell you that cleaning_data.R
-# has been modified. However, this command is not needed right now.
+# has been modified. However, this command is not needed for what follows.
 
 # Add the modifications performed on cleaning_data.R
 git add "cleaning_data.R"
@@ -182,11 +184,11 @@ Your changes are now on the Github server. You only need to iterate these three 
 
 The explanation above is all what you need to start having your projects on Github. Some important notes: 
 
-* Suppose you have subfolders in your local repository. In order to add all folders and files to Github, you can simply use `git add .`. However, if you only want to add one file located in a subfolder, the file's name needs to contain the path: `git add "./subfolder_name/file_name.extension"`.
+* Suppose you have subfolders in your local repository. In order to add all folders and files to Github, you can simply use the command "`git add .`". However, if you only want to add one file located in a subfolder, the file's name needs to contain the path: `git add "./subfolder_name/file_name.extension"`.
 
 * If you made you repository public, colleagues have the possibility to extract your repo on their laptop. This means more commands but opens the door to collaboration. 
 
 
 # Summary
 
-I presented some advises on how to conduct a research project while making it reproducible. In practice, it is frequently not as easy as presented in this post. Conducting research is more a circular process than a linear one. Nonetheless, keeping these elements in mind still allows to converge towards reproducibility in data-centric analyses. 
+I presented some advises on how to conduct a research project while making it reproducible. I did not talk about pre-prints, open access journals and sharing data but these are also critical elements for reproducibility. In practice, it is frequently not as easy as presented in this post. Conducting research is more a circular process than a linear one. Nonetheless, keeping these elements in mind still allows to converge towards reproducibility in data-centric analyses. 

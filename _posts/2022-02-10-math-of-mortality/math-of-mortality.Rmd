@@ -1,7 +1,7 @@
 ---
 title: "Math of mortality"
 description: |
-  Post showing the derivations of some mathematical identities used in mortality estimation with a simulation and estimation in STAN.
+  Post on mathematical identities used in mortality estimation. STAN codes to simulate survival data and to estimate Piecewise Constant Hazards model.
 author:
   - name: Benjamin Schlüter
 date: 02-10-2022
@@ -9,6 +9,7 @@ output:
   distill::distill_article:
     self_contained: false
     highlight: monochrome
+draft: TRUE
 ---
 
 
@@ -16,7 +17,7 @@ output:
 knitr::opts_chunk$set(echo = FALSE)
 ```
 
-The field of mortality can be analyzed (at minimal) with three complementary functions: hazard, survival and death probability density function.
+Survival analyses can be analyzed (at minimal) with three complementary functions: hazard, survival and death probability density function.
 
 Let denote X: the age at death of an individual and assume that this random variable is $X\geq 0$ and continuous. 
 
@@ -74,6 +75,10 @@ Let's check these identities visually or model a survival model with STAN ?
 
 
 ```{r obtain_a_b, eval = FALSE, include = FALSE}
+
+# ONLY PURPOSE IS TO GET A AND B VALUES THAT MAKE SENSE
+# BEL 2015, 55-95 yo estimated with poisson regression
+
 library(ggplot2)
 library(tidyverse)
 # Select a and b according to BEL data in 2015
@@ -106,19 +111,20 @@ df = df.dth %>%
   mutate(mx = D/N,
          Age = ifelse(Age == "110+", 110, Age),
          Age = as.numeric(Age))
-
+# Gompertz perfom badly for young and old ages
+# Age bounds
+age.bds <- c(55, 95)
 df %>% 
-  filter(Age >= 85, 
-         Age < 100) %>% 
-  ggplot(aes(x = Age, y = mx)) +
-  geom_line()
-# mx close to 0.02 at 85 yo
+  filter(Age >= age.bds[1], 
+         Age < age.bds[2]) %>% 
+  ggplot(aes(x = Age, y = log(mx))) +
+  geom_point()
 
-# create data from age 85
+# create data from age 55
 df <- df %>% 
-  filter(Age >= 85, 
-         Age < 100) %>% 
-  mutate(age = Age - 85)
+  filter(Age >= age.bds[1], 
+         Age < age.bds[2]) %>% 
+  mutate(age = Age - age.bds[1])
 
 # important that age start at 0
 fit.gomp <- lm(log(mx) ~ 1 + age,
@@ -128,7 +134,7 @@ fit.gomp$coef
 df %>% 
   mutate(fit = fit.gomp$coef[1] + fit.gomp$coef[2]*age) %>% 
   ggplot(aes(x = age, y = log(mx))) +
-  geom_line() +
+  geom_point() +
   geom_line(aes(x = age, y = fit))
 
 a <- exp(fit.gomp$coef[1])
@@ -137,7 +143,7 @@ b <- fit.gomp$coef[2]
 df %>% 
   mutate(fit = a * exp(b*age)) %>% 
   ggplot(aes(x = age, y = mx)) +
-  geom_line() +
+  geom_point() +
   geom_line(aes(x = age, y = fit))
 
 ```
@@ -155,17 +161,367 @@ stan_data <- list("N" = N,
                   "a" = a,
                   "b" = b)
 
-simu <- stan(file="./modeling/stan/simu_gomp.stan", data=stan_data,
-             iter=1, chains=1, seed=411991,
-             algorithm="Fixed_param")
+# simu <- stan(file="./modeling/stan/simu_gomp.stan", data=stan_data,
+#              iter=1, chains=1, seed=411991,
+#              algorithm="Fixed_param")
+# 
+# t <- array(extract(simu)$t[1,])
+# range(t)
 
-t <- array(extract(simu)$t[1,])
+
+
+# Much quicker without STAN
+u <- runif(N, 0, 1)
+t <- (1/b)*log(1-((b/a)*log(1-u))) # t >= 0 as age start at 85 thanks to par a
+
+```
+
+
+```{r, echo = FALSE}
+
+# Comparison between truth (Gompertz) and simulation
+
+# let's first plot the true density of yi
+grid <- seq(0, ceiling(max(t)), 0.1)
+df <- tibble(x = grid,
+             h = a*exp(b*grid),
+             S = exp((a/b)*(1-exp(b*grid))),
+             pi = h*S)
+
+# hazard
+ggplot(df, aes(x = x, y = h)) +
+  geom_line() +
+  labs(y = "h(x)")
+
+# density
+ggplot(df, aes(x = x, y = pi)) +
+  geom_line()
+
+# compare histogram with true pdf of t
+ggplot() +
+  geom_histogram(data = tibble(x = t), 
+                 aes(x = x, y = ..density..), 
+                 breaks = seq(0, ceiling(max(t)), 0.1)) +
+  geom_line(data = df, 
+            aes(x = x, y = pi),
+            col = "red")
+```
+
+
+```{r, echo = FALSE}
+
+# WITHOUT ANY TRUNCATION HOW DOES POISSON PERFORM?
+# eps <- 1
+# dth <- c()
+# exp <- c()
+# 
+# brks <- seq(0, ceiling(max(t)), eps)
+# for (i in 1:(length(brks)-1)){
+#     # dth
+#     d <- sum( (t >= brks[i] & t < brks[i+1]) )
+#     # time lived by those dying
+#     e_d <- t[t >= brks[i] & t < brks[i+1]] - brks[i]
+#     e <- sum(t >= brks[i])*eps + sum(e_d)
+#   dth <- c(dth, d)
+#   exp <- c(exp, e)
+# }
+
+# Nice way to get count data (DHS)
+# Easy as interval is only 1 year
+df.counts <- tibble(t = t) %>% 
+  # obtain lower bound
+  mutate(interval = floor(t),
+         # exposure from those dying
+         exp_d = t - interval) %>% 
+  group_by(interval) %>% 
+  summarise(dth = n(),
+            exp_d = sum(exp_d)) %>% 
+  ungroup() %>% 
+  mutate(mid = interval + .5,
+         dth.cum = cumsum(dth),
+         # exposure from those surviving
+         exp_s = N - dth.cum,
+         exp = exp_d + exp_s,
+         mx = dth/exp)
+
+ggplot(df.counts, aes(x = mid, y = mx)) +
+  geom_point()
+
+# # df raw estimates
+# df.poi <- tibble(cut_off = head(brks, -1) + (eps/2), # mid of interval
+#                  dth = dth,
+#                  exp = exp) %>%
+#   mutate(mx =dth/exp)
+# 
+# # Fit poisson  
+# brks <- head(brks, -1) + (eps/2) # mid of interval
+# dth <- dth[exp > 0]
+# brks <- brks[exp > 0]
+# exp <- exp[exp > 0]
+fit.poi <- glm(dth ~ 1 + mid, offset = log(exp),
+           family = "poisson",
+           data = df.counts)
+
+# Compare fit with obtained raw estimated from simulated data
+df.counts <- df.counts %>%
+  mutate(fit.glm = exp(fit.poi$coefficients[1])*exp(fit.poi$coefficients[2]*mid) )
+
+# Compare fit with truth
+ggplot() +
+  geom_line(data = df, aes(x = x, y = h, col = "truth")) +
+  geom_line(data = df.counts, aes(x = mid, y = fit.glm, col = "Poisson")) +
+  geom_point(data = df.counts, aes(x = mid, y = mx, col = "nmx simu"),
+             alpha = 0.1) +
+  scale_color_manual(values = c("truth"=  "skyblue3",
+                                  "Poisson" = "slateblue",
+                                  "nmx simu" = "darkseagreen")) +
+  labs(y = "h(x)")
+
+# Do we find the parameter back ? YES
+abs(exp(fit.poi$coefficients[1]) - a)
+abs(fit.poi$coefficients[2] - b)
+```
+
+
+```{r, eval = FALSE, include = FALSE}
+ # Poisson estimation with STAN
+stan_data <- list(
+  "A" = dim(df.counts)[1],
+  "age" = df.counts$mid,
+  "n" = df.counts$exp,
+  "d" = df.counts$dth
+  )
+
+options(mc.cores = parallel::detectCores()-1)
+
+fit = stan("./modeling/stan/poi_for_gomp.stan",
+           iter = 8000,
+           chains = 4,
+           data = stan_data)
+
+library(tidybayes)
+
+df.fit.ab <- fit %>% 
+  spread_draws(a, b) %>% 
+  median_qi() 
+
+df.fit <- fit %>% 
+  spread_draws(eta[i]) %>% 
+  median_qi() %>% 
+  mutate(mid = i-0.5,
+         mx = exp(eta)) 
+
+# Comparison GLM, STAN and truth
+ggplot() +
+  geom_line(data = df.fit, aes(x = mid, y = mx)) +
+  geom_line(data = df.counts, aes(x = mid, y = fit.glm), col = "red", linetype = "dashed") +
+    geom_line(data = df, aes(x = x, y = h), col = "skyblue3", size = 1.5,
+              alpha = 0.3)
+  
+# Obtain S and pi from estimated mx
+a.hat <- exp(extract(fit)$a)
+b.hat <- extract(fit)$b
+
+h.hat = sapply( grid, function(x) a.hat*exp(b.hat*x) )
+S.hat = sapply( grid, function(x) exp((a.hat/b.hat)*(1-exp(b.hat*x))) )
+pi.hat = h.hat*S.hat
+
+df.hat <- tibble(x = grid,
+             h = apply(h.hat, 2, median),
+             h.low = apply(h.hat, 2, quantile, probs = 0.025),
+             h.up = apply(h.hat, 2, quantile, probs = 0.975),
+             S = apply(S.hat, 2, median),
+             S.low = apply(S.hat, 2, quantile, probs = 0.025),
+             S.up = apply(S.hat, 2, quantile, probs = 0.975),
+             pi = apply(pi.hat, 2, median),
+             pi.low = apply(pi.hat, 2, quantile, probs = 0.025),
+             pi.up = apply(pi.hat, 2, quantile, probs = 0.975))
+
+# Compare h with true
+ggplot() +
+  geom_line(data = df.hat, aes(x = x, y = h),
+            col = "skyblue3") +
+  geom_ribbon(data = df.hat, aes(x = x, ymin = h.low, ymax = h.up),
+            col = "skyblue3",
+            fill = "skyblue3",
+            alpha = 0.3) +
+  geom_line(data = df, aes(x = x, y = h), 
+            size = 1.1)
+
+
+# Compare S with true
+ggplot() +
+  geom_line(data = df.hat, aes(x = x, y = S),
+            col = "skyblue3") +
+  geom_ribbon(data = df.hat, aes(x = x, ymin = S.low, ymax = S.up), 
+              col = "skyblue3",
+              fill = "skyblue3",
+              alpha = 0.3) +
+  geom_line(data = df, aes(x = x, y = S), 
+            size = 1.2)
+
+# Compare pi with true
+ggplot() +
+  geom_line(data = df.hat, aes(x = x, y = pi),
+            col = "skyblue3") +
+  geom_ribbon(data = df.hat, aes(x = x, ymin = pi.low, ymax = pi.up),
+              col = "skyblue3",
+              fill = "skyblue3",
+              alpha = 0.3) +
+  geom_line(data = df, aes(x = x, y = pi), 
+            size = 1.2)
+
+
+```
+
+
+```{r, echo = FALSE}
+
+# Check the effect of right censoring
+
+
+# censoring time with ICDF from exponential
+set.seed(2841992)
+u <- runif(N, 0, 1)
+nu <- 1.5e-2 # strength of censoring, higher more censoring. 
+ci <- -log(1-u)/nu
+
+# observed exit time
+gamma <- t > ci
+yi <- pmin(t, ci)
+# sum(gamma == TRUE)/N: % whose death are observed
+
+# need to account for censoring (not everybody is seen dying)
+# still work as dying has same effect as being censored
+df.counts <- tibble(t = t,
+                    cens = gamma,
+                    y = yi) %>% 
+  # obtain lower bound
+  mutate(interval = floor(y),
+         # exposure from those exiting (dth/censored)
+         exp_out = (y - interval)) %>% 
+  group_by(interval, cens) %>% 
+  summarise(dth = n(),
+            exp_out = sum(exp_out)) %>% 
+  ungroup() %>% 
+  # count people exiting at each interval
+  group_by(interval) %>% 
+  mutate(out = sum(dth),
+         exp_out = sum(exp_out)) %>% 
+  ungroup() %>% 
+  # account the censored obs
+  # only through exposure
+  filter(cens == FALSE) %>% 
+  mutate(mid = interval + .5,
+         out.cum = cumsum(out),
+         # exposure from those surviving/not censored
+         exp_s = N - out.cum,
+         exp = exp_out + exp_s,
+         mx = dth/exp)
+
+
+# Poisson estimation with STAN
+stan_data <- list(
+  "A" = dim(df.counts)[1],
+  "age" = df.counts$mid,
+  "n" = df.counts$exp,
+  "d" = df.counts$dth
+  )
+
+options(mc.cores = parallel::detectCores()-1)
+
+fit = stan("./modeling/stan/poi_for_gomp.stan",
+           iter = 8000,
+           chains = 4,
+           data = stan_data)
+
+
+# Obtain S and pi from estimated mx
+a.hat <- exp(extract(fit)$a)
+b.hat <- extract(fit)$b
+
+h.hat = sapply( grid, function(x) a.hat*exp(b.hat*x) )
+S.hat = sapply( grid, function(x) exp((a.hat/b.hat)*(1-exp(b.hat*x))) )
+pi.hat = h.hat*S.hat
+
+df.hat <- tibble(x = grid,
+             h = apply(h.hat, 2, median),
+             h.low = apply(h.hat, 2, quantile, probs = 0.025),
+             h.up = apply(h.hat, 2, quantile, probs = 0.975),
+             S = apply(S.hat, 2, median),
+             S.low = apply(S.hat, 2, quantile, probs = 0.025),
+             S.up = apply(S.hat, 2, quantile, probs = 0.975),
+             pi = apply(pi.hat, 2, median),
+             pi.low = apply(pi.hat, 2, quantile, probs = 0.025),
+             pi.up = apply(pi.hat, 2, quantile, probs = 0.975))
+
+# Compare h with true
+ggplot() +
+  geom_line(data = df.hat, aes(x = x, y = h, col = "true")) +
+  geom_ribbon(data = df.hat, aes(x = x, ymin = h.low, ymax = h.up,
+                                 col = "estimated",
+                                 fill = "estimated"),
+              alpha = 0.3) +
+  geom_line(data = df, aes(x = x, y = h), 
+            size = 1.05) +
+  scale_color_manual(values = c("true" = "black",
+                            "estimated" = "skyblue3")) +
+  scale_fill_manual(values = c("true" = "black",
+                               "estimated" = "skyblue3")) +
+  scale_y_log10()
+
+
+# Compare S with true
+ggplot() +
+  geom_line(data = df.hat, aes(x = x, y = S, col = "true")) +
+  geom_ribbon(data = df.hat, aes(x = x, ymin = S.low, ymax = S.up,
+                                 col = "estimated",
+                                 fill = "estimated"),
+              alpha = 0.3) +
+  geom_line(data = df, aes(x = x, y = S), 
+            size = 1.05) +
+  scale_color_manual(values = c("true" = "black",
+                            "estimated" = "skyblue3")) +
+  scale_fill_manual(values = c("true" = "black",
+                               "estimated" = "skyblue3"))
+
+# Compare pi with true
+ggplot() +
+  geom_line(data = df.hat, aes(x = x, y = pi, col = "true")) +
+  geom_ribbon(data = df.hat, aes(x = x, ymin = pi.low, ymax = pi.up,
+                                 col = "estimated",
+                                 fill = "estimated"),
+              alpha = 0.3) +
+  geom_line(data = df, aes(x = x, y = pi), 
+            size = 1.05) +
+  scale_color_manual(values = c("true" = "black",
+                            "estimated" = "skyblue3")) +
+  scale_fill_manual(values = c("true" = "black",
+                               "estimated" = "skyblue3"))
+
 
 ```
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 ```{r simulation, eval = FALSE, include = FALSE}
+
+# CAMARDA SIMULATION SET-UP
+
 
 # By setting nu really low and d0 to b0 there is not truncation to test estimation
 
@@ -174,7 +530,7 @@ bi <- runif(N, 0, 10)
 
 # censoring time with ICDF from exponential
 u <- runif(N, 0, 1)
-nu <- 1e-6 # strength of censoring, higher more censoring. 
+nu <- 3e-2 # strength of censoring, higher more censoring. 
 ci <- -log(1-u)/nu
 
 # timing of death wit ICDF of gompertz
@@ -198,7 +554,7 @@ d0 <- 0
 # new sample
 yi <- yi[di>d0]
 
-# enter before d0 and survive start of the follow-up: wi is entry age (105+wi)
+# enter before d0 and survive start of the follow-up: wi is entry age (85+wi)
 wi <- d0 - bi
 
 # individual entering after d0, enter age 105
@@ -218,9 +574,9 @@ df <- tibble(x = grid,
              pi = h*S)
 
 # hazard
-ggplot(df, aes(x = x, y = log(h))) +
+ggplot(df, aes(x = x, y = h)) +
   geom_line() +
-  labs(y = "ln(h(x))")
+  labs(y = "h(x)")
 
 # density
 ggplot(df, aes(x = x, y = pi)) +
@@ -236,7 +592,7 @@ ggplot() +
             col = "red")
 
 # see if capable to estimate with Poisson model
-eps <- 0.05
+eps <- 1
 dth <- c()
 exp <- c()
 
@@ -253,74 +609,47 @@ for (i in 1:(length(brks)-1)){
 }
 
 # df raw estimates
-df.poi <- tibble(cut_off = head(brks, -1),
+df.poi <- tibble(cut_off = head(brks, -1) + (eps/2), # mid of interval
                  dth = dth,
                  exp = exp) %>%
   mutate(mx =dth/exp)
 
 ggplot() +
   geom_point(data = df.poi, aes(x = cut_off, y = mx))
-  
-brks <- head(brks, -1)
+
+# Fit poisson  
+brks <- head(brks, -1) + (eps/2) # mid of interval
 dth <- dth[exp > 0]
 brks <- brks[exp > 0]
 exp <- exp[exp > 0]
-fit <- glm(dth ~ 1 + brks, offset = log(exp),
+fit.poi <- glm(dth ~ 1 + brks, offset = log(exp),
            family = "poisson")
 
-ggplot(data = df.poi %>% 
-         mutate(fit = exp(fit$coefficients[1])*exp(fit$coefficients[2]*cut_off) )) +
+# Compare fit with obtained raw estimated from simulated data
+df.poi <- df.poi %>%
+  mutate(fit = exp(fit.poi$coefficients[1])*exp(fit.poi$coefficients[2]*cut_off) )
+
+ggplot(df.poi) +
   geom_point(aes(x = cut_off, y = mx)) +
   geom_line(aes(x = cut_off, y = fit))
 
+# Compare fit with truth
+ggplot() +
+  geom_line(data = df, aes(x = x, y = h, col = "truth")) +
+  geom_line(data = df.poi, aes(x = cut_off, y = fit, col = "Poisson")) +
+  geom_point(data = df.poi, aes(x = cut_off, y = mx, col = "nmx simu"),
+             alpha = 0.3) +
+  scale_color_manual(values = c("truth"=  "skyblue3",
+                                  "Poisson" = "slateblue",
+                                  "nmx simu" = "darkseagreen")) +
+  scale_y_log10() +
+  labs(y = "h(x)")
+
 # Do we find the parameter back ? YES
-abs(exp(fit$coefficients[1]) - a)
-abs(fit$coefficients[2] - b)
+abs(exp(fit.poi$coefficients[1]) - a)
+abs(fit.poi$coefficients[2] - b)
 ```
 
 
 
-```{r, eval = FALSE, include = FALSE}
- # Poisson estimation with STAN
-stan_data <- list(
-  "A" = length(brks),
-  "age" = brks,
-  "n" = round(exp,0),
-  "d" = dth
-  )
-
-options(mc.cores = parallel::detectCores()-1)
-
-fit = stan("./modeling/stan/poi_for_gomp.stan",
-           iter = 4000,
-           data = stan_data)
-
-library(tidybayes)
-
-df.fit.ab <- fit %>% 
-  spread_draws(a, b) %>% 
-  median_qi() 
-
-df.fit <- fit %>% 
-  spread_draws(eta[i]) %>% 
-  median_qi() %>% 
-  mutate(age = i-1,
-         mx = exp(eta),
-         # check pdf of t when assuming d~Poisson
-         pi = mx*exp(-mx*age)) 
-
-ggplot() +
-  geom_line(data = df.fit, aes(x = age, y = eta))
-# pdf of t when assuming d~poisson
-# and compare with truth
-ggplot() +
-  geom_line(data = df.fit, aes(x = age, y = pi)) +
-  geom_line(data = df, aes(x = x, y = pi), col = "blue")
-
-df.fit.d <- fit %>% 
-  spread_draws(pred_h[i]) %>% 
-  median_qi() %>% 
-  mutate(age = i-1)
-
-```
 
