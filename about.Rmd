@@ -8,14 +8,14 @@ knitr::opts_chunk$set(echo = FALSE)
 
 # Bio
 
-I am a PhD student at [UCLouvain](https://uclouvain.be/fr/index.html), Belgium in the demography department [(DEMO)](https://uclouvain.be/en/research-institutes/iacchos/demo). My thesis focuses on mortality estimation at the subnational level using Bayesian methods. I am interested in statistics, applied mathematics, R, data visualization, open science and science of science. 
+I am a PhD student at [UCLouvain](https://uclouvain.be/fr/index.html), Belgium in the Center for Demographic Research [(DEMO)](https://uclouvain.be/en/research-institutes/iacchos/demo). My thesis focuses on mortality estimation at the subnational level using Bayesian methods. I am interested in statistics, applied mathematics, R, data visualization, open science and science of science. 
 
 Outside of work, I am interested in cycling, trekking, basket balling and accordeon playing.
 
 
 # Experience
 
-Before starting my PhD, I worked at the [Centre for Research on the Epidemiology of Disasters](https://www.cred.be/) (CRED) where I conducted statistical analyses on different research projects: evaluating health profiles and health needs of non-EU migrants arriving in Greece with Médecins du Monde data; assessing the impact of the 2015 Earthquake on hospital admissions in Kathmandu (Nepal) using Tribhuvan University Teaching Hospital data; estimating the civilian mortality during the Syrian conflict focusing on deaths recorded by the Syrian Violation Documentation Center (VDC).
+Before starting my PhD, I worked at the [Centre for Research on the Epidemiology of Disasters](https://www.cred.be/) (CRED) where I conducted statistical analyses on different research projects: evaluating health profiles and health needs of non-EU migrants arriving in Greece with Médecins du Monde data; assessing the impact of the 2015 Earthquake on hospital admissions in Kathmandu (Nepal) using Tribhuvan University Teaching Hospital data; estimating the civilian mortality during the Syrian conflict focusing on deaths recorded by the Syrian Violation Documentation Center (VDC). I was also involved in supervising master theses, teaching statistics, data manipulation and visualization.
 
 
 # Education
