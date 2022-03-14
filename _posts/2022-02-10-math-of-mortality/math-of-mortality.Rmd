@@ -323,7 +323,7 @@ plot_grid(fig.dth,
 Assuming that the hazard is constant in each interval
 
 $$
-h(x) = \lambda_x ~ \forall [x, x+1) 
+h(x) = \lambda_x ~ \forall x \in [x, x+1) 
 $$
 
 we can write the PCH model as follow
@@ -331,7 +331,7 @@ we can write the PCH model as follow
 $$
 D_x \sim Poisson(\lambda_xE_x)
 $$
-where $D_x$, $E_x$ and $\lambda_x$ are deaths count, exposure and hazard rate for age $x$, respectively. The following STAN code estimate the model
+where $D_x$, $E_x$ and $\lambda_x$ are deaths count, exposure and hazard rate for age $x$, respectively. The following STAN code estimates the model
 
 
 ```{r stan_data, echo = FALSE, results = "hide", message = FALSE}

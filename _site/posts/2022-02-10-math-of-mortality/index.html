@@ -2352,12 +2352,12 @@ generated quantities {
 </div>
 <p>Assuming that the hazard is constant in each interval</p>
 <p><span class="math display">\[
-h(x) = \lambda_x ~ \forall [x, x+1) 
+h(x) = \lambda_x ~ \forall x \in [x, x+1) 
 \]</span></p>
 <p>we can write the PCH model as follow</p>
 <p><span class="math display">\[
 D_x \sim Poisson(\lambda_xE_x)
-\]</span> where <span class="math inline">\(D_x\)</span>, <span class="math inline">\(E_x\)</span> and <span class="math inline">\(\lambda_x\)</span> are deaths count, exposure and hazard rate for age <span class="math inline">\(x\)</span>, respectively. The following STAN code estimate the model</p>
+\]</span> where <span class="math inline">\(D_x\)</span>, <span class="math inline">\(E_x\)</span> and <span class="math inline">\(\lambda_x\)</span> are deaths count, exposure and hazard rate for age <span class="math inline">\(x\)</span>, respectively. The following STAN code estimates the model</p>
 <div class="layout-chunk" data-layout="l-body">
 
 </div>
