@@ -1,7 +1,7 @@
 ---
-title: "Math of mortality"
+title: "Survival kit for survival analyses"
 description: |
-  Post on mathematical identities used in mortality estimation. STAN codes to simulate survival data and to estimate Piecewise Constant Hazards model.
+  Post on survival analyses deriving main mathematical expressions, simulating survival data applying the inverse CDF sampling with STAN and estimating a Piecewise Constant Hazards model.
 author:
   - name: Benjamin Schlüter
 date: 02-10-2022
@@ -9,7 +9,6 @@ output:
   distill::distill_article:
     self_contained: false
     highlight: monochrome
-draft: TRUE
 ---
 
 
@@ -17,7 +16,9 @@ draft: TRUE
 knitr::opts_chunk$set(echo = FALSE)
 ```
 
-Survival analyses can be analyzed (at minimal) with three complementary functions: hazard, survival and death probability density function.
+In this post, I would like to introduce three complementary mathematical functions frequently encountered in survival analyses: the hazard, the survival and the age at death probability density function. Using STAN, we will then simulate survival data using the inverse cumulative density function (CDF) sampling method assuming the hazard has a Gompertz form. We conclude by estimating the hazard rate on our simulated dataset with a Piecewise Constant Hazard (PCH) model fitted with STAN.
+
+# Complementary mathematical functions
 
 Let denote X: the age at death of an individual and assume that this random variable is $X\geq 0$ and continuous. 
 
@@ -27,19 +28,18 @@ $$
 \begin{align}
 S(x) & = Pr(X>x) \\
 S(x) & = 1 - F(x) \\
-S'(x) & = -f(x) 
+S'(x) & = -f(x) \\
+\Rightarrow S(x) & = -\int^{\infty}_xf(t)dt
 \end{align}
 $$
 
-$$S(x) = Pr(X > x) = -\int^{\infty}_xf(t)dt$$
-
-Let's now express the hazard function, also called the force of mortality:
+Let's now express the hazard rate, also called the force of mortality:
 
 $$
 \begin{align}
 h(x) &= lim_{\Delta x \rightarrow 0} \frac{Pr(x \leq X < x + \Delta x | X > x)}{\Delta x} \\
  &= lim_{\Delta x \rightarrow 0} \frac{Pr(X < x + \Delta x) - Pr(X \leq x)}{\Delta x} \cdot \frac{1}{Pr(X>x)} \\
- &= \frac{f(t)}{S(t)}
+ &= \frac{f(x)}{S(x)}.
 \end{align}
 $$
 
@@ -51,109 +51,177 @@ $$
 \end{align}
 $$
 
-and re-arranging that equation we express the survival probability at age x as
+and re-arranging the above equation, we express the survival probability at age x as
 
 $$\boxed{S(x) = e^{-\int^x_0h(t)dt} = e^{-H(x)}}$$
 
-where $H(t)$ is called the cumulative hazard.
-
-We can further express $S(x+n)$ as
-
-$$S(x+n) = S(x)e^{-\int^{x+n}_{x}h(t)dt}$$
-
-
+where $H(x)$ is called the cumulative hazard at age x.
 
 Note that when $h(x)$ is constant, 
 
-$$S(t) = e^{-ht}$$
+$$S(x) = e^{-hx}.$$
 
-From earlier derivation of $h(x)$ we can obtain a math expression for the death probability density function
+From earlier expression of $h(x)$, we can derive the age at death probability density function
 
-$$\boxed{f(x) = h(x)S(x)}$$
+$$\boxed{f(x) = h(x)S(x)}.$$
 
-Let's check these identities visually or model a survival model with STAN ?
+These formulas show that given either the hazard rate or the survival function, it is possible to get everything else.
 
 
-```{r obtain_a_b, eval = FALSE, include = FALSE}
+# The Gompertz case
 
-# ONLY PURPOSE IS TO GET A AND B VALUES THAT MAKE SENSE
-# BEL 2015, 55-95 yo estimated with poisson regression
+Assuming the hazard rate has the Gompertzian form
+
+$$h(x) = ae^{bx}$$
+we can easily derive the two other functions. We start by deriving the cumulative hazard function
+
+$$
+\begin{align}
+H(x) & = \int^x_0h(t)dt \\
+& = \int^x_0ae^{bt}dt \\
+& = \frac{a}{b}[e^{bx} - 1]
+\end{align}
+$$
+
+and replace it in the survival function
+
+$$
+\begin{align}
+S(x) & = e^{-H(x)} \\
+& = e^{\frac{a}{b}[1 - e^{bx}]}.
+\end{align}
+$$
+
+It is then straightforward to obtain the death probability density function by multiplying both
+
+
+$$
+\begin{align}
+f(x) & = h(x)S(x) \\
+& = ae^{bx} e^{\frac{a}{b}[1 - e^{bx}]} 
+\end{align}
+$$
+
+
+Suppose now that we follow individuals from their 55$^{th}$ birthdays to their death. Using the [Human Mortality Database for Belgium](https://www.mortality.org/cgi-bin/hmd/country.php?cntr=BEL&level=1) in 2015, we estimated the Gompertz parameters to be $a = 0.0006$ and $b = 0.128$ on the ages 55 to 95 years old. Note that we restricted the estimation to these ages as the Gompertz model does not perform well for the young and oldest ages.
+
+With this in hand, we can now plot our three complementary functions assuming Gompertz hazard and setting $a$ and $b$ to the values we estimated.
+
+
+
+```{r a_b, include = FALSE}
 
 library(ggplot2)
 library(tidyverse)
-# Select a and b according to BEL data in 2015
-dth = read.delim("./modeling/data/dthBE_1x1.txt", 
-                 skip = 1,
-                 sep = "", 
-                 stringsAsFactors=FALSE,
-                 header = TRUE)
+library(rstan)
+library(tidybayes)
+library(cowplot)
 
-exp = read.delim("./modeling/data/expBE_1x1.txt", 
-                 skip = 1,
-                 sep = "", 
-                 stringsAsFactors=FALSE,
-                 header = TRUE)
+source("./modeling/function/theme_dark_blue.R")
 
-df.dth = dth %>% 
-  filter(Year == 2015) %>% 
-  select(Year, Age, Female) %>% 
-  mutate(Female = as.numeric(Female))
+# Gompertz parameters
+a <- 0.0006
+b <- 0.128
+# Ages
+ages <- 55:120
 
-df.exp = exp %>% 
-  filter(Year == 2015) %>% 
-  select(Year, Age, Female)
+# Functions
+# Hazard rate
+h <- function(a, b, x){a*exp(b*x)}
+# Survival function
+S <- function(a, b, x){exp((a/b)*(1 - exp(b*x)))}
 
-df = df.dth %>% 
-  left_join(df.exp, 
-            by = c("Year", "Age")) %>% 
-  rename("D" = Female.x,
-         "N" = Female.y) %>% 
-  mutate(mx = D/N,
-         Age = ifelse(Age == "110+", 110, Age),
-         Age = as.numeric(Age))
-# Gompertz perfom badly for young and old ages
-# Age bounds
-age.bds <- c(55, 95)
-df %>% 
-  filter(Age >= age.bds[1], 
-         Age < age.bds[2]) %>% 
-  ggplot(aes(x = Age, y = log(mx))) +
-  geom_point()
-
-# create data from age 55
-df <- df %>% 
-  filter(Age >= age.bds[1], 
-         Age < age.bds[2]) %>% 
-  mutate(age = Age - age.bds[1])
-
-# important that age start at 0
-fit.gomp <- lm(log(mx) ~ 1 + age,
-               data = df )
-fit.gomp$coef
-
-df %>% 
-  mutate(fit = fit.gomp$coef[1] + fit.gomp$coef[2]*age) %>% 
-  ggplot(aes(x = age, y = log(mx))) +
-  geom_point() +
-  geom_line(aes(x = age, y = fit))
-
-a <- exp(fit.gomp$coef[1])
-b <- fit.gomp$coef[2]
-
-df %>% 
-  mutate(fit = a * exp(b*age)) %>% 
-  ggplot(aes(x = age, y = mx)) +
-  geom_point() +
-  geom_line(aes(x = age, y = fit))
+# Create data set
+df <- tibble(age = ages,
+             x = ages - 55, # start at age 55
+             haz = h(a, b, x),
+             Surv = S(a, b, x),
+             pdf = haz * Surv)
 
 ```
 
 
-```{r stan_sim, eval = FALSE, include = FALSE}
-library(rstan)
+```{r plot_truth, echo= FALSE, preview = TRUE}
+fig.h <- ggplot(df, aes(x = ages, y = haz)) +
+  geom_line(col = "skyblue3",
+            size = 1.2) +
+  theme_dark_blue() +
+  labs(y = "h(x)",
+       x = "Age")
 
+fig.logh <- ggplot(df, aes(x = ages, y = log(haz))) +
+  geom_line(col = "skyblue3",
+            size = 1.2) +
+  theme_dark_blue() +
+  labs(y = "ln(h(x))",
+       x = "Age")
+
+fig.S <- ggplot(df, aes(x = ages, y = Surv)) +
+  geom_line(col = "skyblue3",
+            size = 1.2) +
+  theme_dark_blue() +
+  labs(y = "S(x)",
+       x = "Age")
+
+fig.pi <- ggplot(df, aes(x = ages, y = pdf)) +
+  geom_line(col = "skyblue3",
+            size = 1.2) +
+  theme_dark_blue() +
+  labs(y = "f(x)",
+       x = "Age")
+
+plot_grid(fig.h,
+          fig.logh,
+          fig.S,
+          fig.pi,
+          ncol = 2,
+          nrow = 2)
+```
+
+# Simulating survival data
+
+The inverse CDF sampling method can be used to generate data. This method uses the fact that
+
+$$ U = F(X) \sim U_{[0,1]}$$
+
+Therefore, if $u_1,...,u_n$ is an indenpendent and identically distributed (iid) random sample from $U_{[0,1]}$, then
+
+$$\{x_i:x_i = F^{-1}(u_i), i=1,...,n\}$$
+is an iid random sample from $F()$. The algorithm depends on the feasibility to inverse $F()$. 
+
+Applying this method on the survival function, we can simulate ages at death
+
+
+$$
+\begin{align}
+F(x_i) & = u_i \\
+S(x_i) & = 1- u_i \\
+e^{\frac{a}{b}[1 - e^{bx_i}]} &  = 1-u_i \\
+1 - e^{bx_i} & = \frac{b}{a}log(1-u_i)  \\
+x_i & = \frac{1}{b}log(1 - \frac{b}{a}log(1-u_i))
+\end{align}
+$$
+
+with $u_i \sim U_{[0,1]}$.
+
+The corresponding STAN code is
+
+
+```{r code_STAN}
 writeLines(readLines("./modeling/stan/simu_gomp.stan"))
 
+```
+
+The simulation could also easily be performed with base R with the following code
+
+```{r simu_R, echo = TRUE, eval = FALSE}
+u <- runif(N, 0, 1)
+t <- (1/b)*log(1-((b/a)*log(1-u)))
+```
+
+
+
+```{r simu_stan, echo = FALSE, message = FALSE, results = "hide"}
 # sample size
 N <- 2e4
 
@@ -161,129 +229,112 @@ stan_data <- list("N" = N,
                   "a" = a,
                   "b" = b)
 
-# simu <- stan(file="./modeling/stan/simu_gomp.stan", data=stan_data,
-#              iter=1, chains=1, seed=411991,
-#              algorithm="Fixed_param")
-# 
-# t <- array(extract(simu)$t[1,])
+simu <- stan(file="./modeling/stan/simu_gomp.stan", data=stan_data,
+             iter=1, chains=1, seed=411991,
+             algorithm="Fixed_param")
+
+t <- array(extract(simu)$t[1,])
 # range(t)
-
-
-
-# Much quicker without STAN
-u <- runif(N, 0, 1)
-t <- (1/b)*log(1-((b/a)*log(1-u))) # t >= 0 as age start at 85 thanks to par a
-
 ```
 
 
-```{r, echo = FALSE}
+We can now compare the density of the simulated ages at death with the true density to see that our simulation worked fine.  
 
-# Comparison between truth (Gompertz) and simulation
-
-# let's first plot the true density of yi
-grid <- seq(0, ceiling(max(t)), 0.1)
-df <- tibble(x = grid,
-             h = a*exp(b*grid),
-             S = exp((a/b)*(1-exp(b*grid))),
-             pi = h*S)
-
-# hazard
-ggplot(df, aes(x = x, y = h)) +
-  geom_line() +
-  labs(y = "h(x)")
-
-# density
-ggplot(df, aes(x = x, y = pi)) +
-  geom_line()
-
+```{r fig_density_simu, echo = FALSE}
 # compare histogram with true pdf of t
 ggplot() +
-  geom_histogram(data = tibble(x = t), 
-                 aes(x = x, y = ..density..), 
-                 breaks = seq(0, ceiling(max(t)), 0.1)) +
+  geom_density(data = tibble(x = t + 55), 
+                 aes(x = x, col = "f(x) from simulation"),
+               size = 1.2) +
   geom_line(data = df, 
-            aes(x = x, y = pi),
-            col = "red")
+            aes(x = age, y = pdf, col = "true f(x)"),
+            size = 1.5) +
+  theme_dark_blue() +
+  theme(legend.position = c(0.2, 0.85)) +
+  scale_color_manual(values = c("true f(x)" = "skyblue3",
+                                "f(x) from simulation" = "white")) +
+  labs(y = "Density",
+       x = "Age")
 ```
 
 
-```{r, echo = FALSE}
 
-# WITHOUT ANY TRUNCATION HOW DOES POISSON PERFORM?
-# eps <- 1
-# dth <- c()
-# exp <- c()
-# 
-# brks <- seq(0, ceiling(max(t)), eps)
-# for (i in 1:(length(brks)-1)){
-#     # dth
-#     d <- sum( (t >= brks[i] & t < brks[i+1]) )
-#     # time lived by those dying
-#     e_d <- t[t >= brks[i] & t < brks[i+1]] - brks[i]
-#     e <- sum(t >= brks[i])*eps + sum(e_d)
-#   dth <- c(dth, d)
-#   exp <- c(exp, e)
-# }
+# Hazard estimation with a PCH model
 
-# Nice way to get count data (DHS)
-# Easy as interval is only 1 year
-df.counts <- tibble(t = t) %>% 
-  # obtain lower bound
-  mutate(interval = floor(t),
-         # exposure from those dying
-         exp_d = t - interval) %>% 
-  group_by(interval) %>% 
-  summarise(dth = n(),
-            exp_d = sum(exp_d)) %>% 
-  ungroup() %>% 
-  mutate(mid = interval + .5,
-         dth.cum = cumsum(dth),
-         # exposure from those surviving
-         exp_s = N - dth.cum,
-         exp = exp_d + exp_s,
-         mx = dth/exp)
 
-ggplot(df.counts, aes(x = mid, y = mx)) +
-  geom_point()
+Suppose now that we observe the simulated ages at death, not knowing the true hazard rate. Despite the fact that age at death is continuous, we can divide the time into 1-year intervals and assume that the hazard is constant in each interval. We can then use a Piecewise Constant Hazards model to estimate the hazard in these intervals. 
 
-# # df raw estimates
-# df.poi <- tibble(cut_off = head(brks, -1) + (eps/2), # mid of interval
-#                  dth = dth,
-#                  exp = exp) %>%
-#   mutate(mx =dth/exp)
-# 
-# # Fit poisson  
-# brks <- head(brks, -1) + (eps/2) # mid of interval
-# dth <- dth[exp > 0]
-# brks <- brks[exp > 0]
-# exp <- exp[exp > 0]
-fit.poi <- glm(dth ~ 1 + mid, offset = log(exp),
-           family = "poisson",
-           data = df.counts)
+The following code transform the simulated age at death in continuous time, `t`, into counts of death and exposures at each age interval.
 
-# Compare fit with obtained raw estimated from simulated data
-df.counts <- df.counts %>%
-  mutate(fit.glm = exp(fit.poi$coefficients[1])*exp(fit.poi$coefficients[2]*mid) )
-
-# Compare fit with truth
-ggplot() +
-  geom_line(data = df, aes(x = x, y = h, col = "truth")) +
-  geom_line(data = df.counts, aes(x = mid, y = fit.glm, col = "Poisson")) +
-  geom_point(data = df.counts, aes(x = mid, y = mx, col = "nmx simu"),
-             alpha = 0.1) +
-  scale_color_manual(values = c("truth"=  "skyblue3",
-                                  "Poisson" = "slateblue",
-                                  "nmx simu" = "darkseagreen")) +
-  labs(y = "h(x)")
-
-# Do we find the parameter back ? YES
-abs(exp(fit.poi$coefficients[1]) - a)
-abs(fit.poi$coefficients[2] - b)
+```{r counts, echo = TRUE}
+# width of interval (1 year)
+eps <- 1
+# containers
+dth <- c()
+exp <- c()
+# breaks for 1-year age interval
+brks <- seq(0, ceiling(max(t)), eps)
+for (i in 1:(length(brks)-1)){
+    # death counts by interval
+    d <- sum( (t >= brks[i] & t < brks[i+1]) )
+    
+    # time lived in interval by those dying
+    e_d <- t[t >= brks[i] & t < brks[i+1]] - brks[i]
+    # time lived in interval by those surviving
+    e <- sum(t >= brks[i+1])*eps + sum(e_d)
+    
+    dth <- c(dth, d)
+    exp <- c(exp, e)
+}
+# create data set
+df.counts <- tibble(interval = head(brks, -1),
+               mid = head(brks, -1) + (eps/2),
+               age = mid + 55,
+               dth = dth,
+               exp = exp)
 ```
 
 
-```{r, eval = FALSE, include = FALSE}
+These counts data are plotted on the bar charts below
+
+```{r fig_count, echo = FALSE}
+
+fig.dth <- ggplot(df.counts) +
+geom_col(aes(x = age, y = dth),
+         col = "black",
+                 fill = "white") +
+  theme_dark_blue() +
+  labs(y = "Death counts",
+       x = "Age")
+
+fig.exp <- ggplot(df.counts) +
+geom_col(aes(x = age, y = exp),
+         col = "black",
+                 fill = "white") +
+  theme_dark_blue() +
+  labs(y = "Exposure",
+       x = "Age")
+
+plot_grid(fig.dth,
+          fig.exp,
+          ncol = 2)
+```
+
+Assuming that the hazard is constant in each interval
+
+$$
+h(x) = \lambda_x ~ \forall [x, x+1) 
+$$
+
+we can write the PCH model as follow
+
+$$
+D_x \sim Poisson(\lambda_xE_x)
+$$
+where $D_x$, $E_x$ and $\lambda_x$ are deaths count, exposure and hazard rate for age $x$, respectively. The following STAN code estimate the model
+
+
+```{r stan_data, echo = FALSE, results = "hide", message = FALSE}
  # Poisson estimation with STAN
 stan_data <- list(
   "A" = dim(df.counts)[1],
@@ -294,362 +345,126 @@ stan_data <- list(
 
 options(mc.cores = parallel::detectCores()-1)
 
-fit = stan("./modeling/stan/poi_for_gomp.stan",
-           iter = 8000,
-           chains = 4,
-           data = stan_data)
-
-library(tidybayes)
-
-df.fit.ab <- fit %>% 
-  spread_draws(a, b) %>% 
-  median_qi() 
-
-df.fit <- fit %>% 
-  spread_draws(eta[i]) %>% 
-  median_qi() %>% 
-  mutate(mid = i-0.5,
-         mx = exp(eta)) 
-
-# Comparison GLM, STAN and truth
-ggplot() +
-  geom_line(data = df.fit, aes(x = mid, y = mx)) +
-  geom_line(data = df.counts, aes(x = mid, y = fit.glm), col = "red", linetype = "dashed") +
-    geom_line(data = df, aes(x = x, y = h), col = "skyblue3", size = 1.5,
-              alpha = 0.3)
-  
-# Obtain S and pi from estimated mx
-a.hat <- exp(extract(fit)$a)
-b.hat <- extract(fit)$b
-
-h.hat = sapply( grid, function(x) a.hat*exp(b.hat*x) )
-S.hat = sapply( grid, function(x) exp((a.hat/b.hat)*(1-exp(b.hat*x))) )
-pi.hat = h.hat*S.hat
-
-df.hat <- tibble(x = grid,
-             h = apply(h.hat, 2, median),
-             h.low = apply(h.hat, 2, quantile, probs = 0.025),
-             h.up = apply(h.hat, 2, quantile, probs = 0.975),
-             S = apply(S.hat, 2, median),
-             S.low = apply(S.hat, 2, quantile, probs = 0.025),
-             S.up = apply(S.hat, 2, quantile, probs = 0.975),
-             pi = apply(pi.hat, 2, median),
-             pi.low = apply(pi.hat, 2, quantile, probs = 0.025),
-             pi.up = apply(pi.hat, 2, quantile, probs = 0.975))
-
-# Compare h with true
-ggplot() +
-  geom_line(data = df.hat, aes(x = x, y = h),
-            col = "skyblue3") +
-  geom_ribbon(data = df.hat, aes(x = x, ymin = h.low, ymax = h.up),
-            col = "skyblue3",
-            fill = "skyblue3",
-            alpha = 0.3) +
-  geom_line(data = df, aes(x = x, y = h), 
-            size = 1.1)
-
-
-# Compare S with true
-ggplot() +
-  geom_line(data = df.hat, aes(x = x, y = S),
-            col = "skyblue3") +
-  geom_ribbon(data = df.hat, aes(x = x, ymin = S.low, ymax = S.up), 
-              col = "skyblue3",
-              fill = "skyblue3",
-              alpha = 0.3) +
-  geom_line(data = df, aes(x = x, y = S), 
-            size = 1.2)
-
-# Compare pi with true
-ggplot() +
-  geom_line(data = df.hat, aes(x = x, y = pi),
-            col = "skyblue3") +
-  geom_ribbon(data = df.hat, aes(x = x, ymin = pi.low, ymax = pi.up),
-              col = "skyblue3",
-              fill = "skyblue3",
-              alpha = 0.3) +
-  geom_line(data = df, aes(x = x, y = pi), 
-            size = 1.2)
-
-
-```
-
-
-```{r, echo = FALSE}
-
-# Check the effect of right censoring
-
-
-# censoring time with ICDF from exponential
-set.seed(2841992)
-u <- runif(N, 0, 1)
-nu <- 1.5e-2 # strength of censoring, higher more censoring. 
-ci <- -log(1-u)/nu
-
-# observed exit time
-gamma <- t > ci
-yi <- pmin(t, ci)
-# sum(gamma == TRUE)/N: % whose death are observed
-
-# need to account for censoring (not everybody is seen dying)
-# still work as dying has same effect as being censored
-df.counts <- tibble(t = t,
-                    cens = gamma,
-                    y = yi) %>% 
-  # obtain lower bound
-  mutate(interval = floor(y),
-         # exposure from those exiting (dth/censored)
-         exp_out = (y - interval)) %>% 
-  group_by(interval, cens) %>% 
-  summarise(dth = n(),
-            exp_out = sum(exp_out)) %>% 
-  ungroup() %>% 
-  # count people exiting at each interval
-  group_by(interval) %>% 
-  mutate(out = sum(dth),
-         exp_out = sum(exp_out)) %>% 
-  ungroup() %>% 
-  # account the censored obs
-  # only through exposure
-  filter(cens == FALSE) %>% 
-  mutate(mid = interval + .5,
-         out.cum = cumsum(out),
-         # exposure from those surviving/not censored
-         exp_s = N - out.cum,
-         exp = exp_out + exp_s,
-         mx = dth/exp)
-
-
-# Poisson estimation with STAN
-stan_data <- list(
-  "A" = dim(df.counts)[1],
-  "age" = df.counts$mid,
-  "n" = df.counts$exp,
-  "d" = df.counts$dth
-  )
-
-options(mc.cores = parallel::detectCores()-1)
 
 fit = stan("./modeling/stan/poi_for_gomp.stan",
            iter = 8000,
            chains = 4,
            data = stan_data)
 
+```
 
+
+```{r pch_stan}
+writeLines(readLines("./modeling/stan/poi_for_gomp.stan"))
+```
+
+Finally, we extract the posterior draws of $\lambda_x$ and use them to get posterior draws of $S(x)$ and $f(x)$ using the math expressions presented earlier. Looking at the figures below, the PCH model is close to the truth with $N=2e4$ simulated ages at death.
+
+```{r post_draws, echo = FALSE}
 # Obtain S and pi from estimated mx
-a.hat <- exp(extract(fit)$a)
-b.hat <- extract(fit)$b
-
-h.hat = sapply( grid, function(x) a.hat*exp(b.hat*x) )
-S.hat = sapply( grid, function(x) exp((a.hat/b.hat)*(1-exp(b.hat*x))) )
+h.hat <- exp(extract(fit)$eta)
+S.hat = sapply( 1:dim(h.hat)[1], function(x) exp(-cumsum(h.hat[x, ])) )
+S.hat <- t(S.hat)
 pi.hat = h.hat*S.hat
 
-df.hat <- tibble(x = grid,
+df.hat <- tibble(x = head(brks, -1),
+                 age = x + 55, 
              h = apply(h.hat, 2, median),
-             h.low = apply(h.hat, 2, quantile, probs = 0.025),
-             h.up = apply(h.hat, 2, quantile, probs = 0.975),
+             h.low = apply(h.hat, 2, quantile, probs = 0.005),
+             h.up = apply(h.hat, 2, quantile, probs = 0.995),
              S = apply(S.hat, 2, median),
-             S.low = apply(S.hat, 2, quantile, probs = 0.025),
-             S.up = apply(S.hat, 2, quantile, probs = 0.975),
+             S.low = apply(S.hat, 2, quantile, probs = 0.005),
+             S.up = apply(S.hat, 2, quantile, probs = 0.995),
              pi = apply(pi.hat, 2, median),
-             pi.low = apply(pi.hat, 2, quantile, probs = 0.025),
-             pi.up = apply(pi.hat, 2, quantile, probs = 0.975))
+             pi.low = apply(pi.hat, 2, quantile, probs = 0.005),
+             pi.up = apply(pi.hat, 2, quantile, probs = 0.995))
 
 # Compare h with true
-ggplot() +
-  geom_line(data = df.hat, aes(x = x, y = h, col = "true")) +
-  geom_ribbon(data = df.hat, aes(x = x, ymin = h.low, ymax = h.up,
-                                 col = "estimated",
-                                 fill = "estimated"),
+fig.h.fit <- ggplot() +
+  geom_line(data = df.hat, aes(x = age, y = h,
+            col = "posterior PCH")) +
+  geom_ribbon(data = df.hat, aes(x = age, ymin = h.low, ymax = h.up, col = "posterior PCH", fill = "posterior PCH"),
               alpha = 0.3) +
-  geom_line(data = df, aes(x = x, y = h), 
-            size = 1.05) +
-  scale_color_manual(values = c("true" = "black",
-                            "estimated" = "skyblue3")) +
-  scale_fill_manual(values = c("true" = "black",
-                               "estimated" = "skyblue3")) +
-  scale_y_log10()
+  geom_line(data = df %>% filter(age<= max(df.hat$age)), aes(x = age, y = haz, col = "truth"), 
+            size = 1,
+            linetype = "dashed") +
+  scale_color_manual(values = c("posterior PCH" = "red4",
+                                "truth" = "skyblue3")) +
+  scale_fill_manual(values = c("posterior PCH" = "red4",
+                                "truth" = "skyblue3")) +
+  theme_dark_blue() +
+  theme(legend.position = "none") +
+  labs(y = "h(x)",
+       x = "Age") 
+
+fig.log.h.fit <- ggplot() +
+  geom_line(data = df.hat, aes(x = age, y = log(h),
+            col = "posterior PCH")) +
+  geom_ribbon(data = df.hat, aes(x = age, ymin = log(h.low), ymax = log(h.up), col = "posterior PCH", fill = "posterior PCH"),
+              alpha = 0.3) +
+  geom_line(data = df %>% filter(age<= max(df.hat$age)), aes(x = age, y = log(haz), col = "truth"), 
+            size = 1,
+            linetype = "dashed") +
+  scale_color_manual(values = c("posterior PCH" = "red4",
+                                "truth" = "skyblue3")) +
+  scale_fill_manual(values = c("posterior PCH" = "red4",
+                                "truth" = "skyblue3")) +
+  theme_dark_blue() +
+  theme(legend.position = "none") +
+  labs(y = "ln(h(x))",
+       x = "Age") 
 
 
 # Compare S with true
-ggplot() +
-  geom_line(data = df.hat, aes(x = x, y = S, col = "true")) +
-  geom_ribbon(data = df.hat, aes(x = x, ymin = S.low, ymax = S.up,
-                                 col = "estimated",
-                                 fill = "estimated"),
-              alpha = 0.3) +
-  geom_line(data = df, aes(x = x, y = S), 
-            size = 1.05) +
-  scale_color_manual(values = c("true" = "black",
-                            "estimated" = "skyblue3")) +
-  scale_fill_manual(values = c("true" = "black",
-                               "estimated" = "skyblue3"))
+fig.S.fit <- ggplot() +
+  geom_line(data = df.hat, aes(x = age, y = S,
+            col = "posterior PCH")) +
+  geom_ribbon(data = df.hat, aes(x = age, ymin = S.low, ymax = S.up, col = "posterior PCH", fill = "posterior PCH",),
+              alpha = 0.4) +
+  geom_line(data = df, aes(x = age, y = Surv, col = "truth"), 
+            size = 1,
+            linetype = "dashed") +
+  scale_color_manual(values = c("posterior PCH" = "red4",
+                                "truth" = "skyblue3")) +
+  scale_fill_manual(values = c("posterior PCH" = "red4",
+                                "truth" = "skyblue3")) +
+  theme_dark_blue() +
+  theme(legend.position = "none") +
+  labs(y = "S(x)",
+       x = "Age") +
+  annotate("segment", x = c(92, 92), xend = c(96, 96), 
+                 y = c(0.7, 0.9), yend = c(0.7, 0.9), 
+                 size = 2, color = c("red4", "skyblue3")) +
+  annotate("text", label = c("fit & 99% CI", "truth"),
+           x = c(112, 112), y = c(0.7, 0.9), size = 3.5, color = c("red4", "skyblue3"))
 
-# Compare pi with true
-ggplot() +
-  geom_line(data = df.hat, aes(x = x, y = pi, col = "true")) +
-  geom_ribbon(data = df.hat, aes(x = x, ymin = pi.low, ymax = pi.up,
-                                 col = "estimated",
-                                 fill = "estimated"),
-              alpha = 0.3) +
-  geom_line(data = df, aes(x = x, y = pi), 
-            size = 1.05) +
-  scale_color_manual(values = c("true" = "black",
-                            "estimated" = "skyblue3")) +
-  scale_fill_manual(values = c("true" = "black",
-                               "estimated" = "skyblue3"))
+# Compare pdf with true
+fig.pi.fit <- ggplot() +
+  geom_line(data = df.hat, aes(x = age, y = pi,
+            col = "posterior PCH")) +
+  geom_ribbon(data = df.hat, aes(x = age, ymin = pi.low, ymax = pi.up, col = "posterior PCH", fill = "posterior PCH",),
+              alpha = 0.4) +
+  geom_line(data = df, aes(x = age, y = pdf, col = "truth"), 
+            size = 1,
+            linetype = "dashed") +
+  scale_color_manual(values = c("posterior PCH" = "red4",
+                                "truth" = "skyblue3")) +
+  scale_fill_manual(values = c("posterior PCH" = "red4",
+                                "truth" = "skyblue3")) +
+  theme_dark_blue() +
+  theme(legend.position = "none") +
+  labs(y = "f(x)",
+       x = "Age")
 
-
-```
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-```{r simulation, eval = FALSE, include = FALSE}
-
-# CAMARDA SIMULATION SET-UP
-
-
-# By setting nu really low and d0 to b0 there is not truncation to test estimation
-
-# entry time, when an individual reaches 85 yo: b_0=0 ; b_max=10
-bi <- runif(N, 0, 10)
-
-# censoring time with ICDF from exponential
-u <- runif(N, 0, 1)
-nu <- 3e-2 # strength of censoring, higher more censoring. 
-ci <- -log(1-u)/nu
-
-# timing of death wit ICDF of gompertz
-# a and b define with real data
-# --> model in STAN
-# u <- runif(N, 0, 1)
-# ti <- (1/b)*log(1-((b/a)*log(1-u))) # t >= 0 as age start at 85 thanks to par a
-
-# observed exit time
-gamma <- t < ci
-yi <- pmin(t, ci)
-# sum(gamma == TRUE)/N: % whose death are observed
-
-# date of exit when an individual reaches 85 yo (bi) + age at death/censoring (yi)
-di <- bi + yi 
-
-# beginning of follow-up 
-d0 <- 0
-
-# left-truncation: individuals exits before the follow-up
-# new sample
-yi <- yi[di>d0]
-
-# enter before d0 and survive start of the follow-up: wi is entry age (85+wi)
-wi <- d0 - bi
-
-# individual entering after d0, enter age 105
-wi[wi<0] <- 0
+plot_grid(fig.h.fit,
+          fig.log.h.fit,
+          fig.S.fit,
+          fig.pi.fit,
+          ncol = 2) 
 
 ```
 
 
-```{r estimation, eval = FALSE, include = FALSE}
-# does yi look like gompertz ?
+# Summary
 
-# let's first plot the true density of yi
-grid <- seq(0, ceiling(max(yi)), 0.05)
-df <- tibble(x = grid,
-             h = a*exp(b*grid),
-             S = exp((a/b)*(1-exp(b*grid))),
-             pi = h*S)
-
-# hazard
-ggplot(df, aes(x = x, y = h)) +
-  geom_line() +
-  labs(y = "h(x)")
-
-# density
-ggplot(df, aes(x = x, y = pi)) +
-  geom_line()
-
-# compare with histogram
-ggplot() +
-  geom_histogram(data = tibble(x = yi), 
-                 aes(x = x, y = ..density..), 
-                 breaks = seq(0, ceiling(max(yi)), 0.05)) +
-  geom_line(data = df, 
-            aes(x = x, y = pi),
-            col = "red")
-
-# see if capable to estimate with Poisson model
-eps <- 1
-dth <- c()
-exp <- c()
-
-brks <- seq(0, ceiling(max(yi)), eps)
-for (i in 1:(length(brks)-1)){
-    # dth
-    d <- sum( (yi >= brks[i] & yi < brks[i+1]) )
-    # time lived by those dying
-    e_d <- yi[yi >= brks[i] & yi < brks[i+1]] - brks[i]
-    e <- sum(yi >= brks[i])*eps + sum(e_d)
-  dth <- c(dth, d)
-  exp <- c(exp, e)
-  
-}
-
-# df raw estimates
-df.poi <- tibble(cut_off = head(brks, -1) + (eps/2), # mid of interval
-                 dth = dth,
-                 exp = exp) %>%
-  mutate(mx =dth/exp)
-
-ggplot() +
-  geom_point(data = df.poi, aes(x = cut_off, y = mx))
-
-# Fit poisson  
-brks <- head(brks, -1) + (eps/2) # mid of interval
-dth <- dth[exp > 0]
-brks <- brks[exp > 0]
-exp <- exp[exp > 0]
-fit.poi <- glm(dth ~ 1 + brks, offset = log(exp),
-           family = "poisson")
-
-# Compare fit with obtained raw estimated from simulated data
-df.poi <- df.poi %>%
-  mutate(fit = exp(fit.poi$coefficients[1])*exp(fit.poi$coefficients[2]*cut_off) )
-
-ggplot(df.poi) +
-  geom_point(aes(x = cut_off, y = mx)) +
-  geom_line(aes(x = cut_off, y = fit))
-
-# Compare fit with truth
-ggplot() +
-  geom_line(data = df, aes(x = x, y = h, col = "truth")) +
-  geom_line(data = df.poi, aes(x = cut_off, y = fit, col = "Poisson")) +
-  geom_point(data = df.poi, aes(x = cut_off, y = mx, col = "nmx simu"),
-             alpha = 0.3) +
-  scale_color_manual(values = c("truth"=  "skyblue3",
-                                  "Poisson" = "slateblue",
-                                  "nmx simu" = "darkseagreen")) +
-  scale_y_log10() +
-  labs(y = "h(x)")
-
-# Do we find the parameter back ? YES
-abs(exp(fit.poi$coefficients[1]) - a)
-abs(fit.poi$coefficients[2] - b)
-```
-
-
-
-
+Survival analyses mainly require three complementary mathematical expressions: the hazard rate, the survival function and the age at death probability density function. Once we have a given mathematical form for the hazard rate (ie Gompertz), the two other functions can be derived. In order to test models, the inverse CDF sampling method allows to simulate survival data. One model considered in this post is the PCH model that can be modelled in a Bayesian estimation framework within STAN. Note that we did not consider censoring or truncation but it will be addressed in a future post.

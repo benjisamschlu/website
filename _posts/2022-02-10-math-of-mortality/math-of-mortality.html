@@ -66,9 +66,9 @@ code span.wa { font-style: italic; } /* Warning */
 </style>
 
   <!--radix_placeholder_meta_tags-->
-  <title>Math of mortality</title>
+  <title>Survival kit for survival analyses</title>
   
-  <meta property="description" itemprop="description" content="Post showing the derivations of some mathematical identities used in mortality estimation with a simulation and estimation in STAN."/>
+  <meta property="description" itemprop="description" content="Post on survival analyses deriving main mathematical expressions, simulating survival data applying the inverse CDF sampling with STAN and estimating a Piecewise Constant Hazards model."/>
   
   
   <!--  https://schema.org/Article -->
@@ -77,26 +77,26 @@ code span.wa { font-style: italic; } /* Warning */
   <meta name="article:author" content="Benjamin Schlüter"/>
   
   <!--  https://developers.facebook.com/docs/sharing/webmasters#markup -->
-  <meta property="og:title" content="Math of mortality"/>
+  <meta property="og:title" content="Survival kit for survival analyses"/>
   <meta property="og:type" content="article"/>
-  <meta property="og:description" content="Post showing the derivations of some mathematical identities used in mortality estimation with a simulation and estimation in STAN."/>
+  <meta property="og:description" content="Post on survival analyses deriving main mathematical expressions, simulating survival data applying the inverse CDF sampling with STAN and estimating a Piecewise Constant Hazards model."/>
   <meta property="og:locale" content="en_US"/>
   
   <!--  https://dev.twitter.com/cards/types/summary -->
   <meta property="twitter:card" content="summary"/>
-  <meta property="twitter:title" content="Math of mortality"/>
-  <meta property="twitter:description" content="Post showing the derivations of some mathematical identities used in mortality estimation with a simulation and estimation in STAN."/>
+  <meta property="twitter:title" content="Survival kit for survival analyses"/>
+  <meta property="twitter:description" content="Post on survival analyses deriving main mathematical expressions, simulating survival data applying the inverse CDF sampling with STAN and estimating a Piecewise Constant Hazards model."/>
   
   <!--/radix_placeholder_meta_tags-->
   <!--radix_placeholder_rmarkdown_metadata-->
   
   <script type="text/json" id="radix-rmarkdown-metadata">
-  {"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["title","description","author","date","output"]}},"value":[{"type":"character","attributes":{},"value":["Math of mortality"]},{"type":"character","attributes":{},"value":["Post showing the derivations of some mathematical identities used in mortality estimation with a simulation and estimation in STAN.\n"]},{"type":"list","attributes":{},"value":[{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["name"]}},"value":[{"type":"character","attributes":{},"value":["Benjamin Schlüter"]}]}]},{"type":"character","attributes":{},"value":["02-10-2022"]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["distill::distill_article"]}},"value":[{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["self_contained","highlight"]}},"value":[{"type":"logical","attributes":{},"value":[false]},{"type":"character","attributes":{},"value":["monochrome"]}]}]}]}
+  {"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["title","description","author","date","output"]}},"value":[{"type":"character","attributes":{},"value":["Survival kit for survival analyses"]},{"type":"character","attributes":{},"value":["Post on survival analyses deriving main mathematical expressions, simulating survival data applying the inverse CDF sampling with STAN and estimating a Piecewise Constant Hazards model.\n"]},{"type":"list","attributes":{},"value":[{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["name"]}},"value":[{"type":"character","attributes":{},"value":["Benjamin Schlüter"]}]}]},{"type":"character","attributes":{},"value":["02-10-2022"]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["distill::distill_article"]}},"value":[{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["self_contained","highlight"]}},"value":[{"type":"logical","attributes":{},"value":[false]},{"type":"character","attributes":{},"value":["monochrome"]}]}]}]}
   </script>
   <!--/radix_placeholder_rmarkdown_metadata-->
   
   <script type="text/json" id="radix-resource-manifest">
-  {"type":"character","attributes":{},"value":["math-of-mortality_files/anchor-4.2.2/anchor.min.js","math-of-mortality_files/bowser-1.9.3/bowser.min.js","math-of-mortality_files/distill-2.2.21/template.v2.js","math-of-mortality_files/figure-html5/estimation-1.png","math-of-mortality_files/figure-html5/estimation-2.png","math-of-mortality_files/figure-html5/estimation-3.png","math-of-mortality_files/figure-html5/estimation-4.png","math-of-mortality_files/figure-html5/estimation-5.png","math-of-mortality_files/figure-html5/obtain_a_b-1.png","math-of-mortality_files/figure-html5/obtain_a_b-2.png","math-of-mortality_files/figure-html5/obtain_a_b-3.png","math-of-mortality_files/jquery-1.11.3/jquery.min.js","math-of-mortality_files/popper-2.6.0/popper.min.js","math-of-mortality_files/tippy-6.2.7/tippy-bundle.umd.min.js","math-of-mortality_files/tippy-6.2.7/tippy-light-border.css","math-of-mortality_files/tippy-6.2.7/tippy.css","math-of-mortality_files/tippy-6.2.7/tippy.umd.min.js","math-of-mortality_files/webcomponents-2.0.0/webcomponents.js"]}
+  {"type":"character","attributes":{},"value":["math-of-mortality_files/anchor-4.2.2/anchor.min.js","math-of-mortality_files/bowser-1.9.3/bowser.min.js","math-of-mortality_files/distill-2.2.21/template.v2.js","math-of-mortality_files/figure-html5/estimation-1.png","math-of-mortality_files/figure-html5/estimation-2.png","math-of-mortality_files/figure-html5/estimation-3.png","math-of-mortality_files/figure-html5/estimation-4.png","math-of-mortality_files/figure-html5/estimation-5.png","math-of-mortality_files/figure-html5/fig_count-1.png","math-of-mortality_files/figure-html5/fig_density_simu-1.png","math-of-mortality_files/figure-html5/fig_hist_simu-1.png","math-of-mortality_files/figure-html5/obtain_a_b-1.png","math-of-mortality_files/figure-html5/obtain_a_b-2.png","math-of-mortality_files/figure-html5/obtain_a_b-3.png","math-of-mortality_files/figure-html5/plot_truth-1.png","math-of-mortality_files/figure-html5/post_draws-1.png","math-of-mortality_files/jquery-1.11.3/jquery.min.js","math-of-mortality_files/popper-2.6.0/popper.min.js","math-of-mortality_files/tippy-6.2.7/tippy-bundle.umd.min.js","math-of-mortality_files/tippy-6.2.7/tippy-light-border.css","math-of-mortality_files/tippy-6.2.7/tippy.css","math-of-mortality_files/tippy-6.2.7/tippy.umd.min.js","math-of-mortality_files/webcomponents-2.0.0/webcomponents.js"]}
   </script>
   <!--radix_placeholder_navigation_in_header-->
   <!--/radix_placeholder_navigation_in_header-->
@@ -1434,7 +1434,7 @@ code span.wa { font-style: italic; } /* Warning */
 <!--radix_placeholder_front_matter-->
 
 <script id="distill-front-matter" type="text/json">
-{"title":"Math of mortality","description":"Post showing the derivations of some mathematical identities used in mortality estimation with a simulation and estimation in STAN.","authors":[{"author":"Benjamin Schlüter","authorURL":"#","affiliation":"&nbsp;","affiliationURL":"#","orcidID":""}],"publishedDate":"2022-02-10T00:00:00.000+01:00","citationText":"Schlüter, 2022"}
+{"title":"Survival kit for survival analyses","description":"Post on survival analyses deriving main mathematical expressions, simulating survival data applying the inverse CDF sampling with STAN and estimating a Piecewise Constant Hazards model.","authors":[{"author":"Benjamin Schlüter","authorURL":"#","affiliation":"&nbsp;","affiliationURL":"#","orcidID":""}],"publishedDate":"2022-02-10T00:00:00.000+01:00","citationText":"Schlüter, 2022"}
 </script>
 
 <!--/radix_placeholder_front_matter-->
@@ -1444,10 +1444,10 @@ code span.wa { font-style: italic; } /* Warning */
 <!--/radix_placeholder_site_before_body-->
 
 <div class="d-title">
-<h1>Math of mortality</h1>
+<h1>Survival kit for survival analyses</h1>
 <!--radix_placeholder_categories-->
 <!--/radix_placeholder_categories-->
-<p><p>Post showing the derivations of some mathematical identities used in mortality estimation with a simulation and estimation in STAN.</p></p>
+<p><p>Post on survival analyses deriving main mathematical expressions, simulating survival data applying the inverse CDF sampling with STAN and estimating a Piecewise Constant Hazards model.</p></p>
 </div>
 
 <div class="d-byline">
@@ -1457,23 +1457,24 @@ code span.wa { font-style: italic; } /* Warning */
 </div>
 
 <div class="d-article">
-<p>The field of mortality can be analyzed (at minimal) with three complementary functions: hazard, survival and death probability density function.</p>
+<p>In this post, I would like to introduce three complementary mathematical functions frequently encountered in survival analyses: the hazard, the survival and the age at death probability density function. Using STAN, we will then simulate survival data using the inverse cumulative density function (CDF) sampling method assuming the hazard has a Gompertz form. We conclude by estimating the hazard rate on our simulated dataset with a Piecewise Constant Hazard (PCH) model fitted with STAN.</p>
+<h1 id="complementary-mathematical-functions">Complementary mathematical functions</h1>
 <p>Let denote X: the age at death of an individual and assume that this random variable is <span class="math inline">\(X\geq 0\)</span> and continuous.</p>
 <p>Suriving beyond age x is expressed as</p>
 <p><span class="math display">\[
 \begin{align}
 S(x) &amp; = Pr(X&gt;x) \\
 S(x) &amp; = 1 - F(x) \\
-S&#39;(x) &amp; = -f(x) 
+S&#39;(x) &amp; = -f(x) \\
+\Rightarrow S(x) &amp; = -\int^{\infty}_xf(t)dt
 \end{align}
 \]</span></p>
-<p><span class="math display">\[S(x) = Pr(X &gt; x) = -\int^{\infty}_xf(t)dt\]</span></p>
-<p>Let’s now express the hazard function, also called the force of mortality:</p>
+<p>Let’s now express the hazard rate, also called the force of mortality:</p>
 <p><span class="math display">\[
 \begin{align}
 h(x) &amp;= lim_{\Delta x \rightarrow 0} \frac{Pr(x \leq X &lt; x + \Delta x | X &gt; x)}{\Delta x} \\
  &amp;= lim_{\Delta x \rightarrow 0} \frac{Pr(X &lt; x + \Delta x) - Pr(X \leq x)}{\Delta x} \cdot \frac{1}{Pr(X&gt;x)} \\
- &amp;= \frac{f(t)}{S(t)}
+ &amp;= \frac{f(x)}{S(x)}.
 \end{align}
 \]</span></p>
 <p>Thus, the force of mortality can be expressed as</p>
@@ -1482,17 +1483,178 @@ h(x) &amp;= lim_{\Delta x \rightarrow 0} \frac{Pr(x \leq X &lt; x + \Delta x | X
 \boxed{h(x) = -\frac{d}{dx}ln(S(x))}
 \end{align}
 \]</span></p>
-<p>and re-arranging that equation we express the survival probability at age x as</p>
+<p>and re-arranging the above equation, we express the survival probability at age x as</p>
 <p><span class="math display">\[\boxed{S(x) = e^{-\int^x_0h(t)dt} = e^{-H(x)}}\]</span></p>
-<p>where <span class="math inline">\(H(t)\)</span> is called the cumulative hazard.</p>
-<p>We can further express <span class="math inline">\(S(x+n)\)</span> as</p>
-<p><span class="math display">\[S(x+n) = S(x)e^{-\int^{x+n}_{x}h(t)dt}\]</span></p>
+<p>where <span class="math inline">\(H(x)\)</span> is called the cumulative hazard at age x.</p>
 <p>Note that when <span class="math inline">\(h(x)\)</span> is constant,</p>
-<p><span class="math display">\[S(t) = e^{-ht}\]</span></p>
-<p>From earlier derivation of <span class="math inline">\(h(x)\)</span> we can obtain a math expression for the death probability density function</p>
-<p><span class="math display">\[\boxed{f(x) = h(x)S(x)}\]</span></p>
-<p>Let’s check these identities visually or model a survival model with STAN ?</p>
-<div class="sourceCode" id="cb1"><pre class="sourceCode r distill-force-highlighting-css"><code class="sourceCode r"></code></pre></div>
+<p><span class="math display">\[S(x) = e^{-hx}.\]</span></p>
+<p>From earlier expression of <span class="math inline">\(h(x)\)</span>, we can derive the age at death probability density function</p>
+<p><span class="math display">\[\boxed{f(x) = h(x)S(x)}.\]</span></p>
+<p>These formulas show that given either the hazard rate or the survival function, it is possible to get everything else.</p>
+<h1 id="the-gompertz-case">The Gompertz case</h1>
+<p>Assuming the hazard rate has the Gompertzian form</p>
+<p><span class="math display">\[h(x) = ae^{bx}\]</span> we can easily derive the two other functions. We start by deriving the cumulative hazard function</p>
+<p><span class="math display">\[
+\begin{align}
+H(x) &amp; = \int^x_0h(t)dt \\
+&amp; = \int^x_0ae^{bt}dt \\
+&amp; = \frac{a}{b}[e^{bx} - 1]
+\end{align}
+\]</span></p>
+<p>and replace it in the survival function</p>
+<p><span class="math display">\[
+\begin{align}
+S(x) &amp; = e^{-H(x)} \\
+&amp; = e^{\frac{a}{b}[1 - e^{bx}]}.
+\end{align}
+\]</span></p>
+<p>It is then straightforward to obtain the death probability density function by multiplying both</p>
+<p><span class="math display">\[
+\begin{align}
+f(x) &amp; = h(x)S(x) \\
+&amp; = ae^{bx} e^{\frac{a}{b}[1 - e^{bx}]} 
+\end{align}
+\]</span></p>
+<p>Suppose now that we follow individuals from their 55<span class="math inline">\(^{th}\)</span> birthdays to their death. Using the <a href="https://www.mortality.org/cgi-bin/hmd/country.php?cntr=BEL&amp;level=1">Human Mortality Database for Belgium</a> in 2015, we estimated the Gompertz parameters to be <span class="math inline">\(a = 0.0006\)</span> and <span class="math inline">\(b = 0.128\)</span> on the ages 55 to 95 years old. Note that we restricted the estimation to these ages as the Gompertz model does not perform well for the young and oldest ages.</p>
+<p>With this in hand, we can now plot our three complementary functions assuming Gompertz hazard and setting <span class="math inline">\(a\)</span> and <span class="math inline">\(b\)</span> to the values we estimated.</p>
+<div class="layout-chunk" data-layout="l-body">
+<p><img src="math-of-mortality_files/figure-html5/plot_truth-1.png" width="624" data-distill-preview=1 /></p>
+</div>
+<h1 id="simulating-survival-data">Simulating survival data</h1>
+<p>The inverse CDF sampling method can be used to generate data. This method uses the fact that</p>
+<p><span class="math display">\[ U = F(X) \sim U_{[0,1]}\]</span></p>
+<p>Therefore, if <span class="math inline">\(u_1,...,u_n\)</span> is an indenpendent and identically distributed (iid) random sample from <span class="math inline">\(U_{[0,1]}\)</span>, then</p>
+<p><span class="math display">\[\{x_i:x_i = F^{-1}(u_i), i=1,...,n\}\]</span> is an iid random sample from <span class="math inline">\(F()\)</span>. The algorithm depends on the feasibility to inverse <span class="math inline">\(F()\)</span>.</p>
+<p>Applying this method on the survival function, we can simulate ages at death</p>
+<p><span class="math display">\[
+\begin{align}
+F(x_i) &amp; = u_i \\
+S(x_i) &amp; = 1- u_i \\
+e^{\frac{a}{b}[1 - e^{bx_i}]} &amp;  = 1-u_i \\
+1 - e^{bx_i} &amp; = \frac{b}{a}log(1-u_i)  \\
+x_i &amp; = \frac{1}{b}log(1 - \frac{b}{a}log(1-u_i))
+\end{align}
+\]</span></p>
+<p>with <span class="math inline">\(u_i \sim U_{[0,1]}\)</span>.</p>
+<p>The corresponding STAN code is</p>
+<div class="layout-chunk" data-layout="l-body">
+<pre><code>functions {
+  // Inverse survival function
+  real inv_survival(real u, real a, real b) {
+    return (1/b) * log(1 - ((b/a)*log(1 - u))) ;
+  }
+}
+
+data {
+  int&lt;lower=1&gt; N;
+  real a;
+  real&lt;lower=0&gt; b;
+}
+
+generated quantities {
+  real&lt;lower=0&gt; t[N];
+  
+  for (n in 1:N) {
+    real u = uniform_rng(0, 1);
+    t[n] = inv_survival(u, a, b);
+  }
+}</code></pre>
+</div>
+<p>The simulation could also easily be performed with base R with the following code</p>
+<div class="layout-chunk" data-layout="l-body">
+<div class="sourceCode">
+<pre class="sourceCode r"><code class="sourceCode r"><span class='va'>u</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/stats/Uniform.html'>runif</a></span><span class='op'>(</span><span class='va'>N</span>, <span class='fl'>0</span>, <span class='fl'>1</span><span class='op'>)</span>
+<span class='va'>t</span> <span class='op'>&lt;-</span> <span class='op'>(</span><span class='fl'>1</span><span class='op'>/</span><span class='va'>b</span><span class='op'>)</span><span class='op'>*</span><span class='fu'><a href='https://rdrr.io/r/base/Log.html'>log</a></span><span class='op'>(</span><span class='fl'>1</span><span class='op'>-</span><span class='op'>(</span><span class='op'>(</span><span class='va'>b</span><span class='op'>/</span><span class='va'>a</span><span class='op'>)</span><span class='op'>*</span><span class='fu'><a href='https://rdrr.io/r/base/Log.html'>log</a></span><span class='op'>(</span><span class='fl'>1</span><span class='op'>-</span><span class='va'>u</span><span class='op'>)</span><span class='op'>)</span><span class='op'>)</span>
+</code></pre>
+</div>
+</div>
+<div class="layout-chunk" data-layout="l-body">
+
+</div>
+<p>We can now compare the density of the simulated ages at death with the true density to see that our simulation worked fine.</p>
+<div class="layout-chunk" data-layout="l-body">
+<p><img src="math-of-mortality_files/figure-html5/fig_density_simu-1.png" width="624" /></p>
+</div>
+<h1 id="hazard-estimation-with-a-pch-model">Hazard estimation with a PCH model</h1>
+<p>Suppose now that we observe the simulated ages at death, not knowing the true hazard rate. Despite the fact that age at death is continuous, we can divide the time into 1-year intervals and assume that the hazard is constant in each interval. We can then use a Piecewise Constant Hazards model to estimate the hazard in these intervals.</p>
+<p>The following code transform the simulated age at death in continuous time, <code>t</code>, into counts of death and exposures at each age interval.</p>
+<div class="layout-chunk" data-layout="l-body">
+<div class="sourceCode">
+<pre class="sourceCode r"><code class="sourceCode r"><span class='co'># width of interval (1 year)</span>
+<span class='va'>eps</span> <span class='op'>&lt;-</span> <span class='fl'>1</span>
+<span class='co'># containers</span>
+<span class='va'>dth</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='op'>)</span>
+<span class='va'>exp</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='op'>)</span>
+<span class='co'># breaks for 1-year age interval</span>
+<span class='va'>brks</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/seq.html'>seq</a></span><span class='op'>(</span><span class='fl'>0</span>, <span class='fu'><a href='https://rdrr.io/r/base/Round.html'>ceiling</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/Extremes.html'>max</a></span><span class='op'>(</span><span class='va'>t</span><span class='op'>)</span><span class='op'>)</span>, <span class='va'>eps</span><span class='op'>)</span>
+<span class='kw'>for</span> <span class='op'>(</span><span class='va'>i</span> <span class='kw'>in</span> <span class='fl'>1</span><span class='op'>:</span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/length.html'>length</a></span><span class='op'>(</span><span class='va'>brks</span><span class='op'>)</span><span class='op'>-</span><span class='fl'>1</span><span class='op'>)</span><span class='op'>)</span><span class='op'>{</span>
+    <span class='co'># death counts by interval</span>
+    <span class='va'>d</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/sum.html'>sum</a></span><span class='op'>(</span> <span class='op'>(</span><span class='va'>t</span> <span class='op'>&gt;=</span> <span class='va'>brks</span><span class='op'>[</span><span class='va'>i</span><span class='op'>]</span> <span class='op'>&amp;</span> <span class='va'>t</span> <span class='op'>&lt;</span> <span class='va'>brks</span><span class='op'>[</span><span class='va'>i</span><span class='op'>+</span><span class='fl'>1</span><span class='op'>]</span><span class='op'>)</span> <span class='op'>)</span>
+    
+    <span class='co'># time lived in interval by those dying</span>
+    <span class='va'>e_d</span> <span class='op'>&lt;-</span> <span class='va'>t</span><span class='op'>[</span><span class='va'>t</span> <span class='op'>&gt;=</span> <span class='va'>brks</span><span class='op'>[</span><span class='va'>i</span><span class='op'>]</span> <span class='op'>&amp;</span> <span class='va'>t</span> <span class='op'>&lt;</span> <span class='va'>brks</span><span class='op'>[</span><span class='va'>i</span><span class='op'>+</span><span class='fl'>1</span><span class='op'>]</span><span class='op'>]</span> <span class='op'>-</span> <span class='va'>brks</span><span class='op'>[</span><span class='va'>i</span><span class='op'>]</span>
+    <span class='co'># time lived in interval by those surviving</span>
+    <span class='va'>e</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/sum.html'>sum</a></span><span class='op'>(</span><span class='va'>t</span> <span class='op'>&gt;=</span> <span class='va'>brks</span><span class='op'>[</span><span class='va'>i</span><span class='op'>+</span><span class='fl'>1</span><span class='op'>]</span><span class='op'>)</span><span class='op'>*</span><span class='va'>eps</span> <span class='op'>+</span> <span class='fu'><a href='https://rdrr.io/r/base/sum.html'>sum</a></span><span class='op'>(</span><span class='va'>e_d</span><span class='op'>)</span>
+    
+    <span class='va'>dth</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='va'>dth</span>, <span class='va'>d</span><span class='op'>)</span>
+    <span class='va'>exp</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='va'>exp</span>, <span class='va'>e</span><span class='op'>)</span>
+<span class='op'>}</span>
+<span class='co'># create data set</span>
+<span class='va'>df.counts</span> <span class='op'>&lt;-</span> <span class='fu'>tibble</span><span class='op'>(</span>interval <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/utils/head.html'>head</a></span><span class='op'>(</span><span class='va'>brks</span>, <span class='op'>-</span><span class='fl'>1</span><span class='op'>)</span>,
+               mid <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/utils/head.html'>head</a></span><span class='op'>(</span><span class='va'>brks</span>, <span class='op'>-</span><span class='fl'>1</span><span class='op'>)</span> <span class='op'>+</span> <span class='op'>(</span><span class='va'>eps</span><span class='op'>/</span><span class='fl'>2</span><span class='op'>)</span>,
+               age <span class='op'>=</span> <span class='va'>mid</span> <span class='op'>+</span> <span class='fl'>55</span>,
+               dth <span class='op'>=</span> <span class='va'>dth</span>,
+               exp <span class='op'>=</span> <span class='va'>exp</span><span class='op'>)</span>
+</code></pre>
+</div>
+</div>
+<p>These counts data are plotted on the bar charts below</p>
+<div class="layout-chunk" data-layout="l-body">
+<p><img src="math-of-mortality_files/figure-html5/fig_count-1.png" width="624" /></p>
+</div>
+<p>Assuming that the hazard is constant in each interval</p>
+<p><span class="math display">\[
+h(x) = \lambda_x ~ \forall [x, x+1) 
+\]</span></p>
+<p>we can write the PCH model as follow</p>
+<p><span class="math display">\[
+D_x \sim Poisson(\lambda_xE_x)
+\]</span> where <span class="math inline">\(D_x\)</span>, <span class="math inline">\(E_x\)</span> and <span class="math inline">\(\lambda_x\)</span> are deaths count, exposure and hazard rate for age <span class="math inline">\(x\)</span>, respectively. The following STAN code estimate the model</p>
+<div class="layout-chunk" data-layout="l-body">
+
+</div>
+<div class="layout-chunk" data-layout="l-body">
+<pre><code>data {
+  int&lt;lower=0&gt; A; // nber of intervals 
+  vector&lt;lower=0&gt;[A] age; // age-55
+  vector&lt;lower=0&gt;[A] n; // exposure
+  int&lt;lower=0&gt; d[A]; // deaths
+}
+parameters {
+  real a;
+  real&lt;lower=0&gt; b;
+}
+transformed parameters {
+  vector[A] eta = a + b*age; // linear predictor
+}
+model {
+  vector[A] log_lambda;
+  log_lambda = a + b*age + log(n);
+  // Likelihood
+  d ~ poisson_log(log_lambda);
+
+  // Priors
+  a ~ normal(0, 10);
+  b ~ normal(0, 10);
+}</code></pre>
+</div>
+<p>Finally, we extract the posterior draws of <span class="math inline">\(\lambda_x\)</span> and use them to get posterior draws of <span class="math inline">\(S(x)\)</span> and <span class="math inline">\(f(x)\)</span> using the math expressions presented earlier. Looking at the figures below, the PCH model is close to the truth with <span class="math inline">\(N=2e4\)</span> simulated ages at death.</p>
+<div class="layout-chunk" data-layout="l-body">
+<p><img src="math-of-mortality_files/figure-html5/post_draws-1.png" width="624" /></p>
+</div>
+<h1 id="summary">Summary</h1>
+<p>Survival analyses mainly require three complementary mathematical expressions: the hazard rate, the survival function and the age at death probability density function. Once we have a given mathematical form for the hazard rate (ie Gompertz), the two other functions can be derived. In order to test models, the inverse CDF sampling method allows to simulate survival data. One model considered in this post is the PCH model that can be modelled in a Bayesian estimation framework within STAN. Note that we did not consider censoring or truncation but it will be addressed in a future post.</p>
+<div class="sourceCode" id="cb3"><pre class="sourceCode r distill-force-highlighting-css"><code class="sourceCode r"></code></pre></div>
 <!--radix_placeholder_article_footer-->
 <!--/radix_placeholder_article_footer-->
 </div>
