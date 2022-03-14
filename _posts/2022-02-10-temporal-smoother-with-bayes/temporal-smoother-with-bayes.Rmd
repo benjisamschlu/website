@@ -83,10 +83,10 @@ The size of the sample has a big impact on the precision we have about the preva
 
 # Bayesian formula and smoothing
 
-The Bayes theorem can be expressed as follow
+The Bayes formula can be expressed as follow
 
 $$p(\theta|y) \propto L(\theta|y) \times \pi(\theta)$$
-where we have from left to right, the posterior distribution, the likelihood and the prior distribution. The likelihood describes the distribution of the data, depending on unknown parameters $\theta$ (see this [post](https://benjaminschluter/posts/2022-02-11-what-is-the-likelihood/)). The prior distribution expresses beliefs about $\theta$ and this beliefs can be expressed in such a way that they provide a mechanism by which smoothing can be imposed.
+where we have from left to right, the posterior distribution, the likelihood and the prior distribution. The likelihood describes the distribution of the data, depending on unknown parameters $\theta$ (see this [post](https://www.benjaminschluter.com/posts/2022-02-11-what-is-the-likelihood/)). The prior distribution expresses beliefs about $\theta$ and this beliefs can be expressed in such a way that they provide a mechanism by which smoothing can be imposed.
 
 # Modelling the prevalence
 
@@ -128,7 +128,7 @@ df.phi.sim <- tibble(x = rep(phi.sim, 2),
                                  labels = facet.names))
 df.phi.sim %>% 
         ggplot(aes(x = x, y = f)) +
-        geom_line(col = "white", size = 1.3) +
+        geom_line(col = "skyblue3", size = 1.3) +
         annotate("text",
                  label = expression(frac(1,2)~"("~phi[t-1]+phi[t+1]~")"),
                  x = 0,
@@ -147,7 +147,7 @@ df.phi.sim %>%
 ```
 
 
-Let's now estimate this model in STAN
+Let's now estimate this model on the sampled proportions using STAN
 
 ```{r, echo=FALSE}
 # STAN data
@@ -282,5 +282,5 @@ The figure clearly shows that prior can be used to increase smoothing of our est
  
 # Summary
 
-In Bayesian statistics, the posterior distribution of the parameters of interest is proportional to the product of the likelihood and the prior. In this post, it has been showned that the prior can be used as a mechanism to impose smoothing on the estimated quantity. This makes it straightforward to smooth estimates in a Bayesian estimation framework.
+In Bayesian statistics, the posterior distribution of the parameters of interest is proportional to the product of the likelihood and the prior. In this post, it has been shown that the prior can be used as a mechanism to impose smoothing on the estimated quantity. This makes it straightforward to smooth estimates in a Bayesian estimation framework.
 

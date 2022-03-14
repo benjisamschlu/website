@@ -88,7 +88,7 @@ Now suppose, as it is commonly the case when performing analyses, that the param
 
 $$p^{MLE} = argmax_p(p^Y(1-p)^{N-Y})$$
 
-The above expression does not contain $\binom{N}{Y}$ as it does not depend on $p$ and hence will not play a role in the optimization. To find the maximum of a function, we take its derivative with respect to the parameter of interest and set it to 0. In practice, it is easier to first transform the likelihood into a log-likelihood $l(p|Y,N)$ (monotonic transformation) and then find the value of the parameter maximizing it. Let's do that,
+The above expression does not contain $\binom{N}{Y}$ as it does not depend on $p$ and hence, will not play a role in the optimization. To find the maximum of a function, we take its derivative with respect to the parameter of interest and set it to 0. In practice, it is easier to first transform the likelihood into a log-likelihood $l(p|Y,N)$ (monotonic transformation) and then find the value of the parameter maximizing it. Let's do that,
 
 
 $$
@@ -121,7 +121,7 @@ In demography, we commonly assume that deaths at age $x$ ($d_x$) are Poisson dis
 
 $$d_x \sim Poisson(e_x \mu_x)$$
 
-where $e_x$ is the number of person exposed at age $x$ and $\mu_x$ is the force of mortality. Hence, from this assumption, the probability that deaths at age $x$ equal $d_x$ can be expressed as follow
+where $e_x$ is the number of person at risk of dying at age $x$ and $\mu_x$ is the force of mortality. Hence, from this assumption, the probability that deaths at age $x$ equal $d_x$ can be expressed as follow
 
 $$P(deaths~at~age~x=d_x) = \frac{(e_x \mu_x)^{d_x}e^{-(e_x \mu_x)}}{d_x!}$$
 
@@ -139,7 +139,7 @@ Hence, the likelihood is obtained by replacing $\mu_x$ by the above expression i
 
 $$L(a, b|d_x, e_x) = \prod^A_{x=0} \frac{(e_x ae^{bx})^{d_x}e^{-(e_x ae^{bx})}}{d_x!}$$
 
-The only thing that remains to be done in order to obtain an estimated value for $a$ and $b$ is to find their values maximizing the above likelihood. In comparison to the coin flip example, even after taking the logarithm of $L(a, b|d_x, e_x)$, we can't obtain an analytical solution for $a$ and $b$ that would maximize the log-likelihood. In this context, we have to use a numerical method such as the Iteratively Reweighted Least-Squares (IRLS) algorithm but this goes outside the scope of this post ..
+The only thing that remains to be done in order to obtain an estimated value for $a$ and $b$ is to find their values maximizing the above likelihood. In comparison to the coin flip example, even after taking the logarithm of $L(a, b|d_x, e_x)$, we can't obtain an analytical solution for $a$ and $b$ that would maximize the log-likelihood. In this context, we have to use a numerical method such as the Iteratively Reweighted Least-Squares (IRLS) algorithm but this goes outside the scope of this post ...
 
 
 

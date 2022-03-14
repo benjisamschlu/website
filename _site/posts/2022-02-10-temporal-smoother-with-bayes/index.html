@@ -2210,8 +2210,8 @@ d-appendix d-footnote-list a.footnote-backlink {
 </div>
 <p>The size of the sample has a big impact on the precision we have about the prevalence. This is clear from the picture with points much more spread around the true prevalence when <span class="math inline">\(n=100\)</span> in comparison to <span class="math inline">\(n=1000\)</span>. In real life, due to constraints during the surveying process (time, budget,..), we can’t have hughe sample size and thus, we usually end up with prevalence estimates that might be varying over time, just due to the sampling variation (high point to point variation on the left figure). In this context, smoothing/penalization helps in estimating a quantity over time, when we expect that the true underlying prevalence in a population exhibits some degree of smoothness.</p>
 <h1 id="bayesian-formula-and-smoothing">Bayesian formula and smoothing</h1>
-<p>The Bayes theorem can be expressed as follow</p>
-<p><span class="math display">\[p(\theta|y) \propto L(\theta|y) \times \pi(\theta)\]</span> where we have from left to right, the posterior distribution, the likelihood and the prior distribution. The likelihood describes the distribution of the data, depending on unknown parameters <span class="math inline">\(\theta\)</span> (see this <a href="https://benjaminschluter/posts/2022-02-11-what-is-the-likelihood/">post</a>). The prior distribution expresses beliefs about <span class="math inline">\(\theta\)</span> and this beliefs can be expressed in such a way that they provide a mechanism by which smoothing can be imposed.</p>
+<p>The Bayes formula can be expressed as follow</p>
+<p><span class="math display">\[p(\theta|y) \propto L(\theta|y) \times \pi(\theta)\]</span> where we have from left to right, the posterior distribution, the likelihood and the prior distribution. The likelihood describes the distribution of the data, depending on unknown parameters <span class="math inline">\(\theta\)</span> (see this <a href="https://www.benjaminschluter.com/posts/2022-02-11-what-is-the-likelihood/">post</a>). The prior distribution expresses beliefs about <span class="math inline">\(\theta\)</span> and this beliefs can be expressed in such a way that they provide a mechanism by which smoothing can be imposed.</p>
 <h1 id="modelling-the-prevalence">Modelling the prevalence</h1>
 <p>In our example, the likelihood should describe the distribution of a prevalence. It is common to model such type of variable with a logistic regression since the outcome variable is binary (an individual has a characteristic or not). This assumption leads to model the logit of <span class="math inline">\(p\)</span> -where <span class="math inline">\(p\)</span> is the prevalence we want to estimate- with a linear equation. Let’s write what we assumed so far</p>
 <p><span class="math display">\[
@@ -2231,7 +2231,7 @@ d-appendix d-footnote-list a.footnote-backlink {
 <div class="layout-chunk" data-layout="l-body">
 <p><img src="temporal-smoother-with-bayes_files/figure-html5/unnamed-chunk-4-1.png" width="624" /></p>
 </div>
-<p>Let’s now estimate this model in STAN</p>
+<p>Let’s now estimate this model on the sampled proportions using STAN</p>
 <div class="layout-chunk" data-layout="l-body">
 
 </div>
@@ -2279,7 +2279,7 @@ d-appendix d-footnote-list a.footnote-backlink {
 </div>
 <p>The figure clearly shows that prior can be used to increase smoothing of our estimated posterior prevalence. Indeed, the right side of the figure, where we assumed that <span class="math inline">\(\sigma\)</span>’s distribution is centered on 0, shows much less wiggle than on the left.</p>
 <h1 id="summary">Summary</h1>
-<p>In Bayesian statistics, the posterior distribution of the parameters of interest is proportional to the product of the likelihood and the prior. In this post, it has been showned that the prior can be used as a mechanism to impose smoothing on the estimated quantity. This makes it straightforward to smooth estimates in a Bayesian estimation framework.</p>
+<p>In Bayesian statistics, the posterior distribution of the parameters of interest is proportional to the product of the likelihood and the prior. In this post, it has been shown that the prior can be used as a mechanism to impose smoothing on the estimated quantity. This makes it straightforward to smooth estimates in a Bayesian estimation framework.</p>
 <div class="sourceCode" id="cb2"><pre class="sourceCode r distill-force-highlighting-css"><code class="sourceCode r"></code></pre></div>
 <!--radix_placeholder_article_footer-->
 <!--/radix_placeholder_article_footer-->
