@@ -1,7 +1,7 @@
 ---
 title: "Belgian demografie or démographie"
 description: |
-  Post presenting some demographic indicators of Belgium
+  Presenting some demographic indicators of Belgium.
 author:
   - name: Benjamin Schlüter
 date: 02-10-2022
@@ -73,7 +73,7 @@ pop2020 <- df.tot.pop %>% filter(Year == 2020) %>% mutate(N_B = N/1e6) %>% pull(
 # Population structure
 
 
-In 1930, the belgian population consisted of `r pop1930` millions inhabitants. Ninty years later, belgian's population reached `r pop2020` millions.
+In 1930, the Belgian population consisted of `r pop1930` millions inhabitants. Ninty years later, Belgian's population reached `r pop2020` millions.
 
 ```{r, echo = FALSE}
 ggplot(df.tot.pop, aes(x = Year, y = N)) +
@@ -157,7 +157,7 @@ ratio.dep <- df %>%
 
 ```
 
-In 2020, the median age of the belgian population is `r median_age` years old which means that the number of individuals younger that age equals the number of individual older that age. The share of individuals aged more than 65 in the population equals `r share65`%. An indicator frequently encountered is the age dependency ratio which is the ratio between the population not in the labor force (aged 0 to 14 and 65+) and those usually in the labor force (ages 15 to 64). It is a proxy to reflect the pressure on the productive population and it was equal to `r ratio.dep` in 2020.
+In 2020, the median age of the Belgian population is `r median_age` years old which means that the number of individuals younger that age equals the number of individual older that age. The share of individuals aged more than 65 in the population equals `r share65`%. An indicator frequently encountered is the age dependency ratio which is the ratio between the population not in the labor force (aged 0 to 14 and 65+) and those usually in the labor force (ages 15 to 64). It is a proxy to reflect the pressure on the productive population and it was equal to `r ratio.dep` in 2020.
 
 ```{r, echo = FALSE}
 # Population +65 yo

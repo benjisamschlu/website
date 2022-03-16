@@ -1,7 +1,7 @@
 ---
 title: "Easy smoothing with Bayes"
 description: |
-  Post demonstrating that Bayesian modeling makes it straightforward to smooth estimates.
+  Demonstrating that Bayesian modeling makes it straightforward to smooth estimates.
 author:
   - name: Benjamin Schlüter
 date: 02-10-2022

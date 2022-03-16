@@ -1,7 +1,7 @@
 ---
 title: "Survival kit for survival analyses"
 description: |
-  Post on survival analyses deriving main mathematical expressions, simulating survival data applying the inverse CDF sampling with STAN and estimating a Piecewise Constant Hazards model.
+  Deriving main mathematical expressions, simulating survival data applying an inverse CDF sampling with STAN and estimating a Piecewise Constant Hazards model.
 author:
   - name: Benjamin Schlüter
 date: 02-10-2022

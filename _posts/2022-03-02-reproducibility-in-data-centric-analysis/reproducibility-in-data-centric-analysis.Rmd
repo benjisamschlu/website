@@ -1,7 +1,7 @@
 ---
 title: "Reproducibility in data-centric analyses"
 description: |
-  Post highlighting good practices for reproducibility presented during the DEMO council.
+  Highlighting good practices for reproducibility presented during the DEMO council.
 author:
   - name: Benjamin Schlüter
 date: 02-10-2022
