@@ -1,7 +1,7 @@
 ---
 title: "Belgian demografie or démographie"
 description: |
-  Presenting some demographic indicators of Belgium.
+  Presenting a few Belgian demographic indicators.
 author:
   - name: Benjamin Schlüter
 date: 02-10-2022
@@ -21,7 +21,7 @@ knitr::opts_chunk$set(echo = FALSE)
 ```
 
 
-While doing my PhD, I realised that I was working on such specific things that I could not give basic demographic facts of Belgium when discussing with friends or relatives. Thus, I decided to create this post which looks at Belgium from a demographic perspective. Data sources used in this post are freely available from [Statbel Open Data](https://statbel.fgov.be/en/open-data) and the [Human Mortality Database](https://www.mortality.org/cgi-bin/hmd/country.php?cntr=BEL&level=1).
+While doing my PhD demography, I realized that my research was so specific that I could not give basic Belgian demographic facts when discussing with friends or relatives. Thus, I decided to create this post which looks at Belgium from a demographic perspective. Data sources used are freely available from [Statbel Open Data](https://statbel.fgov.be/en/open-data) and the [Human Mortality Database](https://www.mortality.org/cgi-bin/hmd/country.php?cntr=BEL&level=1).
 
 
 
@@ -73,7 +73,7 @@ pop2020 <- df.tot.pop %>% filter(Year == 2020) %>% mutate(N_B = N/1e6) %>% pull(
 # Population structure
 
 
-In 1930, the Belgian population consisted of `r pop1930` millions inhabitants. Ninty years later, Belgian's population reached `r pop2020` millions.
+In 1930, the Belgian population consisted of `r pop1930` millions inhabitants. Ninety years later, Belgium's population reached `r pop2020` millions .
 
 ```{r, echo = FALSE}
 ggplot(df.tot.pop, aes(x = Year, y = N)) +
@@ -157,7 +157,7 @@ ratio.dep <- df %>%
 
 ```
 
-In 2020, the median age of the Belgian population is `r median_age` years old which means that the number of individuals younger that age equals the number of individual older that age. The share of individuals aged more than 65 in the population equals `r share65`%. An indicator frequently encountered is the age dependency ratio which is the ratio between the population not in the labor force (aged 0 to 14 and 65+) and those usually in the labor force (ages 15 to 64). It is a proxy to reflect the pressure on the productive population and it was equal to `r ratio.dep` in 2020.
+In 2020, the median age of the Belgian population was `r median_age` years old which means that the number of individuals under that age was equal to the number of individuals above that age. The share of individuals aged more than 65 in the population was `r share65`%. An indicator frequently encountered is the age dependency ratio which is the ratio between the population not in the labor force (aged 0 to 14 and 65+) and those usually in the labor force (ages 15 to 64). It is a proxy to reflect the pressure on the productive population and it was equal to `r ratio.dep` in 2020.
 
 ```{r, echo = FALSE}
 # Population +65 yo
@@ -194,7 +194,7 @@ df %>%
 
 ```
 
-Let's now look at the ratio of male versus female over all ages. Globally, there are 105 male births for 100 female births which explains why the ratio is close to 1.05 for the youngest age groups in Belgium. The ratio gets closer to 1 during the 30ies due to what is called the mortality hump (violent mortality), higher for young men. As we move to older age groups, the ratio converges quickly to zero due to a lower mortality for females in comparison to males.
+Let's now look at the ratio of male versus female across all ages. Globally, there are 105 male births for 100 female births, which explains why the ratio is close to 1.05 for the youngest age groups in Belgium. The ratio gets closer to 1 around 30 years old due to what is called the mortality hump (violent mortality), higher for young men. As we move to older age groups, the ratio converges quickly to zero due to a lower mortality for women in comparison to men.
 
 ```{r, echo = FALSE}
 # Sex ratio
@@ -245,7 +245,7 @@ av.birth.2019 <- df.daily.birth %>%
 ```
 
 
-The figure below shows the daily number of births over the year 2019. There is substantial variation between week days and the week-end, in part explained by induced births and scheduled C-sections taking place during the week. It is quite shocking to observe how a natural process is structured by the medical profession. The average number of daily births during the week is `r av.birth.2019`.
+The figure below shows the daily number of births over the year 2019. There is a substantial difference between week days and the week-end, partly explained by induced births and scheduled C-sections taking place during the week. It is quite striking to observe how a natural process can be structured by the medical profession. The average number of daily births during the week is `r av.birth.2019`.
 
 ```{r, echo = FALSE}
 
@@ -306,7 +306,7 @@ aab <- sum(df.fx$fx * (df.fx$age+0.5)) / tfr.2019
 
 
 
-By dividing the number of births by the number of women susceptible to have a birth at each age between 15 and 49 years old (reproductive ages), you obtain age-specific fertility rates (ASFR). They are presented for all reproductive ages in the figure below.  The highest ASFR are at 29, 30 and 31 years old which means that the frequency of giving births for women at these ages is the highest. Summing these rates at all reproductive ages gives us the 2019 total fertility rate (TFR), equal to `r tfr.2019`. It represents the number of children a woman would bear if she survived the reproductive ages, and experienced at each age the fertility rate of women of that age in 2019. It is important to realize that it consists of a hypothetical scenario which is noneless informative. The average age of mothers at the birth of their child is `r round(aab, 0)` in 2019.
+By dividing the number of births by the number of women susceptible to give birth at each age between 15 and 49 years old (reproductive ages), you obtain age-specific fertility rates (ASFR). They are presented for all reproductive ages in the figure below.  The highest ASFR are at 29, 30 and 31 years old which means that the frequency of giving birth for women at these ages is the highest. Summing these rates at all reproductive ages gives us the 2019 total fertility rate (TFR), equal to `r tfr.2019`. It represents the number of children a woman would bear if she survived the reproductive ages, and experienced at each age the fertility rate of women of that age in 2019. It is important to realize that it consists of a hypothetical scenario which is nonetheless informative. The average age of mothers when their child is born is `r round(aab, 0)` in 2019.
 
 
 
@@ -347,7 +347,7 @@ av.dth.2019 <- df.daily.dth %>%
 ```
 
 
-In the figure below, we show the daily number of deaths over the period 2016-2019. The average number of daily deaths in 2019 is equal to `r av.dth.2019 `. There is however a high variation around that average due to a clear seasonal pattern of mortality. Indeed, daily death counts are higher in Winter respectively to Summer due to more cardio- and cerebro-vascular diseases and respiratory diseases. 
+In the figure below, we show the daily number of deaths over the period 2016-2019. The average number of daily deaths in 2019 was equal to `r av.dth.2019 `. There is however a high variation around that average due to a clear seasonal pattern of mortality. Indeed, daily death counts are higher in Winter respectively to Summer due to more cardio- and cerebro-vascular diseases and respiratory diseases. 
 
 ```{r, echo = FALSE}
 
@@ -385,7 +385,7 @@ e0.2019.f <- df.e0 %>% filter(Year == 2019) %>% pull(e0.f) %>% round(., 1)
 ```
 
 
-When studying mortality, age-specific mortality rates (ASMR) are equivalent to age-specific fertility rates in the context of fertility studies. For a given year, we divide the number of deaths by the number of person exposed to the risk of dying at each age. It is common to set a logarithmic scale to better visualize the changes over ages. We end up having a kind of inverse J-shape. Looking at the difference between curves for male and female allows to understand the evolution of the male to female ratio presented earlier.
+When studying mortality, age-specific mortality rates (ASMR) are equivalent to age-specific fertility rates (ASFR) in the context of fertility studies. For a given year, we divide the number of deaths by the number of people exposed to the risk of dying at each age. It is common to set a logarithmic scale to better visualize the changes over ages. We end up having a kind of inverse J-shape. Looking at the difference between curves for male and female allows to understand the evolution of the male to female ratio presented earlier.
 
 ```{r, echo = FALSE}
 # Load mx
@@ -418,7 +418,7 @@ ggplot(df.mx, aes(x = Age)) +
 
 
 
-Finally, let's look at the yearly life expectancy at birth over time in Belgium. As for the TFR, this is a hypothetical measure. It reflects the expected number of years an individual is expected to live, assuming that at each age, individuals face the mortality of the year considered. This means that in the year 1941, we suppose that individuals face the mortality observed during this year throughout their life. Hence, we assume that individuals live their entire life during the war taking place in the year 1941. This explains the big dip in life expectancy at birth for these years on the plot below. In 2019, life expectancy at birth is `r e0.2019.m` and `r e0.2019.f` for male and female, respectively.
+Finally, let's look at the yearly life expectancy at birth over time in Belgium. As for the TFR, this is a hypothetical measure. It reflects the expected number of years an individual is expected to live, assuming that at each age, individuals face the mortality of the year considered. This means that in the year 1941, we suppose that individuals face the mortality observed during this year throughout their life, as if they lived their entire life during that year. This explains the big dip in life expectancy at birth for these years on the plot below. In 2019, life expectancy at birth was `r e0.2019.m` for men and `r e0.2019.f` for women.
 
 
 ```{r, echo = FALSE}
@@ -433,4 +433,6 @@ ggplot(df.e0, aes(x = Year)) +
 ```
 
 
+# Summary
 
+Thanks to this post, I hope that next time someone asks me about Belgian demography, I will know what to answer. Otherwise, I might add elements to the post! 

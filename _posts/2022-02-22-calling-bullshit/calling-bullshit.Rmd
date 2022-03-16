@@ -10,6 +10,7 @@ output:
     self_contained: false
     highlight: monochrome
 preview: false
+draft: true
 ---
 
 Carl Bergstrom and Jevin West wrote the book ["Calling Bullshit - the art of skepticism in a data-driven world"](https://www.penguinrandomhouse.com/books/563882/calling-bullshit-by-carl-t-bergstrom-and-jevin-d-west/) based on a course they taught in 2017, entitled ["Calling Bullshit in the age of big data" ](https://www.callingbullshit.org/videos.html). The aim of their course is to learn how to spot bullshit and effectively calling it, focusing on claims, not people. They are particularly seeing bullshit in the guise of big data and fancy algorithms which is the specific type of bullshit they are adressing in the course. 
@@ -130,7 +131,15 @@ Glass Slippers: structure of data defines visualization's form used. Fancy != in
 The principle of proportional ink: "when a sheded ..."
 
 
+
+
 # Publication bias
+
+Replication: re-run the study on a different sample. Do we obtain the same result ?
+
+Reproducibility: reproduce the same study through code or experimental conditions
+
+Few grants offered to reproduce
 
 # Scholarly publishing and predatory publishers
 

@@ -326,7 +326,7 @@ $$
 h(x) = \lambda_x ~ \forall x \in [x, x+1) 
 $$
 
-we can write the PCH model as follow
+we can write the PCH model as follows
 
 $$
 D_x \sim Poisson(\lambda_xE_x)
