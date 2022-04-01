@@ -1,0 +1,587 @@
+---
+title: "Years and ages aggregation, a solution to compute life table at small scale?"
+description: |
+  Runing a Monte-Carlo simulation to quantify the uncertainty reduction in life expectancy when aggregating over ages and years.
+author:
+  - name: Benjamin Schlüter
+date: 02-10-2022
+output:
+  distill::distill_article:
+    self_contained: false
+    highlight: monochrome
+---
+
+
+
+Studying health inequalities within a country requires to obtain subnational mortality estimates to quantify geographic disparities. One of the difficulties is the presence of small populations in which the stochastic variation in death counts is relatively high. This produces shaky values at small-scale for life-table functions. Two solutions are frequently encountered: the use of statistical models to smooth estimates and the aggregation of mortality data over years and/or ages. In several articles, when authors aggregate mortality data over ages and/or years, they sometimes present life table functions as if they were deterministic. In this post, I would like to assess to what extend this aggregation effectively reduce uncertainty. 
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE)
+```
+
+
+```{r}
+
+
+packages <- c("tidyverse", "ggplot2", "HMDHFDplus", "viridis", "scales",
+              "cowplot")
+invisible( lapply(packages, library, character.only = TRUE))
+
+# ggplot theme
+source("./modeling/function/theme_dark_blue.R")
+
+# Credentials
+userID <- "benjamin-samuel.schluter@uclouvain.be"
+pwd <- "Marieke0917"
+
+
+## Load data --------------------------------------------------------
+
+# Register data
+df <- readRDS("../PhD/Research Projects/subnational_covid_bel/data/tidy/df_ageyearsexadmins_extrapol2020exp.rda")
+
+# HMD data 
+qx <- readHMDweb("BEL", "fltper_1x1", userID, pwd) %>%
+        select(Year, Age, qx) %>% 
+        filter(Year == 2018) %>% 
+        pull(qx)
+
+prop.pop <- readHMDweb("BEL", "Population", userID, pwd) %>%
+        filter(Year == 2018) %>% 
+        group_by(Year) %>% 
+        mutate(totpop = sum(Female1)) %>% 
+        ungroup() %>% 
+        mutate(prop = Female1/totpop) %>% 
+        pull(prop)
+# check: sum(prop.pop)
+
+
+```
+
+
+
+```{r}
+
+## Median size of NUTS3 and 4 ---------------------------------------
+
+# NUTS 3 for female in 2018
+sizesN3 <- df %>% 
+        filter(year == 2018,
+               sex == "f") %>% 
+        group_by(dist) %>% 
+        summarise(EXP = sum(exp)) %>% 
+        pull(EXP) %>% 
+        quantile(., probs = c(0.1, 0.5, 0.9))
+# NUTS 4 for female in 2018 
+sizesN4 <- df %>% 
+        filter(year == 2018,
+               sex == "f") %>% 
+        group_by(comm) %>% 
+        summarise(EXP = sum(exp)) %>% 
+        pull(EXP) %>% 
+        quantile(., probs = c(0.1, 0.5, 0.9))
+
+sizes <- c(sizesN4, sizesN3)
+
+```
+
+
+
+
+
+
+# Monte-Carlo simulation
+
+
+The Monte-Carlo simulation is built upon the Chiang method where we assume that deaths are realizations from a binomial distribution. The number of trials is equal to the people at risk ${}_nN_x$ and the success probability for each trial is the probability of dying ${}_nq_x$ (which in real life, does not consist of a success). We can thus simulate an *i*-th series of death counts as follows:
+
+$${}_nD_{x,i} \sim Binomial({}_nN_x, {}_nq_x).$$
+
+We repeat this procedure 4,000 times for different population sizes (${}_nN_x$), using French ${}_nq_x$ for women in 2018 from the [Human Mortality Database](https://www.mortality.org/cgi-bin/hmd/country.php?cntr=FRA&level=2). From these, we obtain 4,000 associated life tables and life expectancies at birth ($e^0_i$). For a given population size, we can then obtain 95\% (80\%) confidence interval around life expectancy at birth using the 2.5 (10) and 97.5 (90) quantiles of the $e^0_i$ realizations. We look at six population sizes representing the 1<sup>st</sup>, 5<sup>th</sup> and 10<sup>th</sup> deciles of population sizes corresponding to two administrative levels (NUTS3 and municipality) in Belgium. These deciles equal approximately, 2.000, 6.000 18.000 and 31.000, 102.000, 278.000 for municipality and NUTS3, respectively.
+
+When aggregating over years to compute life tables, we assume a constant mortality, a constant population size and a stable population structure.
+
+```{r}
+## Monte-carlo Simulation for e0 ---------------------------------------------
+
+source("../PhD/Research Projects/ideas/code/functions/LifeTableFUN.R")
+
+# Sim parameters
+ns <- 4e3
+Age <- 0:110
+m <- length(Age)
+
+# Containers
+df.e0 <- data.frame()
+
+# MC simulations for each size
+for (s in sizes) {
+        # Scale down population
+        pop.sim <- ceiling(prop.pop * s)
+        # sum(pop.sim) == sizesN3[2]
+        
+        # MC simulation
+        Y <- suppressWarnings(matrix(rbinom(m*ns,
+                                            pop.sim,
+                                            qx),
+                                     m,ns))
+        ## simulated probabilities
+        QX <- Y/pop.sim
+        
+        e0 <- c()
+        # Camarda fct for life table computation
+        for (it in 1:ns) {
+                # a_inf from HMD
+                e0.temp <- lifetable.qx(Age, QX[, it], sex = "F", last.ax = 1.26)$ex[1]
+                e0 <- c(e0, e0.temp)
+        }
+        
+        e0.sim <- quantile(e0, probs = c(0.025, 0.1, 0.5, 0.9, 0.975))
+        df.e0 <- rbind(df.e0,
+                       c(s, as.numeric(e0.sim))
+                       )
+        
+}
+colnames(df.e0) <- c("size", "e0.l95", "e0.l80", "e0.m", "e0.u80", "e0.u95")
+df.e0 <- df.e0 %>% 
+        mutate(diff = round(e0.u95 - e0.l95, 1))
+
+# Plot 
+fig.e0.1y <- df.e0 %>% 
+        mutate(size = factor(size,
+                             labels = c("1st dec munty",
+                                        "5th dec munty",
+                                        "9th dec munty",
+                                        "1st dec NUTS3",
+                                        "5th dec NUTS3",
+                                        "9th dec NUTS3"))) %>% 
+        ggplot(aes(y = size)) +
+        geom_point(aes(x = e0.m),
+                   size = 3,
+                   col = "skyblue3") +
+        geom_errorbar(aes(xmin = e0.l95,
+                          xmax = e0.u95),
+                      width = 0,
+                      col = "white") +
+        geom_errorbar(aes(xmin = e0.l80,
+                          xmax = e0.u80),
+                      size = 2,
+                      col = "skyblue3",
+                      width = 0) +
+        geom_text(aes(x = e0.m, y = size, label = diff), 
+                  vjust = -1,
+                  size = 4,
+                 col = "white") +
+        geom_vline(xintercept = 83.69,
+                   col = "red4",
+                   linetype = "dashed") +
+        scale_x_continuous(limits = c(77.5, 89.5), breaks = seq(78, 89, 1)) +  
+        theme_dark_blue() +
+        labs(x = "Life expectancy at birth",
+             y = "Population sizes") +
+        annotate("text",
+                 x = 87.5,
+                 y = 5.5,
+                 label = "95% CI",
+                 col = "white") +
+        annotate("segment",
+                 x = 86,
+                 xend = 86.5,
+                 y = 5.5,
+                 yend = 5.5,
+                 col = "white") +
+        annotate("text",
+                 x = 87.5,
+                 y = 5,
+                 label = "80% CI",
+                 col = "skyblue3") +
+        annotate("segment",
+                 x = 86,
+                 xend = 86.5,
+                 y = 5,
+                 yend = 5,
+                 col = "skyblue3",
+                 size = 2)
+
+```
+
+
+
+```{r}
+
+## Effect of years aggregation ---------------------------------------------
+
+# Four years
+
+# Containers
+df.e0 <- data.frame()
+
+# MC simulations for each size
+for (s in sizes) {
+        # Scale down population
+        pop.sim <- ceiling(prop.pop * s)
+        # sum(pop.sim) == sizesN3[2]
+        
+        # MC simulation
+        Y <- suppressWarnings(matrix(rbinom(m*ns,
+                                            pop.sim,
+                                            qx),
+                                     m,ns))
+        
+        X <- suppressWarnings(matrix(rbinom(m*ns,
+                                            pop.sim,
+                                            qx),
+                                     m,ns))
+        
+        Z <- suppressWarnings(matrix(rbinom(m*ns,
+                                            pop.sim,
+                                            qx),
+                                     m,ns))
+        
+        W <- suppressWarnings(matrix(rbinom(m*ns,
+                                            pop.sim,
+                                            qx),
+                                     m,ns))
+        ## simulated probabilities assuming 
+        ## constant population and mortality
+        QX <- (Y + X + Z + W)/ (4*pop.sim)
+        
+        e0 <- c()
+        # Camarda fct for life table computation
+        for (it in 1:ns) {
+                
+                e0.temp <- lifetable.qx(Age, QX[, it], sex = "F", last.ax = 1.26)$ex[1]
+                e0 <- c(e0, e0.temp)
+        }
+        
+        e0.sim <- quantile(e0, probs = c(0.025, 0.1, 0.5, 0.9, 0.975))
+        df.e0 <- rbind(df.e0,
+                       c(s, as.numeric(e0.sim))
+        )
+        
+}
+colnames(df.e0) <- c("size", "e0.l95", "e0.l80", "e0.m", "e0.u80", "e0.u95")
+df.e0 <- df.e0 %>% 
+        mutate(diff = round(e0.u95 - e0.l95, 1))
+
+# Plot 
+fig.e0.4y <- df.e0 %>% 
+        mutate(size = factor(size,
+                             labels = c("1st dec munty",
+                                        "5th dec munty",
+                                        "9th dec munty",
+                                        "1st dec NUTS3",
+                                        "5th dec NUTS3",
+                                        "9th dec NUTS3"))) %>% 
+        ggplot(aes(y = size)) +
+        geom_point(aes(x = e0.m),
+                   size = 3,
+                   col = "skyblue3") +
+        geom_errorbar(aes(xmin = e0.l95,
+                          xmax = e0.u95),
+                      width = 0,
+                      col = "white") +
+        geom_errorbar(aes(xmin = e0.l80,
+                          xmax = e0.u80),
+                      size = 2,
+                      col = "skyblue3",
+                      width = 0) +
+        geom_text(aes(x = e0.m, y = size, label = diff), 
+                  vjust = -1,
+                  size = 4,
+                 col = "white") +
+        geom_vline(xintercept = 83.69,
+                   col = "red4",
+                   linetype = "dashed") +
+        scale_x_continuous(limits = c(77.5, 89.5), breaks = seq(78, 89, 1)) +  
+        theme_dark_blue() +
+        labs(x = "Life expectancy at birth",
+             y = "Population sizes") +
+        annotate("text",
+                 x = 87.5,
+                 y = 5.5,
+                 label = "95% CI",
+                 col = "white") +
+        annotate("segment",
+                 x = 86,
+                 xend = 86.5,
+                 y = 5.5,
+                 yend = 5.5,
+                 col = "white") +
+        annotate("text",
+                 x = 87.5,
+                 y = 5,
+                 label = "80% CI",
+                 col = "skyblue3") +
+        annotate("segment",
+                 x = 86,
+                 xend = 86.5,
+                 y = 5,
+                 yend = 5,
+                 col = "skyblue3",
+                 size = 2)
+
+```
+
+
+```{r}
+
+## Effect of ages aggregation ---------------------------------------------
+
+# Aggregate over 5y age group
+qx5 <- tibble(qx = qx,
+              age = c(0, rep(1, 4), rep(seq(5, 105, 5), each = 5), 110)) %>%
+        mutate(px = 1 - qx) %>% 
+        group_by(age) %>%
+        summarise(qx = 1 - prod(px)) %>% 
+        pull(qx)
+
+prop.pop5 <- tibble(prop.pop = prop.pop,
+                   age = c(0, rep(1, 4), rep(seq(5, 105, 5), each = 5), 110)) %>%
+        group_by(age) %>%
+        summarise(prop.pop = sum(prop.pop)) %>% 
+        pull(prop.pop)
+
+# Sim pars
+m <- length(qx5)
+Age <- c(0, 1, seq(5, 110, 5))
+
+# Containers
+df.e0 <- data.frame()
+
+# MC simulations for each size
+for (s in sizes) {
+        # Scale down population
+        pop.sim <- ceiling(prop.pop5 * s)
+        # sum(pop.sim) == sizesN3[2]
+        
+        # MC simulation
+        Y <- suppressWarnings(matrix(rbinom(m*ns,
+                                            pop.sim,
+                                            qx5),
+                                     m,ns))
+        ## simulated probabilities
+        QX <- Y/pop.sim
+        
+        e0 <- c()
+        # Camarda fct for life table computation
+        for (it in 1:ns) {
+                
+                e0.temp <- lifetable.qx(Age, QX[, it], sex = "F", last.ax = 1.26)$ex[1]
+                e0 <- c(e0, e0.temp)
+        }
+        
+        e0.sim <- quantile(e0, probs = c(0.025, 0.1, 0.5, 0.9, 0.975))
+        df.e0 <- rbind(df.e0,
+                       c(s, as.numeric(e0.sim))
+        )
+        
+}
+colnames(df.e0) <- c("size", "e0.l95", "e0.l80", "e0.m", "e0.u80", "e0.u95")
+df.e0 <- df.e0 %>% 
+        mutate(diff = round(e0.u95 - e0.l95, 1))
+
+# Plot 
+fig.e0.5a <- df.e0 %>% 
+        mutate(size = factor(size,
+                             labels = c("1st dec munty",
+                                        "5th dec munty",
+                                        "9th dec munty",
+                                        "1st dec NUTS3",
+                                        "5th dec NUTS3",
+                                        "9th dec NUTS3"))) %>% 
+        ggplot(aes(y = size)) +
+        geom_point(aes(x = e0.m),
+                   size = 3,
+                   col = "skyblue3") +
+        geom_errorbar(aes(xmin = e0.l95,
+                          xmax = e0.u95),
+                      width = 0,
+                      col = "white") +
+        geom_errorbar(aes(xmin = e0.l80,
+                          xmax = e0.u80),
+                      size = 2,
+                      col = "skyblue3",
+                      width = 0) +
+        geom_text(aes(x = e0.m, y = size, label = diff), 
+                  vjust = -1,
+                  size = 4,
+                 col = "white") +
+        geom_vline(xintercept = 83.69,
+                   col = "red4",
+                   linetype = "dashed") +
+        scale_x_continuous(limits = c(77.5, 89.5), breaks = seq(78, 89, 1)) +  
+        theme_dark_blue() +
+        labs(x = "Life expectancy at birth",
+             y = "Population sizes") +
+        annotate("text",
+                 x = 87.5,
+                 y = 5.5,
+                 label = "95% CI",
+                 col = "white") +
+        annotate("segment",
+                 x = 86,
+                 xend = 86.5,
+                 y = 5.5,
+                 yend = 5.5,
+                 col = "white") +
+        annotate("text",
+                 x = 87.5,
+                 y = 5,
+                 label = "80% CI",
+                 col = "skyblue3") +
+        annotate("segment",
+                 x = 86,
+                 xend = 86.5,
+                 y = 5,
+                 yend = 5,
+                 col = "skyblue3",
+                 size = 2)
+
+```
+
+
+# Results
+
+
+The figure below shows 95\% and 80\% confidence intervals for life expectancy at birth associated to the six population sizes considered. Top left panel consists of building life tables on 1 year $\times$ 1year age group, top right panel on 4 years $\times$ 1 year age group, bottom left on 1 year $\times$ 5 years age group and bottom right on 4 years $\times$ 5 years age group. Aggregating over 4 years (top right panel) is clearly not sufficient to reduce uncertainty at the municipality level but also at the NUTS3 level for the smallest population sizes in this group. Focusing now on the bottom right panel, despite a significant reduction in uncertainty, none of the confidence interval's width for municipalities are below 1 year. Hence, substantial stochasticity remains for such small areas.
+
+
+```{r, layout="l-body-outset", fig.width=10, fig.height=8}
+
+## Effect of years ages aggregation ---------------------------------------------
+
+
+# Four years, five ages
+
+# Containers
+df.e0 <- data.frame()
+
+# MC simulations for each size
+for (s in sizes) {
+        # Scale down population
+        pop.sim <- ceiling(prop.pop5 * s)
+        # sum(pop.sim) == sizesN3[2]
+        
+        # MC simulation
+        Y <- suppressWarnings(matrix(rbinom(m*ns,
+                                            pop.sim,
+                                            qx5),
+                                     m,ns))
+        
+        X <- suppressWarnings(matrix(rbinom(m*ns,
+                                            pop.sim,
+                                            qx5),
+                                     m,ns))
+        
+        Z <- suppressWarnings(matrix(rbinom(m*ns,
+                                            pop.sim,
+                                            qx5),
+                                     m,ns))
+        
+        W <- suppressWarnings(matrix(rbinom(m*ns,
+                                            pop.sim,
+                                            qx5),
+                                     m,ns))
+        ## simulated probabilities assuming 
+        ## constant population and mortality
+        QX <- (Y + X + Z + W)/ (4*pop.sim)
+        
+        e0 <- c()
+        # Camarda fct for life table computation
+        for (it in 1:ns) {
+                
+                e0.temp <- lifetable.qx(Age, QX[, it], sex = "F", last.ax = 1.26)$ex[1]
+                e0 <- c(e0, e0.temp)
+        }
+        
+        e0.sim <- quantile(e0, probs = c(0.025, 0.1, 0.5, 0.9, 0.975))
+        df.e0 <- rbind(df.e0,
+                       c(s, as.numeric(e0.sim))
+        )
+        
+}
+colnames(df.e0) <- c("size", "e0.l95", "e0.l80", "e0.m", "e0.u80", "e0.u95")
+df.e0 <- df.e0 %>% 
+        mutate(diff = round(e0.u95 - e0.l95, 1))
+
+# Plot 
+fig.e0.4y.5a <- df.e0 %>% 
+        mutate(size = factor(size,
+                             labels = c("1st dec munty",
+                                        "5th dec munty",
+                                        "9th dec munty",
+                                        "1st dec NUTS3",
+                                        "5th dec NUTS3",
+                                        "9th dec NUTS3"))) %>% 
+        ggplot(aes(y = size)) +
+        geom_point(aes(x = e0.m),
+                   size = 3,
+                   col = "skyblue3") +
+        geom_errorbar(aes(xmin = e0.l95,
+                          xmax = e0.u95),
+                      width = 0,
+                      col = "white") +
+        geom_errorbar(aes(xmin = e0.l80,
+                          xmax = e0.u80),
+                      size = 2,
+                      col = "skyblue3",
+                      width = 0) +
+        geom_text(aes(x = e0.m, y = size, label = diff), 
+                  vjust = -1,
+                  size = 4,
+                 col = "white") +
+        geom_vline(xintercept = 83.69,
+                   col = "red4",
+                   linetype = "dashed") +
+        scale_x_continuous(limits = c(77.5, 89.5), breaks = seq(78, 89, 1)) +  
+        theme_dark_blue() +
+        labs(x = "Life expectancy at birth",
+             y = "Population sizes") +
+        annotate("text",
+                 x = 87.5,
+                 y = 5.5,
+                 label = "95% CI",
+                 col = "white") +
+        annotate("segment",
+                 x = 86,
+                 xend = 86.5,
+                 y = 5.5,
+                 yend = 5.5,
+                 col = "white") +
+        annotate("text",
+                 x = 87.5,
+                 y = 5,
+                 label = "80% CI",
+                 col = "skyblue3") +
+        annotate("segment",
+                 x = 86,
+                 xend = 86.5,
+                 y = 5,
+                 yend = 5,
+                 col = "skyblue3",
+                 size = 2)
+
+# Plot all aggregation together
+plot_grid(fig.e0.1y,
+          fig.e0.4y,
+          fig.e0.5a,
+          fig.e0.4y.5a,
+          labels = c("",
+                     "4y aggr.",
+                     "5a aggr.",
+                     "4y & 5a aggr."),
+          label_x = 0.2,
+          label_y = 0.95,
+          label_colour = "white",
+          hjust = 0,
+          ncol = 2,
+          byrow = TRUE)
+
+```
+
+
+# Summary
+
+
+Aggregating over ages and years sometimes lead to present life table functions of small areas as deterministic. Using a Monte-Carlo simulation, we showed that performing such aggregation indeed efficiently reduces uncertainty. However, at the smallest administrative level considered (municipality), these measures are still subject to substantial stochasticity and uncertainty intervals should be presented. We did not consider aggregating over more years and ages. In the former case, we thought that in a context of diminishing mortality, aggregating over more than 4 years won't be so informative on the true mortality level experienced at a given time point. In the latter case, grouping ages together requires to assume that mortality rates are constant within age groups, which is an unrealistic assumption when more than five years are considered. Please note that these two later points are personnal opinions.
