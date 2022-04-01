@@ -20,9 +20,9 @@ In this post, I would like to introduce three complementary mathematical functio
 
 # Complementary mathematical functions
 
-Let denote X: the age at death of an individual and assume that this random variable is $X\geq 0$ and continuous. 
+Let's denote X: the age at death of an individual and assume that this random variable is $X\geq 0$ and continuous. 
 
-Suriving beyond age x is expressed as
+Surviving beyond age x is expressed as
 
 $$
 \begin{align}
@@ -83,7 +83,7 @@ H(x) & = \int^x_0h(t)dt \\
 \end{align}
 $$
 
-and replace it in the survival function
+and replacing it in the survival function
 
 $$
 \begin{align}
@@ -103,7 +103,7 @@ f(x) & = h(x)S(x) \\
 $$
 
 
-Suppose now that we follow individuals from their 55$^{th}$ birthdays to their death. Using the [Human Mortality Database for Belgium](https://www.mortality.org/cgi-bin/hmd/country.php?cntr=BEL&level=1) in 2015, we estimated the Gompertz parameters to be $a = 0.0006$ and $b = 0.128$ on the ages 55 to 95 years old. Note that we restricted the estimation to these ages as the Gompertz model does not perform well for the young and oldest ages.
+Suppose now that we follow individuals from their 55$^{th}$ birthday to their death. Using the [Human Mortality Database for Belgium](https://www.mortality.org/cgi-bin/hmd/country.php?cntr=BEL&level=1) in 2015, we estimated the Gompertz parameters to be $a = 0.0006$ and $b = 0.128$ on the ages 55 to 95 years old. Note that we restricted the estimation to these ages as the Gompertz model does not perform well for the youngest and oldest ages.
 
 With this in hand, we can now plot our three complementary functions assuming Gompertz hazard and setting $a$ and $b$ to the values we estimated.
 
@@ -184,12 +184,12 @@ The inverse CDF sampling method can be used to generate data. This method uses t
 
 $$ U = F(X) \sim U_{[0,1]}$$
 
-Therefore, if $u_1,...,u_n$ is an indenpendent and identically distributed (iid) random sample from $U_{[0,1]}$, then
+Therefore, if $u_1,...,u_n$ is an independent and identically distributed (iid) random sample from $U_{[0,1]}$, then
 
 $$\{x_i:x_i = F^{-1}(u_i), i=1,...,n\}$$
 is an iid random sample from $F()$. The algorithm depends on the feasibility to inverse $F()$. 
 
-Applying this method on the survival function, we can simulate ages at death
+Applying this method to the survival function, we can simulate ages at death
 
 
 $$
@@ -238,7 +238,7 @@ t <- array(extract(simu)$t[1,])
 ```
 
 
-We can now compare the density of the simulated ages at death with the true density to see that our simulation worked fine.  
+We can now compare the density of the simulated ages at death with the true density to check if our simulation worked fine.  
 
 ```{r fig_density_simu, echo = FALSE}
 # compare histogram with true pdf of t
@@ -264,7 +264,7 @@ ggplot() +
 
 Suppose now that we observe the simulated ages at death, not knowing the true hazard rate. Despite the fact that age at death is continuous, we can divide the time into 1-year intervals and assume that the hazard is constant in each interval. We can then use a Piecewise Constant Hazards model to estimate the hazard in these intervals. 
 
-The following code transform the simulated age at death in continuous time, `t`, into counts of death and exposures at each age interval.
+The following code transforms the simulated age at death in continuous time, `t`, into counts of deaths and exposures at each age interval.
 
 ```{r counts, echo = TRUE}
 # width of interval (1 year)
@@ -331,7 +331,7 @@ we can write the PCH model as follows
 $$
 D_x \sim Poisson(\lambda_xE_x)
 $$
-where $D_x$, $E_x$ and $\lambda_x$ are deaths count, exposure and hazard rate for age $x$, respectively. The following STAN code estimates the model
+where $D_x$, $E_x$ and $\lambda_x$ are death counts, exposure and hazard rate for age $x$, respectively. The following STAN code estimates the model
 
 
 ```{r stan_data, echo = FALSE, results = "hide", message = FALSE}
@@ -467,4 +467,4 @@ plot_grid(fig.h.fit,
 
 # Summary
 
-Survival analyses mainly require three complementary mathematical expressions: the hazard rate, the survival function and the age at death probability density function. Once we have a given mathematical form for the hazard rate (ie Gompertz), the two other functions can be derived. In order to test models, the inverse CDF sampling method allows to simulate survival data. One model considered in this post is the PCH model that can be modelled in a Bayesian estimation framework within STAN. Note that we did not consider censoring or truncation but it will be addressed in a future post.
+Survival analyses mainly require three complementary mathematical expressions: the hazard rate, the survival function and the age at death probability density function. Once we have a given mathematical form for the hazard rate (ie Gompertz), the two other functions can be derived. In order to test models, the inverse CDF sampling method allows to simulate survival data. One model considered in this post is the PCH model that can be modelled in a Bayesian estimation framework with STAN. Note that we did not consider censoring or truncation but it will be addressed in a future post.

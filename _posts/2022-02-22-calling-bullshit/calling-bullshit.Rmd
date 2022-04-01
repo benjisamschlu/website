@@ -141,7 +141,24 @@ Reproducibility: reproduce the same study through code or experimental condition
 
 Few grants offered to reproduce
 
+Not reproducible results: crisis in science
+
+Main cause of reproducibility crisis: correct study cannot be replicated. Publication bias occurs when authors preferentially report and journals preferentially publish positive results. Results that appear in published papers have been filtered. Positive results goes in paper while negative results are not submitted. Distort the representation of the studies that have been done in the literature. Not possible to distinguish in which state we are.
+
+Is science bullshit: incremental aspect of science (build on previous findings)
+
+
+
 # Scholarly publishing and predatory publishers
+
+
+P-hacking, outcome switching
+
+Car market flows: USS->Ford (build cars)->Consumers   Consumers(pay)->Ford(pay)->USS
+Typical world of scientific publishing: 1) (has been this in the past) subscription-based (library pays and pay-wall) 2) Author-pay (open access)
+Publishing market flows: scientists(pay)->Publishers(package articles)<-(pay)Library
+
+Predatory publishing: bad science partly resulting from the open science system. No peer-review and no trash, just author payment. Relation with pressure on publication for carrier evolution.
 
 # Fake news
 
