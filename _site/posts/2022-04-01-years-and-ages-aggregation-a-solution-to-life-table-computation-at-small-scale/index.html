@@ -68,7 +68,7 @@ code span.wa { font-style: italic; } /* Warning */
   <!--radix_placeholder_meta_tags-->
 <title>Benjamin Schluter: Years and ages aggregation, a solution to compute life table at small scale?</title>
 
-<meta property="description" itemprop="description" content="Runing a Monte-Carlo simulation to quantify the uncertainty reduction in life expectancy when aggregating over ages and years."/>
+<meta property="description" itemprop="description" content="Runing a Monte-Carlo simulation to quantify the uncertainty reduction in life expectancy when aggregating over multiple ages and years."/>
 
 
 <!--  https://schema.org/Article -->
@@ -79,20 +79,20 @@ code span.wa { font-style: italic; } /* Warning */
 <!--  https://developers.facebook.com/docs/sharing/webmasters#markup -->
 <meta property="og:title" content="Benjamin Schluter: Years and ages aggregation, a solution to compute life table at small scale?"/>
 <meta property="og:type" content="article"/>
-<meta property="og:description" content="Runing a Monte-Carlo simulation to quantify the uncertainty reduction in life expectancy when aggregating over ages and years."/>
+<meta property="og:description" content="Runing a Monte-Carlo simulation to quantify the uncertainty reduction in life expectancy when aggregating over multiple ages and years."/>
 <meta property="og:locale" content="en_US"/>
 <meta property="og:site_name" content="Benjamin Schluter"/>
 
 <!--  https://dev.twitter.com/cards/types/summary -->
 <meta property="twitter:card" content="summary"/>
 <meta property="twitter:title" content="Benjamin Schluter: Years and ages aggregation, a solution to compute life table at small scale?"/>
-<meta property="twitter:description" content="Runing a Monte-Carlo simulation to quantify the uncertainty reduction in life expectancy when aggregating over ages and years."/>
+<meta property="twitter:description" content="Runing a Monte-Carlo simulation to quantify the uncertainty reduction in life expectancy when aggregating over multiple ages and years."/>
 
 <!--/radix_placeholder_meta_tags-->
   <!--radix_placeholder_rmarkdown_metadata-->
 
 <script type="text/json" id="radix-rmarkdown-metadata">
-{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["title","description","author","date","output"]}},"value":[{"type":"character","attributes":{},"value":["Years and ages aggregation, a solution to compute life table at small scale?"]},{"type":"character","attributes":{},"value":["Runing a Monte-Carlo simulation to quantify the uncertainty reduction in life expectancy when aggregating over ages and years."]},{"type":"list","attributes":{},"value":[{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["name"]}},"value":[{"type":"character","attributes":{},"value":["Benjamin Schlüter"]}]}]},{"type":"character","attributes":{},"value":["02-10-2022"]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["distill::distill_article"]}},"value":[{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["self_contained","highlight"]}},"value":[{"type":"logical","attributes":{},"value":[false]},{"type":"character","attributes":{},"value":["monochrome"]}]}]}]}
+{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["title","description","author","date","output"]}},"value":[{"type":"character","attributes":{},"value":["Years and ages aggregation, a solution to compute life table at small scale?"]},{"type":"character","attributes":{},"value":["Runing a Monte-Carlo simulation to quantify the uncertainty reduction in life expectancy when aggregating over multiple ages and years."]},{"type":"list","attributes":{},"value":[{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["name"]}},"value":[{"type":"character","attributes":{},"value":["Benjamin Schlüter"]}]}]},{"type":"character","attributes":{},"value":["02-10-2022"]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["distill::distill_article"]}},"value":[{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["self_contained","highlight"]}},"value":[{"type":"logical","attributes":{},"value":[false]},{"type":"character","attributes":{},"value":["monochrome"]}]}]}]}
 </script>
 <!--/radix_placeholder_rmarkdown_metadata-->
   
@@ -2159,7 +2159,7 @@ d-appendix d-footnote-list a.footnote-backlink {
 <!--radix_placeholder_front_matter-->
 
 <script id="distill-front-matter" type="text/json">
-{"title":"Years and ages aggregation, a solution to compute life table at small scale?","description":"Runing a Monte-Carlo simulation to quantify the uncertainty reduction in life expectancy when aggregating over ages and years.","authors":[{"author":"Benjamin Schlüter","authorURL":"#","affiliation":"&nbsp;","affiliationURL":"#","orcidID":""}],"publishedDate":"2022-02-10T00:00:00.000+01:00","citationText":"Schlüter, 2022"}
+{"title":"Years and ages aggregation, a solution to compute life table at small scale?","description":"Runing a Monte-Carlo simulation to quantify the uncertainty reduction in life expectancy when aggregating over multiple ages and years.","authors":[{"author":"Benjamin Schlüter","authorURL":"#","affiliation":"&nbsp;","affiliationURL":"#","orcidID":""}],"publishedDate":"2022-02-10T00:00:00.000+01:00","citationText":"Schlüter, 2022"}
 </script>
 
 <!--/radix_placeholder_front_matter-->
@@ -2185,7 +2185,7 @@ d-appendix d-footnote-list a.footnote-backlink {
 <h1>Years and ages aggregation, a solution to compute life table at small scale?</h1>
 <!--radix_placeholder_categories-->
 <!--/radix_placeholder_categories-->
-<p><p>Runing a Monte-Carlo simulation to quantify the uncertainty reduction in life expectancy when aggregating over ages and years.</p></p>
+<p><p>Runing a Monte-Carlo simulation to quantify the uncertainty reduction in life expectancy when aggregating over multiple ages and years.</p></p>
 </div>
 
 <div class="d-byline">
@@ -2195,7 +2195,7 @@ d-appendix d-footnote-list a.footnote-backlink {
 </div>
 
 <div class="d-article">
-<p>Studying health inequalities within a country requires to obtain subnational mortality estimates to quantify geographic disparities. One of the difficulties is the presence of small populations in which the stochastic variation in death counts is relatively high. This produces shaky values at small-scale for life-table functions. Two solutions are frequently encountered: the use of statistical models to smooth estimates and the aggregation of mortality data over years and/or ages. In several articles, when authors aggregate mortality data over ages and/or years, they sometimes present life table functions as if they were deterministic. In this post, I would like to assess to what extend this aggregation effectively reduce uncertainty.</p>
+<p>Studying health inequalities within a country requires to obtain subnational mortality estimates to quantify geographic disparities. One of the difficulties is the presence of small populations in which the stochastic variation in death counts is relatively high. This produces shaky values at small-scale for life-table functions. Two solutions are frequently encountered: the use of statistical models to smooth estimates and the aggregation of mortality data over multiple years and/or ages. In several articles, when authors aggregate mortality data over multiple ages and/or years, they sometimes present life table functions as if they were deterministic. In this post, I would like to assess to what extend this aggregation effectively reduce uncertainty.</p>
 <div class="layout-chunk" data-layout="l-body">
 
 </div>
@@ -2206,7 +2206,7 @@ d-appendix d-footnote-list a.footnote-backlink {
 <p>The Monte-Carlo simulation is built upon the Chiang method where we assume that deaths are realizations from a binomial distribution. The number of trials is equal to the people at risk <span class="math inline">\({}_nN_x\)</span> and the success probability for each trial is the probability of dying <span class="math inline">\({}_nq_x\)</span> (which in real life, does not consist of a success). We can thus simulate an <em>i</em>-th series of death counts as follows:</p>
 <p><span class="math display">\[{}_nD_{x,i} \sim Binomial({}_nN_x, {}_nq_x).\]</span></p>
 <p>We repeat this procedure 4,000 times for different population sizes (<span class="math inline">\({}_nN_x\)</span>), using French <span class="math inline">\({}_nq_x\)</span> for women in 2018 from the <a href="https://www.mortality.org/cgi-bin/hmd/country.php?cntr=FRA&amp;level=2">Human Mortality Database</a>. From these, we obtain 4,000 associated life tables and life expectancies at birth (<span class="math inline">\(e^0_i\)</span>). For a given population size, we can then obtain 95% (80%) confidence interval around life expectancy at birth using the 2.5 (10) and 97.5 (90) quantiles of the <span class="math inline">\(e^0_i\)</span> realizations. We look at six population sizes representing the 1<sup>st</sup>, 5<sup>th</sup> and 10<sup>th</sup> deciles of population sizes corresponding to two administrative levels (NUTS3 and municipality) in Belgium. These deciles equal approximately, 2.000, 6.000 18.000 and 31.000, 102.000, 278.000 for municipality and NUTS3, respectively.</p>
-<p>When aggregating over years to compute life tables, we assume a constant mortality, a constant population size and a stable population structure.</p>
+<p>When aggregating over mutliple years to compute life tables, we assume a constant mortality, a constant population size and a stable population structure.</p>
 <div class="layout-chunk" data-layout="l-body">
 
 </div>
@@ -2217,12 +2217,12 @@ d-appendix d-footnote-list a.footnote-backlink {
 
 </div>
 <h1 id="results">Results</h1>
-<p>The figure below shows 95% and 80% confidence intervals for life expectancy at birth associated to the six population sizes considered. Top left panel consists of building life tables on 1 year <span class="math inline">\(\times\)</span> 1year age group, top right panel on 4 years <span class="math inline">\(\times\)</span> 1 year age group, bottom left on 1 year <span class="math inline">\(\times\)</span> 5 years age group and bottom right on 4 years <span class="math inline">\(\times\)</span> 5 years age group. Aggregating over 4 years (top right panel) is clearly not sufficient to reduce uncertainty at the municipality level but also at the NUTS3 level for the smallest population sizes in this group. Focusing now on the bottom right panel, despite a significant reduction in uncertainty, none of the confidence interval’s width for municipalities are below 1 year. Hence, substantial stochasticity remains for such small areas.</p>
+<p>The figure below shows 95% and 80% confidence intervals for life expectancy at birth associated to the six population sizes considered. Top left panel consists of building life tables on 1 year <span class="math inline">\(\times\)</span> 1year age group, top right panel on 4 years <span class="math inline">\(\times\)</span> 1 year age group, bottom left on 1 year <span class="math inline">\(\times\)</span> 5 years age group and bottom right on 4 years <span class="math inline">\(\times\)</span> 5 years age group. Aggregating over 4 years (top right panel) is clearly not sufficient to reduce uncertainty sufficiently at the municipality level. For the smallest NUTS3 population size, the width of the confidence interval is still higher than 1 year. Focusing now on the bottom right panel, despite a significant reduction in uncertainty, none of the confidence interval’s width for municipalities are below 1 year. Hence, substantial stochasticity remains for such small areas.</p>
 <div class="layout-chunk" data-layout="l-body-outset">
 <p><img src="years-and-ages-aggregation-a-solution-to-life-table-computation-at-small-scale_files/figure-html5/unnamed-chunk-6-1.png" width="960" /></p>
 </div>
 <h1 id="summary">Summary</h1>
-<p>Aggregating over ages and years sometimes lead to present life table functions of small areas as deterministic. Using a Monte-Carlo simulation, we showed that performing such aggregation indeed efficiently reduces uncertainty. However, at the smallest administrative level considered (municipality), these measures are still subject to substantial stochasticity and uncertainty intervals should be presented. We did not consider aggregating over more years and ages. In the former case, we thought that in a context of diminishing mortality, aggregating over more than 4 years won’t be so informative on the true mortality level experienced at a given time point. In the latter case, grouping ages together requires to assume that mortality rates are constant within age groups, which is an unrealistic assumption when more than five years are considered. Please note that these two later points are personnal opinions.</p>
+<p>Aggregating over multiple ages and years sometimes lead to present life table functions of small areas as deterministic. Using a Monte-Carlo simulation, we showed that performing such aggregation reduces uncertainty. However, at the smallest administrative level considered (municipality), these measures are still subject to substantial stochasticity and uncertainty intervals should be presented. We did not consider aggregating over space as we supposed we were interested in the administrative levels considered. We also did not consider aggregating over more than 4 years and 5 years age group. In the former case, we thought that in a context of diminishing mortality, aggregating over more than 4 years won’t be so informative on the true mortality level experienced at a given time point. In the latter case, grouping ages together requires to assume that mortality rates are constant within age groups, which is an unrealistic assumption when more than five years are considered. Please note that these two later points are personnal opinions.</p>
 <div class="sourceCode" id="cb1"><pre class="sourceCode r distill-force-highlighting-css"><code class="sourceCode r"></code></pre></div>
 <!--radix_placeholder_article_footer-->
 <!--/radix_placeholder_article_footer-->

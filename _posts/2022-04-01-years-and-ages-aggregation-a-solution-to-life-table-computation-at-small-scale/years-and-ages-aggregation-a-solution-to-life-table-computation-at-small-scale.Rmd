@@ -1,7 +1,7 @@
 ---
 title: "Years and ages aggregation, a solution to compute life table at small scale?"
 description: |
-  Runing a Monte-Carlo simulation to quantify the uncertainty reduction in life expectancy when aggregating over ages and years.
+  Runing a Monte-Carlo simulation to quantify the uncertainty reduction in life expectancy when aggregating over multiple ages and years.
 author:
   - name: Benjamin Schlüter
 date: 02-10-2022
@@ -13,7 +13,7 @@ output:
 
 
 
-Studying health inequalities within a country requires to obtain subnational mortality estimates to quantify geographic disparities. One of the difficulties is the presence of small populations in which the stochastic variation in death counts is relatively high. This produces shaky values at small-scale for life-table functions. Two solutions are frequently encountered: the use of statistical models to smooth estimates and the aggregation of mortality data over years and/or ages. In several articles, when authors aggregate mortality data over ages and/or years, they sometimes present life table functions as if they were deterministic. In this post, I would like to assess to what extend this aggregation effectively reduce uncertainty. 
+Studying health inequalities within a country requires to obtain subnational mortality estimates to quantify geographic disparities. One of the difficulties is the presence of small populations in which the stochastic variation in death counts is relatively high. This produces shaky values at small-scale for life-table functions. Two solutions are frequently encountered: the use of statistical models to smooth estimates and the aggregation of mortality data over multiple years and/or ages. In several articles, when authors aggregate mortality data over multiple ages and/or years, they sometimes present life table functions as if they were deterministic. In this post, I would like to assess to what extend this aggregation effectively reduce uncertainty. 
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = FALSE)
@@ -99,7 +99,7 @@ $${}_nD_{x,i} \sim Binomial({}_nN_x, {}_nq_x).$$
 
 We repeat this procedure 4,000 times for different population sizes (${}_nN_x$), using French ${}_nq_x$ for women in 2018 from the [Human Mortality Database](https://www.mortality.org/cgi-bin/hmd/country.php?cntr=FRA&level=2). From these, we obtain 4,000 associated life tables and life expectancies at birth ($e^0_i$). For a given population size, we can then obtain 95\% (80\%) confidence interval around life expectancy at birth using the 2.5 (10) and 97.5 (90) quantiles of the $e^0_i$ realizations. We look at six population sizes representing the 1<sup>st</sup>, 5<sup>th</sup> and 10<sup>th</sup> deciles of population sizes corresponding to two administrative levels (NUTS3 and municipality) in Belgium. These deciles equal approximately, 2.000, 6.000 18.000 and 31.000, 102.000, 278.000 for municipality and NUTS3, respectively.
 
-When aggregating over years to compute life tables, we assume a constant mortality, a constant population size and a stable population structure.
+When aggregating over mutliple years to compute life tables, we assume a constant mortality, a constant population size and a stable population structure.
 
 ```{r}
 ## Monte-carlo Simulation for e0 ---------------------------------------------
@@ -444,7 +444,7 @@ fig.e0.5a <- df.e0 %>%
 # Results
 
 
-The figure below shows 95\% and 80\% confidence intervals for life expectancy at birth associated to the six population sizes considered. Top left panel consists of building life tables on 1 year $\times$ 1year age group, top right panel on 4 years $\times$ 1 year age group, bottom left on 1 year $\times$ 5 years age group and bottom right on 4 years $\times$ 5 years age group. Aggregating over 4 years (top right panel) is clearly not sufficient to reduce uncertainty at the municipality level but also at the NUTS3 level for the smallest population sizes in this group. Focusing now on the bottom right panel, despite a significant reduction in uncertainty, none of the confidence interval's width for municipalities are below 1 year. Hence, substantial stochasticity remains for such small areas.
+The figure below shows 95\% and 80\% confidence intervals for life expectancy at birth associated to the six population sizes considered. Top left panel consists of building life tables on 1 year $\times$ 1year age group, top right panel on 4 years $\times$ 1 year age group, bottom left on 1 year $\times$ 5 years age group and bottom right on 4 years $\times$ 5 years age group. Aggregating over 4 years (top right panel) is clearly not sufficient to reduce uncertainty sufficiently at the municipality level. For the smallest NUTS3 population size, the width of the confidence interval is still higher than 1 year. Focusing now on the bottom right panel, despite a significant reduction in uncertainty, none of the confidence interval's width for municipalities are below 1 year. Hence, substantial stochasticity remains for such small areas.
 
 
 ```{r, layout="l-body-outset", fig.width=10, fig.height=8}
@@ -584,4 +584,4 @@ plot_grid(fig.e0.1y,
 # Summary
 
 
-Aggregating over ages and years sometimes lead to present life table functions of small areas as deterministic. Using a Monte-Carlo simulation, we showed that performing such aggregation indeed efficiently reduces uncertainty. However, at the smallest administrative level considered (municipality), these measures are still subject to substantial stochasticity and uncertainty intervals should be presented. We did not consider aggregating over more years and ages. In the former case, we thought that in a context of diminishing mortality, aggregating over more than 4 years won't be so informative on the true mortality level experienced at a given time point. In the latter case, grouping ages together requires to assume that mortality rates are constant within age groups, which is an unrealistic assumption when more than five years are considered. Please note that these two later points are personnal opinions.
+Aggregating over multiple ages and years sometimes lead to present life table functions of small areas as deterministic. Using a Monte-Carlo simulation, we showed that performing such aggregation reduces uncertainty. However, at the smallest administrative level considered (municipality), these measures are still subject to substantial stochasticity and uncertainty intervals should be presented. We did not consider aggregating over space as we supposed we were interested in the administrative levels considered. We also did not consider aggregating over more than 4 years and 5 years age group. In the former case, we thought that in a context of diminishing mortality, aggregating over more than 4 years won't be so informative on the true mortality level experienced at a given time point. In the latter case, grouping ages together requires to assume that mortality rates are constant within age groups, which is an unrealistic assumption when more than five years are considered. Please note that these two later points are personnal opinions.
