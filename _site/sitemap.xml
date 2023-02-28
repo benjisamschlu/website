@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.sitemaps.org/schemas/sitemap/0.9 http://www.sitemaps.org/schemas/sitemap/0.9/sitemap.xsd" version="1.0">
+  <url>
+    <loc>https://www.benjaminschluter.com/about.html</loc>
+    <lastmod>2022-03-14T16:24:05-04:00</lastmod>
+  </url>
+  <url>
+    <loc>https://www.benjaminschluter.com/blog.html</loc>
+    <lastmod>2022-02-09T11:00:22-05:00</lastmod>
+  </url>
+  <url>
+    <loc>https://www.benjaminschluter.com/</loc>
+    <lastmod>2023-02-28T10:50:19-05:00</lastmod>
+  </url>
+  <url>
+    <loc>https://www.benjaminschluter.com/news.html</loc>
+    <lastmod>2023-02-28T11:49:11-05:00</lastmod>
+  </url>
+  <url>
+    <loc>https://www.benjaminschluter.com/posts/2023-02-19-advises-to-starting-phd/</loc>
+    <lastmod>2023-02-28T11:30:07-05:00</lastmod>
+  </url>
+  <url>
+    <loc>https://www.benjaminschluter.com/posts/2022-02-11-what-is-the-likelihood/</loc>
+    <lastmod>2022-03-16T08:20:57-04:00</lastmod>
+  </url>
+  <url>
+    <loc>https://www.benjaminschluter.com/posts/2022-02-10-demographic-indicators-of-belgium/</loc>
+    <lastmod>2022-03-16T13:01:08-04:00</lastmod>
+  </url>
+  <url>
+    <loc>https://www.benjaminschluter.com/posts/2022-02-10-math-of-mortality/</loc>
+    <lastmod>2022-04-01T03:06:33-04:00</lastmod>
+  </url>
+  <url>
+    <loc>https://www.benjaminschluter.com/posts/2022-02-10-temporal-smoother-with-bayes/</loc>
+    <lastmod>2022-03-16T12:29:45-04:00</lastmod>
+  </url>
+  <url>
+    <loc>https://www.benjaminschluter.com/posts/2022-03-02-reproducibility-in-data-centric-analysis/</loc>
+    <lastmod>2022-04-01T06:28:06-04:00</lastmod>
+  </url>
+  <url>
+    <loc>https://www.benjaminschluter.com/posts/2022-04-01-years-and-ages-aggregation-a-solution-to-life-table-computation-at-small-scale/</loc>
+    <lastmod>2023-02-28T10:48:49-05:00</lastmod>
+  </url>
+</urlset>

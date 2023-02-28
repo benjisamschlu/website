@@ -1,0 +1,98 @@
+---
+title: "Advice to new PhD students"
+description: |
+  Sharing good practices on what helped me go through the PhD.
+base_url: https://www.benjaminschluter.com
+author: Benjamin Schluter
+date: 2023-02-19
+output:
+  distill::distill_article:
+    self_contained: false
+    highlight: monochrome
+preview: figures/lib.jpg
+---
+
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE)
+library(here)
+```
+
+
+My PhD focused on Bayesian Hierarchical Models (BHM) applied to subnational mortality estimation. Looking back at this experience, I honestly enjoyed it despite the challenges along the way. It forced me to persevere, allowed me to develop knowledge in an area I had an interest in, led me to meet knowledgeable and kind people, and opened up lots of new research interests. In this post, I would like to share some good practices that might help others go through the PhD. I share these with humility as each PhD experience is different. 
+
+```{r, eval = FALSE, fig.cap="Figure from unsplash.com", out.width=500, out.height=300, fig.align = "center", preview = TRUE}
+# Do not manage to locate the file both when knitting and building website
+knitr::include_graphics(path = here("lib_phd.jpg"))
+```
+
+
+# English, the language of research
+
+I did my PhD in Belgium at the Catholic University of Louvain. The spoken language was mainly French. However, when it comes to publishing articles, presenting slides or posters at conferences, applying for workshops or grants, the language most frequently used is English. Having that in mind, my advice is to practice your spoken and written English as much as you can. Do you have to write a small report to your promotor? Write it in English. Does your research center offer opportunities to present your work internally to colleagues? Force yourself to present in English. Writing your dissertation in English might be challenging but it will significantly broaden its potential readers. Go along these lines and you will see your progress year after year.
+
+# Folder structure
+
+My dissertation was articulated around three research projects. Each project led to several outputs such as reports, posters, slide presentations, and scientific articles. It is thus important that the folder structure allows your project to evolve while staying clear and organized. Having that in mind, I usually create one folder per research project. Using the R software, I usually locate my R project in this folder. Within this folder, I additionally create the subfolders shown below,
+
+* Data
+
+    * Raw
+    * Tidy
+
+* Code
+
+    * Function
+
+* Figure
+
+    * EDA
+
+* Table
+
+    * EDA
+
+* Literature
+
+* Presentation
+
+* Poster
+
+* Submission
+
+    * Figure
+    * Table 
+    * Manuscript
+    * Review
+
+* Product
+
+The _Raw_ and _Tidy_ subfolders allow me to differentiate data on which I performed cleaning or created variables of interest. The subfolders _EDA_ allows storage of outputs at the earliest stages of the analysis when conducting exploratory data analyses. The subfolder _Function_ contains R functions I built or used. The folder _Literature_ contains scientific articles, protocols, or supplementary materials that were key to developing the methodology used in my project. The folder _Presentation_ contains a subfolder for each presentation I made on that research project. The _Review_ subfolder usually contains point-by-point answers to reviewers and revised versions of the manuscript following reviewers' comments. The folder _Products_ usually contains reports or methodology I had to write along the way. Additionally, this structure makes it easy to upload a project on Github, bringing you closer to the standards of reproducibility.
+
+# Annotate your codes
+
+My dissertation had a strong methodological focus. In this context, I wrote several codes in R. Sometimes, you will write codes performing the analysis of your manuscript. When it is done, you move to the writing process and submit the manuscript to a journal. Then, you wait, wait, and wait. One day, you receive an answer asking you to modify some elements of your analysis and you go back to your code and ... what was that code doing again? It might happen that you have to go back to your codes 6 months later and trust me, you sometimes need help to understand what you did back then. Having that in mind, clearly structure your code, explain at the beginning what its purpose is, define sections, and annotate chunks of code. You might have the impression that you are losing time, but it will pay off on a long-term basis. Similarly to what I mentioned in the previous paragraph, it also has the advantage to bring you closer to the standards of reproducibility.
+
+# Side projects
+
+During your PhD, you will spend several years on the same topic. It is sometimes good to have (a) side project(s) not necessarily related to your PhD topic. It will bring you some diversity which could be refreshing. Additionally, it will broaden your knowledge in other research areas. This nonetheless requires you to be able to efficiently allocate your time. Also, be careful not to focus too much on side projects to look away from your PhD.
+
+# Training, workshops and courses
+
+As I said, my dissertation had a strong methodological focus. Following diverse methodological training, courses, or workshops will make you more efficient in applying or developing methods during your PhD. In my opinion, being good at methods also brings more flexibility to the research topics you can address. Do not hesitate to take the time to read reference books. During my PhD, I had to learn about Bayesian statistics and the impact of books such as [Statistical Rethinking](https://xcelab.net/rm/statistical-rethinking/), [Bayesian Data Analysis](http://www.stat.columbia.edu/~gelman/book/), and [Bayesian Demographic Estimation and Forecasting](https://www.bayesiandemography.com/book) was tremendous on my research. Try to see the PhD as a period in which you can also intensely train yourself.
+
+# Apply to conferences
+
+I highly recommend applying to conferences as much as you can. Writing an abstract under a strict deadline will force you to clarify your ideas and will make you progress in the research you are undertaking. If you get selected to present, you will further have the opportunity to get feedback and remarks on your project. Presenting is stressful but keep in mind that everybody is stressed before speaking in public. That is normal and let's accept and maybe even embrace our stress.
+
+# Data visualization
+
+If you perform quantitative research, your results will most likely be presented through visualizations. Spend time thinking about your visualizations and learn about best practices. This is what people will focus on if they want to quickly look at your results. Some great demographers provide codes and best practices such as [Ilya Kashnitsky](https://github.com/ikashnitsky) and [Jonas Schöley](https://github.com/jschoeley). Check out their Twitter and GitHub accounts!
+
+# Tools to collaborate remotely
+
+I see research as a collaborative process. There are great tools out there allowing researchers to collaborate remotely. Make sure to become familiar with these tools during your PhD. Put your codes and slides online with [Github](https://github.com/) for example. In addition, create an account on [Overleaf](https://www.overleaf.com/login) which allows you to collaboratively write Latex documents accessible from any laptop with an internet connection.  
+
+# Summary
+
+There is not one good way to go through the PhD. Everybody finds their way. I hope some of the advice highlighted above will help you. In difficult times, keep in mind that we are extremely lucky to have the opportunity to spend several years (and be paid!) to study something we have an interest in. Good luck!

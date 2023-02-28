@@ -1,0 +1,13 @@
+---
+title: "News"
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE)
+```
+
+* __March 1st, 2023__: Started a postdoctoral fellowship with [Monica Alexander](https://www.monicaalexander.com/) at the University of Toronto.
+
+* __February 6th, 2023__: Publicly defended my thesis entitled _Bayesian Hierarchical Models applied to subnational mortality estimation: three applications_.
+
+* __October 1st, 2019__: Started a PhD with [Bruno Masquelier](https://scholar.google.com/citations?user=OHF3hUYAAAAJ&hl=en&oi=ao) at the Catholic University of Louvain (Belgium).

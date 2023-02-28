@@ -130,12 +130,25 @@ d-article div.sourceCode code, d-article pre code {
   color: #537691;
 }
 
+/*-- Harmonize size of preview images --*/
+/*-- Setting max-width as a percent and setting height: auto keeps the image sizing responsive for different screen format --*/
+.thumbnail {
+    padding: 0px!important;
+    margin: 0px!important;
+    max-width: 20%!important;
+    height: auto!important;
+    vertical-align: text-top!important;
+}
+
  /*-- Might try to re center elements in header navbar --*/
 
 
 .distill-site-nav {
   font-weight: 900;
 }
+
+
+
 
 
 
