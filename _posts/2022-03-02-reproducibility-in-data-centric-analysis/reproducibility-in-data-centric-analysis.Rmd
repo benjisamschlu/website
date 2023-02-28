@@ -2,6 +2,7 @@
 title: "Reproducibility in data-centric analyses"
 description: |
   Highlighting good practices for reproducibility.
+base_url: https://www.benjaminschluter.com
 author:
   - name: Benjamin Schlüter
 date: 02-10-2022
@@ -9,15 +10,20 @@ output:
   distill::distill_article:
     self_contained: false
     highlight: monochrome
-preview: false
+preview: reproVSrepli.jpg
 ---
 
 ```{r, echo = FALSE}
 knitr::opts_chunk$set()
+library("here")
 ```
 
 
 In this post, I will summarize a talk I made to the members of my research center ([DEMO](https://uclouvain.be/en/research-institutes/iacchos/demo)), promoting reproducibility. I focused on **computation reproducibility** which requires that someone else should be able to reproduce your results with the materials (data, codes, guidance) you provided. This transparency is necessary as our research results are used to inform public and health policies. The key elements I will go through should be seen as minimal requirements for reproducibility. I am sharing my own practice but there are of course other (better) ways to do.
+
+```{r, echo = FALSE, fig.cap="Figure from radiance.org.uk", out.width=400, out.height=300, fig.align = "center"}
+knitr::include_graphics(path = "./figures/reproVSrepli.JPG")
+```
 
 
 # Folder's structure
@@ -26,13 +32,13 @@ For someone else to be able to reproduce your analysis, a first requirement is t
 
 
 ```{r, echo = FALSE, fig.cap="The don't...", out.width=400, out.height=300, fig.align = "center"}
-knitr::include_graphics(path = "C:/Users/bschluter/Desktop/website/_posts/2022-03-02-reproducibility-in-data-centric-analysis/messy_files.jpg")
+knitr::include_graphics(path = "./figures/messy_files.jpg")
 ```
 
 My actual practice is to structure my project folder, here named "*5-15 mortality estimation*", as follows
 
 ```{r, echo = FALSE, fig.cap="...and the do", out.width=400, out.height=300, fig.align = "center"}
-knitr::include_graphics(path = "C:/Users/bschluter/Desktop/website/_posts/2022-03-02-reproducibility-in-data-centric-analysis/clean_files.png")
+knitr::include_graphics(path = "./figures/clean_files.png")
 ```
 
 This structure allows the project to evolve from data cleaning to submission, while maintaining a constant structure. At minimum, `code` has a subfolder called `function`, where I store R functions created for the project. I also add a `stan` subfolder for my Stan scripts. Each R code has a specific aim, for example, there will be one R code for data cleaning, one for exploratory data analysis (EDA) and so on. In the `product` folder, I usually store reports on EDA and manuscript drafts. I also write a mardown file for the project history. Note also that I locate my R project associated to that reseach project in the folder (bottom of the screen shot). It makes it easy to load data and functions, store data etc.
@@ -56,7 +62,7 @@ In order to be transparent about the research process, I try to maintain a proje
 # Data
 
 ```{r, echo = FALSE, fig.cap="Was that version 37b'?", fig.align = "center"}
-knitr::include_graphics(path = "C:/Users/bschluter/Desktop/website/_posts/2022-03-02-reproducibility-in-data-centric-analysis/data.png")
+knitr::include_graphics(path = "./figures/data.png")
 ```
 
 
@@ -67,7 +73,7 @@ I usually subdivide the `data` folder into `raw` and `tidy`. I do not save data 
 # Coding practices
 
 ```{r, echo = FALSE, fig.cap="What is this f@#&!% code doing?", fig.align = "center"}
-knitr::include_graphics(path = "C:/Users/bschluter/Desktop/website/_posts/2022-03-02-reproducibility-in-data-centric-analysis/messy_code.png")
+knitr::include_graphics(path = "./figures/messy_code.png")
 ```
 
 Always remember Karl Broman's quote: **"Your closest collaborator is you, six months ago, but you don't respond to emails"**. 
@@ -87,7 +93,7 @@ As I already mentioned, I usually write one script per task
 I also add a short description at the top of each script, write clear commenting and define sections in the script for better visibility. 
 
 ```{r, echo = FALSE, fig.cap="One example", fig.align = "center"}
-knitr::include_graphics(path = "C:/Users/bschluter/Desktop/website/_posts/2022-03-02-reproducibility-in-data-centric-analysis/coding.png")
+knitr::include_graphics(path = "./figures/coding.png")
 ```
    
 
@@ -97,7 +103,7 @@ knitr::include_graphics(path = "C:/Users/bschluter/Desktop/website/_posts/2022-0
 
 
 ```{r, echo = FALSE, fig.cap="Version Control System (VCS)", out.width=400, out.height=300, fig.align = "center"}
-knitr::include_graphics(path = "C:/Users/bschluter/Desktop/website/_posts/2022-03-02-reproducibility-in-data-centric-analysis/vcs.png")
+knitr::include_graphics(path = "./figures/vcs.png")
 ```
  
 

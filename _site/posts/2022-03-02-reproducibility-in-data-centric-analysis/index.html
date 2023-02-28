@@ -20,26 +20,28 @@
 
 <style type="text/css">code{white-space: pre;}</style>
 <style type="text/css" data-origin="pandoc">
-a.sourceLine { display: inline-block; line-height: 1.25; }
-a.sourceLine { pointer-events: none; color: inherit; text-decoration: inherit; }
-a.sourceLine:empty { height: 1.2em; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
 .sourceCode { overflow: visible; }
-code.sourceCode { white-space: pre; position: relative; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
 div.sourceCode { margin: 1em 0; }
 pre.sourceCode { margin: 0; }
 @media screen {
 div.sourceCode { overflow: auto; }
 }
 @media print {
-code.sourceCode { white-space: pre-wrap; }
-a.sourceLine { text-indent: -1em; padding-left: 1em; }
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
 }
-pre.numberSource a.sourceLine
-  { position: relative; left: -4em; }
-pre.numberSource a.sourceLine::before
-  { content: attr(title);
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
     position: relative; left: -1em; text-align: right; vertical-align: baseline;
-    border: none; pointer-events: all; display: inline-block;
+    border: none; display: inline-block;
     -webkit-touch-callout: none; -webkit-user-select: none;
     -khtml-user-select: none; -moz-user-select: none;
     -ms-user-select: none; user-select: none;
@@ -47,9 +49,9 @@ pre.numberSource a.sourceLine::before
   }
 pre.numberSource { margin-left: 3em;  padding-left: 4px; }
 div.sourceCode
-  {  }
+  {   }
 @media screen {
-a.sourceLine::before { text-decoration: underline; }
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
 }
 code span.al { font-weight: bold; } /* Alert */
 code span.an { font-style: italic; } /* Annotation */
@@ -64,6 +66,7 @@ code span.kw { font-weight: bold; } /* Keyword */
 code span.pp { font-weight: bold; } /* Preprocessor */
 code span.wa { font-style: italic; } /* Warning */
 </style>
+
 
   <!--radix_placeholder_meta_tags-->
 <title>Benjamin Schluter: Reproducibility in data-centric analyses</title>
@@ -82,7 +85,7 @@ code span.wa { font-style: italic; } /* Warning */
 <meta property="og:type" content="article"/>
 <meta property="og:description" content="Highlighting good practices for reproducibility."/>
 <meta property="og:url" content="https://www.benjaminschluter.com/posts/2022-03-02-reproducibility-in-data-centric-analysis/"/>
-<meta property="og:image" content="https://www.benjaminschluter.com/posts/2022-03-02-reproducibility-in-data-centric-analysis/messy_files.jpg"/>
+<meta property="og:image" content="https://www.benjaminschluter.com/posts/2022-03-02-reproducibility-in-data-centric-analysis/figures/reproVSrepli.JPG"/>
 <meta property="og:locale" content="en_US"/>
 <meta property="og:site_name" content="Benjamin Schluter"/>
 
@@ -91,7 +94,7 @@ code span.wa { font-style: italic; } /* Warning */
 <meta property="twitter:title" content="Benjamin Schluter: Reproducibility in data-centric analyses"/>
 <meta property="twitter:description" content="Highlighting good practices for reproducibility."/>
 <meta property="twitter:url" content="https://www.benjaminschluter.com/posts/2022-03-02-reproducibility-in-data-centric-analysis/"/>
-<meta property="twitter:image" content="https://www.benjaminschluter.com/posts/2022-03-02-reproducibility-in-data-centric-analysis/messy_files.jpg"/>
+<meta property="twitter:image" content="https://www.benjaminschluter.com/posts/2022-03-02-reproducibility-in-data-centric-analysis/figures/reproVSrepli.JPG"/>
 
 <!--  https://scholar.google.com/intl/en/scholar/inclusion.html#indexing -->
 <meta name="citation_title" content="Benjamin Schluter: Reproducibility in data-centric analyses"/>
@@ -103,12 +106,12 @@ code span.wa { font-style: italic; } /* Warning */
   <!--radix_placeholder_rmarkdown_metadata-->
 
 <script type="text/json" id="radix-rmarkdown-metadata">
-{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["title","description","author","date","output","preview","citation_url","canonical_url"]}},"value":[{"type":"character","attributes":{},"value":["Reproducibility in data-centric analyses"]},{"type":"character","attributes":{},"value":["Highlighting good practices for reproducibility."]},{"type":"list","attributes":{},"value":[{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["name"]}},"value":[{"type":"character","attributes":{},"value":["Benjamin Schlüter"]}]}]},{"type":"character","attributes":{},"value":["02-10-2022"]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["distill::distill_article"]}},"value":[{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["self_contained","highlight"]}},"value":[{"type":"logical","attributes":{},"value":[false]},{"type":"character","attributes":{},"value":["monochrome"]}]}]},{"type":"logical","attributes":{},"value":[false]},{"type":"character","attributes":{},"value":["https://www.benjaminschluter.com/posts/2022-03-02-reproducibility-in-data-centric-analysis/"]},{"type":"character","attributes":{},"value":["https://www.benjaminschluter.com/posts/2022-03-02-reproducibility-in-data-centric-analysis/"]}]}
+{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["title","description","base_url","author","date","output","preview","citation_url","canonical_url"]}},"value":[{"type":"character","attributes":{},"value":["Reproducibility in data-centric analyses"]},{"type":"character","attributes":{},"value":["Highlighting good practices for reproducibility."]},{"type":"character","attributes":{},"value":["https://www.benjaminschluter.com"]},{"type":"list","attributes":{},"value":[{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["name"]}},"value":[{"type":"character","attributes":{},"value":["Benjamin Schlüter"]}]}]},{"type":"character","attributes":{},"value":["02-10-2022"]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["distill::distill_article"]}},"value":[{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["self_contained","highlight"]}},"value":[{"type":"logical","attributes":{},"value":[false]},{"type":"character","attributes":{},"value":["monochrome"]}]}]},{"type":"character","attributes":{},"value":["reproVSrepli.jpg"]},{"type":"character","attributes":{},"value":["https://www.benjaminschluter.com/posts/2022-03-02-reproducibility-in-data-centric-analysis/"]},{"type":"character","attributes":{},"value":["https://www.benjaminschluter.com/posts/2022-03-02-reproducibility-in-data-centric-analysis/"]}]}
 </script>
 <!--/radix_placeholder_rmarkdown_metadata-->
   
   <script type="text/json" id="radix-resource-manifest">
-  {"type":"character","attributes":{},"value":["clean_files.PNG","coding.PNG","data.PNG","messy_code.PNG","messy_files.jpg","reproducibility-in-data-centric-analysis_files/anchor-4.2.2/anchor.min.js","reproducibility-in-data-centric-analysis_files/bowser-1.9.3/bowser.min.js","reproducibility-in-data-centric-analysis_files/distill-2.2.21/template.v2.js","reproducibility-in-data-centric-analysis_files/jquery-1.11.3/jquery.min.js","reproducibility-in-data-centric-analysis_files/popper-2.6.0/popper.min.js","reproducibility-in-data-centric-analysis_files/tippy-6.2.7/tippy-bundle.umd.min.js","reproducibility-in-data-centric-analysis_files/tippy-6.2.7/tippy-light-border.css","reproducibility-in-data-centric-analysis_files/tippy-6.2.7/tippy.css","reproducibility-in-data-centric-analysis_files/tippy-6.2.7/tippy.umd.min.js","reproducibility-in-data-centric-analysis_files/webcomponents-2.0.0/webcomponents.js","vcs.png"]}
+  {"type":"character","attributes":{},"value":["figures/clean_files.PNG","figures/coding.PNG","figures/data.PNG","figures/messy_code.PNG","figures/messy_files.jpg","figures/reproVSrepli.JPG","figures/vcs.png","reproducibility-in-data-centric-analysis_files/anchor-4.2.2/anchor.min.js","reproducibility-in-data-centric-analysis_files/bowser-1.9.3/bowser.min.js","reproducibility-in-data-centric-analysis_files/distill-2.2.21/template.v2.js","reproducibility-in-data-centric-analysis_files/header-attrs-2.14/header-attrs.js","reproducibility-in-data-centric-analysis_files/jquery-1.11.3/jquery.min.js","reproducibility-in-data-centric-analysis_files/jquery-3.6.0/jquery-3.6.0.js","reproducibility-in-data-centric-analysis_files/jquery-3.6.0/jquery-3.6.0.min.js","reproducibility-in-data-centric-analysis_files/jquery-3.6.0/jquery-3.6.0.min.map","reproducibility-in-data-centric-analysis_files/popper-2.6.0/popper.min.js","reproducibility-in-data-centric-analysis_files/tippy-6.2.7/tippy-bundle.umd.min.js","reproducibility-in-data-centric-analysis_files/tippy-6.2.7/tippy-light-border.css","reproducibility-in-data-centric-analysis_files/tippy-6.2.7/tippy.css","reproducibility-in-data-centric-analysis_files/tippy-6.2.7/tippy.umd.min.js","reproducibility-in-data-centric-analysis_files/webcomponents-2.0.0/webcomponents.js"]}
   </script>
   <!--radix_placeholder_navigation_in_header-->
 <meta name="distill:offset" content="../.."/>
@@ -2202,7 +2205,8 @@ d-appendix d-footnote-list a.footnote-backlink {
   color: var(--hover-color, white);
 }</style>
 <!--/radix_placeholder_distill-->
-  <script src="../../site_libs/jquery-1.11.3/jquery.min.js"></script>
+  <script src="../../site_libs/header-attrs-2.14/header-attrs.js"></script>
+  <script src="../../site_libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
   <script src="../../site_libs/popper-2.6.0/popper.min.js"></script>
   <link href="../../site_libs/tippy-6.2.7/tippy.css" rel="stylesheet" />
   <link href="../../site_libs/tippy-6.2.7/tippy-light-border.css" rel="stylesheet" />
@@ -2263,22 +2267,30 @@ d-appendix d-footnote-list a.footnote-backlink {
 
 </div>
 <p>In this post, I will summarize a talk I made to the members of my research center (<a href="https://uclouvain.be/en/research-institutes/iacchos/demo">DEMO</a>), promoting reproducibility. I focused on <strong>computation reproducibility</strong> which requires that someone else should be able to reproduce your results with the materials (data, codes, guidance) you provided. This transparency is necessary as our research results are used to inform public and health policies. The key elements I will go through should be seen as minimal requirements for reproducibility. I am sharing my own practice but there are of course other (better) ways to do.</p>
+<div class="layout-chunk" data-layout="l-body">
+<div class="figure" style="text-align: center"><span style="display:block;" id="fig:unnamed-chunk-2"></span>
+<img src="figures/reproVSrepli.JPG" alt="Figure from radiance.org.uk" width="400" height="300" />
+<p class="caption">
+Figure 1: Figure from radiance.org.uk
+</p>
+</div>
+</div>
 <h1 id="folders-structure">Folder’s structure</h1>
 <p>For someone else to be able to reproduce your analysis, a first requirement is that the repository associated to a research project is well organized. In addition, the project’s folder structure must allow an evolution over a long period of time (sometimes really long…). Hence, your desktop should definitely not look like this one (no judgment here):</p>
 <div class="layout-chunk" data-layout="l-body">
-<div class="figure" style="text-align: center"><span id="fig:unnamed-chunk-2"></span>
-<img src="messy_files.jpg" alt="The don't..." width="400" height="300" />
+<div class="figure" style="text-align: center"><span style="display:block;" id="fig:unnamed-chunk-3"></span>
+<img src="figures/messy_files.jpg" alt="The don't..." width="400" height="300" />
 <p class="caption">
-Figure 1: The don’t…
+Figure 2: The don’t…
 </p>
 </div>
 </div>
 <p>My actual practice is to structure my project folder, here named “<em>5-15 mortality estimation</em>”, as follows</p>
 <div class="layout-chunk" data-layout="l-body">
-<div class="figure" style="text-align: center"><span id="fig:unnamed-chunk-3"></span>
-<img src="clean_files.PNG" alt="...and the do" width="400" height="300" />
+<div class="figure" style="text-align: center"><span style="display:block;" id="fig:unnamed-chunk-4"></span>
+<img src="figures/clean_files.PNG" alt="...and the do" width="400" height="300" />
 <p class="caption">
-Figure 2: …and the do
+Figure 3: …and the do
 </p>
 </div>
 </div>
@@ -2294,20 +2306,20 @@ Figure 2: …and the do
 </ul>
 <h1 id="data">Data</h1>
 <div class="layout-chunk" data-layout="l-body">
-<div class="figure" style="text-align: center"><span id="fig:unnamed-chunk-4"></span>
-<img src="data.PNG" alt="Was that version 37b'?" width="376" />
+<div class="figure" style="text-align: center"><span style="display:block;" id="fig:unnamed-chunk-5"></span>
+<img src="figures/data.PNG" alt="Was that version 37b'?" width="376" />
 <p class="caption">
-Figure 3: Was that version 37b’?
+Figure 4: Was that version 37b’?
 </p>
 </div>
 </div>
 <p>I usually subdivide the <code>data</code> folder into <code>raw</code> and <code>tidy</code>. I do not save data versions but rather the code performing the data cleaning and manipulation on the raw data. At the end of this code, I save the tidy data set in <code>tidy</code>. I can then load the data from this subfolder to save time if the cleaning code takes time to run.</p>
 <h1 id="coding-practices">Coding practices</h1>
 <div class="layout-chunk" data-layout="l-body">
-<div class="figure" style="text-align: center"><span id="fig:unnamed-chunk-5"></span>
-<img src="messy_code.PNG" alt="What is this f@#&amp;!% code doing?" width="816" />
+<div class="figure" style="text-align: center"><span style="display:block;" id="fig:unnamed-chunk-6"></span>
+<img src="figures/messy_code.PNG" alt="What is this f@#&amp;!% code doing?" width="816" />
 <p class="caption">
-Figure 4: What is this f@#&amp;!% code doing?
+Figure 5: What is this f@#&amp;!% code doing?
 </p>
 </div>
 </div>
@@ -2322,19 +2334,19 @@ Figure 4: What is this f@#&amp;!% code doing?
 </ul>
 <p>I also add a short description at the top of each script, write clear commenting and define sections in the script for better visibility.</p>
 <div class="layout-chunk" data-layout="l-body">
-<div class="figure" style="text-align: center"><span id="fig:unnamed-chunk-6"></span>
-<img src="coding.PNG" alt="One example" width="516" />
+<div class="figure" style="text-align: center"><span style="display:block;" id="fig:unnamed-chunk-7"></span>
+<img src="figures/coding.PNG" alt="One example" width="516" />
 <p class="caption">
-Figure 5: One example
+Figure 6: One example
 </p>
 </div>
 </div>
 <h1 id="sharing-code-and-data">Sharing code and data</h1>
 <div class="layout-chunk" data-layout="l-body">
-<div class="figure" style="text-align: center"><span id="fig:unnamed-chunk-7"></span>
-<img src="vcs.png" alt="Version Control System (VCS)" width="400" height="300" />
+<div class="figure" style="text-align: center"><span style="display:block;" id="fig:unnamed-chunk-8"></span>
+<img src="figures/vcs.png" alt="Version Control System (VCS)" width="400" height="300" />
 <p class="caption">
-Figure 6: Version Control System (VCS)
+Figure 7: Version Control System (VCS)
 </p>
 </div>
 </div>
@@ -2354,53 +2366,53 @@ Figure 6: Version Control System (VCS)
 <li><p>Open Git Bash and use the following commands (each run by pressing enter):</p></li>
 </ol>
 <div class="layout-chunk" data-layout="l-body">
-<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb1-1" title="1"><span class="co"># Print the present working directory where Git Bash is located</span></a>
-<a class="sourceLine" id="cb1-2" title="2">pwd </a>
-<a class="sourceLine" id="cb1-3" title="3"></a>
-<a class="sourceLine" id="cb1-4" title="4"><span class="co"># Use cd &quot;repository path&quot; to let Git Bash know where to locate the current directory.</span></a>
-<a class="sourceLine" id="cb1-5" title="5"><span class="co"># Locate it in the project you want to add to Github.  </span></a>
-<a class="sourceLine" id="cb1-6" title="6">cd <span class="st">&quot;C:/Users/..../my_first_project&quot;</span></a>
-<a class="sourceLine" id="cb1-7" title="7"></a>
-<a class="sourceLine" id="cb1-8" title="8"><span class="co"># Initializes the folder as a local repo. Files in the folder will now be tracked.</span></a>
-<a class="sourceLine" id="cb1-9" title="9">git init    </a>
-<a class="sourceLine" id="cb1-10" title="10"></a>
-<a class="sourceLine" id="cb1-11" title="11"><span class="co"># Gives you the status (tracked/untracked) of the different folders and files present.</span></a>
-<a class="sourceLine" id="cb1-12" title="12">git status</a>
-<a class="sourceLine" id="cb1-13" title="13"></a>
-<a class="sourceLine" id="cb1-14" title="14"><span class="co"># Adding file(s).</span></a>
-<a class="sourceLine" id="cb1-15" title="15">git add <span class="st">&quot;filename.extension&quot;</span>        </a>
-<a class="sourceLine" id="cb1-16" title="16"><span class="co"># Alternatively, the command &quot;git add .&quot; will add all folders and files present in the repo.</span></a>
-<a class="sourceLine" id="cb1-17" title="17"></a>
-<a class="sourceLine" id="cb1-18" title="18"><span class="co"># Adds a brief message explaining what changes were made.</span></a>
-<a class="sourceLine" id="cb1-19" title="19">git commit <span class="op">-</span>m <span class="st">&quot;your brief message here&quot;</span></a>
-<a class="sourceLine" id="cb1-20" title="20"></a>
-<a class="sourceLine" id="cb1-21" title="21"><span class="co"># Defines that it is the main branch (easiest case)</span></a>
-<a class="sourceLine" id="cb1-22" title="22">git branch <span class="op">-</span>M main</a>
-<a class="sourceLine" id="cb1-23" title="23"></a>
-<a class="sourceLine" id="cb1-24" title="24"><span class="co"># Connects your local repository to the one you created on the Github server.</span></a>
-<a class="sourceLine" id="cb1-25" title="25"><span class="co"># This step is only required once, when initializing a repo.</span></a>
-<a class="sourceLine" id="cb1-26" title="26"><span class="co"># Note that the URL is shown at the top of the Github </span></a>
-<a class="sourceLine" id="cb1-27" title="27"><span class="co"># webpage, just after creating your repository.</span></a>
-<a class="sourceLine" id="cb1-28" title="28">git remote add origin https<span class="op">:</span><span class="er">//</span>github.com<span class="op">/</span>user_name<span class="op">/</span>repo_name.git</a>
-<a class="sourceLine" id="cb1-29" title="29"></a>
-<a class="sourceLine" id="cb1-30" title="30"><span class="co"># Finally, push the files and associated message from your laptop to </span></a>
-<a class="sourceLine" id="cb1-31" title="31"><span class="co"># the Github server.</span></a>
-<a class="sourceLine" id="cb1-32" title="32">git push <span class="op">-</span>u origin main</a></code></pre></div>
+<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Print the present working directory where Git Bash is located</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>pwd </span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Use cd &quot;repository path&quot; to let Git Bash know where to locate the current directory.</span></span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="co"># Locate it in the project you want to add to Github.  </span></span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>cd <span class="st">&quot;C:/Users/..../my_first_project&quot;</span></span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a><span class="co"># Initializes the folder as a local repo. Files in the folder will now be tracked.</span></span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a>git init    </span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a><span class="co"># Gives you the status (tracked/untracked) of the different folders and files present.</span></span>
+<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a>git status</span>
+<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a><span class="co"># Adding file(s).</span></span>
+<span id="cb1-15"><a href="#cb1-15" aria-hidden="true" tabindex="-1"></a>git add <span class="st">&quot;filename.extension&quot;</span>        </span>
+<span id="cb1-16"><a href="#cb1-16" aria-hidden="true" tabindex="-1"></a><span class="co"># Alternatively, the command &quot;git add .&quot; will add all folders and files present in the repo.</span></span>
+<span id="cb1-17"><a href="#cb1-17" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-18"><a href="#cb1-18" aria-hidden="true" tabindex="-1"></a><span class="co"># Adds a brief message explaining what changes were made.</span></span>
+<span id="cb1-19"><a href="#cb1-19" aria-hidden="true" tabindex="-1"></a>git commit <span class="sc">-</span>m <span class="st">&quot;your brief message here&quot;</span></span>
+<span id="cb1-20"><a href="#cb1-20" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-21"><a href="#cb1-21" aria-hidden="true" tabindex="-1"></a><span class="co"># Defines that it is the main branch (easiest case)</span></span>
+<span id="cb1-22"><a href="#cb1-22" aria-hidden="true" tabindex="-1"></a>git branch <span class="sc">-</span>M main</span>
+<span id="cb1-23"><a href="#cb1-23" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-24"><a href="#cb1-24" aria-hidden="true" tabindex="-1"></a><span class="co"># Connects your local repository to the one you created on the Github server.</span></span>
+<span id="cb1-25"><a href="#cb1-25" aria-hidden="true" tabindex="-1"></a><span class="co"># This step is only required once, when initializing a repo.</span></span>
+<span id="cb1-26"><a href="#cb1-26" aria-hidden="true" tabindex="-1"></a><span class="co"># Note that the URL is shown at the top of the Github </span></span>
+<span id="cb1-27"><a href="#cb1-27" aria-hidden="true" tabindex="-1"></a><span class="co"># webpage, just after creating your repository.</span></span>
+<span id="cb1-28"><a href="#cb1-28" aria-hidden="true" tabindex="-1"></a>git remote add origin https<span class="sc">:</span><span class="er">//</span>github.com<span class="sc">/</span>user_name<span class="sc">/</span>repo_name.git</span>
+<span id="cb1-29"><a href="#cb1-29" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-30"><a href="#cb1-30" aria-hidden="true" tabindex="-1"></a><span class="co"># Finally, push the files and associated message from your laptop to </span></span>
+<span id="cb1-31"><a href="#cb1-31" aria-hidden="true" tabindex="-1"></a><span class="co"># the Github server.</span></span>
+<span id="cb1-32"><a href="#cb1-32" aria-hidden="true" tabindex="-1"></a>git push <span class="sc">-</span>u origin main</span></code></pre></div>
 </div>
 <p>If you now go back to your repository on Github and refresh the page, you should see the file(s) you added and the message associated to the changes.</p>
 <p>The initialization is done. Let’s now focus on how it works when progressing on the project. Assume that you go back to this project some days later. Further suppose that you work on a script called “cleaning_data.R”. When you are satisfied with your work, open Git Bash and write the following commands:</p>
 <div class="layout-chunk" data-layout="l-body">
-<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb2-1" title="1"><span class="co"># Running the command &quot;git status&quot; will tell you that cleaning_data.R</span></a>
-<a class="sourceLine" id="cb2-2" title="2"><span class="co"># has been modified. However, this command is not needed for what follows.</span></a>
-<a class="sourceLine" id="cb2-3" title="3"></a>
-<a class="sourceLine" id="cb2-4" title="4"><span class="co"># Adds the modifications performed on cleaning_data.R</span></a>
-<a class="sourceLine" id="cb2-5" title="5">git add <span class="st">&quot;cleaning_data.R&quot;</span></a>
-<a class="sourceLine" id="cb2-6" title="6"></a>
-<a class="sourceLine" id="cb2-7" title="7"><span class="co"># Adds the message briefly describing what you changed in the script.</span></a>
-<a class="sourceLine" id="cb2-8" title="8">git commit <span class="op">-</span>m <span class="st">&quot;convert NA into 0&quot;</span></a>
-<a class="sourceLine" id="cb2-9" title="9"></a>
-<a class="sourceLine" id="cb2-10" title="10"><span class="co"># Pushes the files to the Github server</span></a>
-<a class="sourceLine" id="cb2-11" title="11">git push <span class="op">-</span>u origin main</a></code></pre></div>
+<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Running the command &quot;git status&quot; will tell you that cleaning_data.R</span></span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="co"># has been modified. However, this command is not needed for what follows.</span></span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Adds the modifications performed on cleaning_data.R</span></span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>git add <span class="st">&quot;cleaning_data.R&quot;</span></span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a><span class="co"># Adds the message briefly describing what you changed in the script.</span></span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a>git commit <span class="sc">-</span>m <span class="st">&quot;convert NA into 0&quot;</span></span>
+<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a><span class="co"># Pushes the files to the Github server</span></span>
+<span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a>git push <span class="sc">-</span>u origin main</span></code></pre></div>
 </div>
 <p>Your changes are now on the Github server. You only need to iterate these three commands each time you make progress on your project.</p>
 <p>The explanation above is all you need to start having your projects on Github. Some importants notes:</p>
