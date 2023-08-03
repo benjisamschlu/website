@@ -23,5 +23,8 @@ output:
 #### University of Toronto
 
 
+In my research, I examine health inequalities from a spatial and kinship perspective, using formal demographic methods and Bayesian statistics.
+
+
 
 
