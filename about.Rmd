@@ -10,7 +10,7 @@ knitr::opts_chunk$set(echo = FALSE)
 
 I am a postdoctoral fellow at the [Statistical Department of the University of Toronto](https://www.statistics.utoronto.ca/), conducting research in the [Bayesian Demography Lab](https://www.monicaalexander.com/lab/) under the supervision of [Monica Alexander](https://www.monicaalexander.com/about/). My current research focus on racial/ethnic disparity in the experience of parental loss in the US. 
 
-I was a PhD student at [UCLouvain](https://uclouvain.be/fr/index.html), Belgium in the Center for Demographic Research [(DEMO)](https://uclouvain.be/en/research-institutes/iacchos/demo) under the supervision of [Bruno Masquelier](https://scholar.google.com/citations?user=OHF3hUYAAAAJ&hl=en). My thesis focused on mortality estimation at the subnational level using Bayesian methods. I am interested in statistics, applied mathematics, R, data visualization, open science and science of science. 
+I was a PhD student at [UCLouvain](https://uclouvain.be/fr/index.html) (Belgium), in the Center for Demographic Research [(DEMO)](https://uclouvain.be/en/research-institutes/iacchos/demo) under the supervision of [Bruno Masquelier](https://scholar.google.com/citations?user=OHF3hUYAAAAJ&hl=en). My thesis focused on mortality estimation at the subnational level using Bayesian methods. I am interested in statistics, applied mathematics, R, data visualization, open science and science of science. 
 
 Outside of work, I am a full time dad.
 
@@ -22,7 +22,7 @@ Before starting my PhD, I worked at the [Centre for Research on the Epidemiology
 
 # Education
 
-I did my master in quantitative economics at the Free University Brussels (ULB). I trained myself further in statistics by first following an [online micromaster](https://micromasters.mit.edu/ds/) in Statistics and Data Science at the Massachusetts Institute of Technology (MIT) and then, by validating statistics courses at UCLouvain.
+I did my master in quantitative economics at the [Free University Brussels](https://www.ulb.be/en/ulb-homepage). I trained myself further in statistics by first following an [online micromaster](https://micromasters.mit.edu/ds/) in Statistics and Data Science at the Massachusetts Institute of Technology (MIT) and then, by validating statistics courses at UCLouvain.
 
 I also had the opportunity to follow several workshops (usually 1 week long):
 
