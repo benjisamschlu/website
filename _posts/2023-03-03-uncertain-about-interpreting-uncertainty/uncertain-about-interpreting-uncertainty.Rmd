@@ -1,0 +1,40 @@
+---
+title: "Uncertain about interpreting uncertainty?"
+description: |
+  Differentiating between Bayesian and Frequentist interpretation of uncertainty.
+base_url: https://www.benjaminschluter.com
+author: Benjamin Schluter
+date: 2023-03-03
+output:
+  distill::distill_article:
+    self_contained: false
+    highlight: monochrome
+---
+
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE)
+```
+
+The interpretation of uncertainty depends on whether you use Frequentist or Bayesian statistics. In this post, my aim is to explain the difference between the interpretation of uncertainty of these two frameworks. I will also highlight why in my opinion, the interpretation of Bayesian uncertainty is more fitted to demographers working with census or civil register data.
+
+
+# Frequentist framework
+
+In the Frequentist framework, the way you reflect uncertainty around you parameters is by computing confidence intervals. These intervals are based on the assumption of a repetition of hypothetical samples. If your sample is a random sample draw from the population, computing a 95% confidence interval around your parameter means that in 95% of the hypothetical samples, it should contain the true parameter's value. Let's use a visualization to make that clearer.
+
+
+
+Key points here. First, it means that your 95% confidence interval might not contain the true parameter's value if your sample ends up being in the 5%. Second, you cannot interpret the confidence interval as "there is a 95% probability that the true parameter's value is contained in the 95% confidence interval". Finally, this is crucially dependent on the assumption of a hypothetical repetition of random sample. 
+
+
+
+
+
+# Bayesian framework
+
+
+
+# Statistical analysis on exhaustive data
+
+
