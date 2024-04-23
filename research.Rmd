@@ -6,11 +6,53 @@ title: "Research"
 knitr::opts_chunk$set(echo = FALSE)
 ```
 
-page in progress ...
-
-
 # Peer-reviewed publications
 
-# Pre-prints
+* A. Menashe-Oren, B. Masquelier, __B-S. Schlüter__, S. Helleringer. [Estimer la mortalité aux âges élevés dans les pays à données incomplètes: les estimations basées sur la survie des parents sont-elles affectées par des biais de sélection ?](https://www.ined.fr/fr/publications/editions/population/population-2023-n3-4/) _Population_ (french edition) 78 (3), 501-522 (2023)
 
-# Code
+* __B-S. Schlüter__, B. Masquelier, C-G. Camarda. [Heterogeneity in subnational mortality in the context of the COVID-19 pandemic: The case of belgian districts](https://archpublichealth.biomedcentral.com/articles/10.1186/s13690-022-00874-7). _Archives of Public Health_, 80, 130 (2022)
+
+* __B-S. Schlüter__, B. Masquelier. [Space-time smoothing of mortality estimates in children aged 5-14 in Sub-Saharan Africa](https://journals.plos.org/plosone/article?id=10.1371/journal.pone.0245596). _PloS one_, 16(1), e0245596 (2021)
+
+* M. Moitinho de Almeida, __B-S. Schlüter__, J. van Loenhout et al. [Changes in patient admissions after the 2015 Earthquake: a tertiary hospital-based study in Kathmandu, Nepal](https://www.nature.com/articles/s41598-020-61901-7).
+_Scientific Report_, 10, 4956 (2020)
+
+* __B-S. Schlüter__, B. Masquelier, C. J. E. Metcalf, A. Rasoanomenjanahary. [Long-term trends in seasonality of mortality in urban Madagascar: the role of the epidemiological transition](https://pubmed.ncbi.nlm.nih.gov/32027239/). _Global Health Action_, Volume 13, Issue 1 (2020)
+
+* M. Moitinho de Almeida, J. van Loenhout, S. Singh Thapa, K. C. Kumar, __B-S. Schlüter__ et al. [Clinical and demographic profile of admitted victims in a tertiary hospital after the 2015 earthquake in Nepal](https://journals.plos.org/plosone/article?id=10.1371/journal.pone.0220016). _PloS one_, 14(7): e0220016 (2019)
+
+* D. Guha-Sapir, __B-S. Schlüter__, J. M. Rodriguez-Llanes, L. Lillywhite, M. Hicks. [Patterns of civilian and child deaths due to war related-violence in Syria: a comparative analysis from the Violation Documentation Center dataset, 2011-16](https://www.thelancet.com/journals/langlo/article/PIIS2214-109X(17)30469-2/fulltext). _Lancet Global Health_, Volume 6, Issue 1, p.e103-e110 (2018)
+
+* J. M. Rodriguez-Llanes, D. Guha-Sapir, __B-S. Schlüter__, M. Hicks. [Epidemiological findings of major chemical attacks in the Syrian war are consistent with civilian targeting: a short report](https://conflictandhealth.biomedcentral.com/articles/10.1186/s13031-018-0150-4). _Conflict and Health_, 12:16 (2018)
+
+
+# Talks
+
+* __European Population Conference__, June 2024 - Edinburgh, Scotland
+  * _Modeling age patterns of childlessness: a Bayesian parametric approach_, B-S. Schlüter, M. J. Alexander
+
+* __Population Association of America__, April 2024 - Columbus, United States
+  *  _Children experiencing parental death due to drugs and firearms in the United States, 1999 - 2020_, B-S. Schlüter, D. Alburez-Gutierrez, K. Bibbins-Domingo, M. J. Alexander, M. V. Kiang
+  * _Modeling age patterns of childlessness: a Bayesian parametric approach_, B-S. Schlüter, M. J. Alexander
+  
+* __British Society for Population Studies__, September 2022 - Winchester, United Kingdom
+  * _Comparison of small-area mortality estimation models: A simulation setup_, B-S. Schlüter, B. Masquelier
+  
+* __Dutch Demography Day__, November 2022 - Utrecht, Netherlands
+  * _Comparison of small-area mortality estimation models: A simulation setup_, B-S. Schlüter, B. Masquelier
+  
+* __International Population Conference__, December 2021 - Online
+  * _Heterogeneity in subnational mortality due to
+COVID-19: The case of Belgian districts_, B-S. Schlüter, B. Masquelier, C-G. Camarda
+
+* __British Society for Population Studies__, September 2021 - Online
+  * _Subnational analyses of Covid19 impact on mortality: The case of Belgian districts in 2020_, B-S. Schlüter, B. Masquelier
+
+* __EAPS Health, Morbidity and Mortality Workshop__, September 2020 - Evora, Portugal
+  * _Space-time smoothing of mortality estimates in
+children aged 5-14 in Sub-Saharan Africa_, B-S. Schlüter, B. Masquelier
+
+* __8$^{th}$ African Population Conference__, November 2019 - Entebbe, Uganda
+  * _Long-term trends in seasonality of mortality in
+Madagascar: the role of the epidemiological transition_, B-S. Schlüter, B. Masquelier, J. Metcalf, A. Rasoanomenjanahary 
+

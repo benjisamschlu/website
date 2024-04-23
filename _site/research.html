@@ -455,8 +455,8 @@ code span.wa { color: #5e5e5e; font-style: italic; } /* Warning */
   </style>
 
   <script src="site_libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
-  <link href="site_libs/font-awesome-6.4.0/css/all.min.css" rel="stylesheet"/>
-  <link href="site_libs/font-awesome-6.4.0/css/v4-shims.min.css" rel="stylesheet"/>
+  <link href="site_libs/font-awesome-6.4.2/css/all.min.css" rel="stylesheet"/>
+  <link href="site_libs/font-awesome-6.4.2/css/v4-shims.min.css" rel="stylesheet"/>
   <script src="site_libs/headroom-0.9.4/headroom.min.js"></script>
   <!--/radix_placeholder_navigation_in_header-->
   <!--radix_placeholder_distill-->
@@ -567,9 +567,21 @@ code span.wa { color: #5e5e5e; font-style: italic; } /* Warning */
     display: none !important;
   }
 
+  hr.section-separator {
+    border: none;
+    border-top: 1px solid rgba(0, 0, 0, 0.1);
+    margin: 0px;
+  }
+
+
+  d-byline {
+    border-top: none;
+  }
+
   d-article {
     padding-top: 2.5rem;
     padding-bottom: 30px;
+    border-top: none;
   }
 
   d-appendix {
@@ -664,6 +676,11 @@ code span.wa { color: #5e5e5e; font-style: italic; } /* Warning */
   d-article div.sourceCode pre {
     padding-left: 18px;
     font-size: 14px;
+  }
+
+  /* tweak for Pandoc numbered line within distill */
+  d-article pre.numberSource code > span {
+      left: -2em;
   }
 
   d-article pre {
@@ -1425,6 +1442,12 @@ code span.wa { color: #5e5e5e; font-style: italic; } /* Warning */
     // create d-title
     $('.d-title').changeElementType('d-title');
 
+    // separator
+    var separator = '<hr class="section-separator" style="clear: both"/>';
+    // prepend separator above appendix
+    $('.d-byline').before(separator);
+    $('.d-article').before(separator);
+
     // create d-byline
     var byline = $('<d-byline></d-byline>');
     $('.d-byline').replaceWith(byline);
@@ -1502,8 +1525,9 @@ code span.wa { color: #5e5e5e; font-style: italic; } /* Warning */
     $('.distill-force-highlighting-css').parent().remove();
 
     // remove empty line numbers inserted by pandoc when using a
-    // custom syntax highlighting theme
-    $('code.sourceCode a:empty').remove();
+    // custom syntax highlighting theme, except when numbering line
+    // in code chunk
+    $('pre:not(.numberLines) code.sourceCode a:empty').remove();
 
     // load distill framework
     load_distill_framework();
@@ -1529,12 +1553,13 @@ code span.wa { color: #5e5e5e; font-style: italic; } /* Warning */
       // add orcid ids
       $('.authors-affiliations').find('.author').each(function(i, el) {
         var orcid_id = front_matter.authors[i].orcidID;
+        var author_name = front_matter.authors[i].author
         if (orcid_id) {
           var a = $('<a></a>');
           a.attr('href', 'https://orcid.org/' + orcid_id);
           var img = $('<img></img>');
           img.addClass('orcid-id');
-          img.attr('alt', 'ORCID ID');
+          img.attr('alt', author_name ? 'ORCID ID for ' + author_name : 'ORCID ID');
           img.attr('src','data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAA2ZpVFh0WE1MOmNvbS5hZG9iZS54bXAAAAAAADw/eHBhY2tldCBiZWdpbj0i77u/IiBpZD0iVzVNME1wQ2VoaUh6cmVTek5UY3prYzlkIj8+IDx4OnhtcG1ldGEgeG1sbnM6eD0iYWRvYmU6bnM6bWV0YS8iIHg6eG1wdGs9IkFkb2JlIFhNUCBDb3JlIDUuMC1jMDYwIDYxLjEzNDc3NywgMjAxMC8wMi8xMi0xNzozMjowMCAgICAgICAgIj4gPHJkZjpSREYgeG1sbnM6cmRmPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5LzAyLzIyLXJkZi1zeW50YXgtbnMjIj4gPHJkZjpEZXNjcmlwdGlvbiByZGY6YWJvdXQ9IiIgeG1sbnM6eG1wTU09Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC9tbS8iIHhtbG5zOnN0UmVmPSJodHRwOi8vbnMuYWRvYmUuY29tL3hhcC8xLjAvc1R5cGUvUmVzb3VyY2VSZWYjIiB4bWxuczp4bXA9Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC8iIHhtcE1NOk9yaWdpbmFsRG9jdW1lbnRJRD0ieG1wLmRpZDo1N0NEMjA4MDI1MjA2ODExOTk0QzkzNTEzRjZEQTg1NyIgeG1wTU06RG9jdW1lbnRJRD0ieG1wLmRpZDozM0NDOEJGNEZGNTcxMUUxODdBOEVCODg2RjdCQ0QwOSIgeG1wTU06SW5zdGFuY2VJRD0ieG1wLmlpZDozM0NDOEJGM0ZGNTcxMUUxODdBOEVCODg2RjdCQ0QwOSIgeG1wOkNyZWF0b3JUb29sPSJBZG9iZSBQaG90b3Nob3AgQ1M1IE1hY2ludG9zaCI+IDx4bXBNTTpEZXJpdmVkRnJvbSBzdFJlZjppbnN0YW5jZUlEPSJ4bXAuaWlkOkZDN0YxMTc0MDcyMDY4MTE5NUZFRDc5MUM2MUUwNEREIiBzdFJlZjpkb2N1bWVudElEPSJ4bXAuZGlkOjU3Q0QyMDgwMjUyMDY4MTE5OTRDOTM1MTNGNkRBODU3Ii8+IDwvcmRmOkRlc2NyaXB0aW9uPiA8L3JkZjpSREY+IDwveDp4bXBtZXRhPiA8P3hwYWNrZXQgZW5kPSJyIj8+84NovQAAAR1JREFUeNpiZEADy85ZJgCpeCB2QJM6AMQLo4yOL0AWZETSqACk1gOxAQN+cAGIA4EGPQBxmJA0nwdpjjQ8xqArmczw5tMHXAaALDgP1QMxAGqzAAPxQACqh4ER6uf5MBlkm0X4EGayMfMw/Pr7Bd2gRBZogMFBrv01hisv5jLsv9nLAPIOMnjy8RDDyYctyAbFM2EJbRQw+aAWw/LzVgx7b+cwCHKqMhjJFCBLOzAR6+lXX84xnHjYyqAo5IUizkRCwIENQQckGSDGY4TVgAPEaraQr2a4/24bSuoExcJCfAEJihXkWDj3ZAKy9EJGaEo8T0QSxkjSwORsCAuDQCD+QILmD1A9kECEZgxDaEZhICIzGcIyEyOl2RkgwAAhkmC+eAm0TAAAAABJRU5ErkJggg==');
           a.append(img);
           $(this).append(a);
@@ -2202,7 +2227,7 @@ code span.wa { color: #5e5e5e; font-style: italic; } /* Warning */
     color: var(--hover-color, white);
   }</style>
   <!--/radix_placeholder_distill-->
-  <script src="site_libs/header-attrs-2.23/header-attrs.js"></script>
+  <script src="site_libs/header-attrs-2.26/header-attrs.js"></script>
   <script src="site_libs/popper-2.6.0/popper.min.js"></script>
   <link href="site_libs/tippy-6.2.7/tippy.css" rel="stylesheet" />
   <link href="site_libs/tippy-6.2.7/tippy-light-border.css" rel="stylesheet" />
@@ -2247,6 +2272,7 @@ code span.wa { color: #5e5e5e; font-style: italic; } /* Warning */
 
 <div class="d-title">
 <h1>Research</h1>
+
 <!--radix_placeholder_categories-->
 <!--/radix_placeholder_categories-->
 
@@ -2254,10 +2280,57 @@ code span.wa { color: #5e5e5e; font-style: italic; } /* Warning */
 
 
 <div class="d-article">
-<p>page in progress …</p>
 <h1 id="peer-reviewed-publications">Peer-reviewed publications</h1>
-<h1 id="pre-prints">Pre-prints</h1>
-<h1 id="code">Code</h1>
+<ul>
+<li><p>A. Menashe-Oren, B. Masquelier, <strong>B-S. Schlüter</strong>, S. Helleringer. <a href="https://www.ined.fr/fr/publications/editions/population/population-2023-n3-4/">Estimer la mortalité aux âges élevés dans les pays à données incomplètes: les estimations basées sur la survie des parents sont-elles affectées par des biais de sélection ?</a> <em>Population</em> (french edition) 78 (3), 501-522 (2023)</p></li>
+<li><p><strong>B-S. Schlüter</strong>, B. Masquelier, C-G. Camarda. <a href="https://archpublichealth.biomedcentral.com/articles/10.1186/s13690-022-00874-7">Heterogeneity in subnational mortality in the context of the COVID-19 pandemic: The case of belgian districts</a>. <em>Archives of Public Health</em>, 80, 130 (2022)</p></li>
+<li><p><strong>B-S. Schlüter</strong>, B. Masquelier. <a href="https://journals.plos.org/plosone/article?id=10.1371/journal.pone.0245596">Space-time smoothing of mortality estimates in children aged 5-14 in Sub-Saharan Africa</a>. <em>PloS one</em>, 16(1), e0245596 (2021)</p></li>
+<li><p>M. Moitinho de Almeida, <strong>B-S. Schlüter</strong>, J. van Loenhout et al. <a href="https://www.nature.com/articles/s41598-020-61901-7">Changes in patient admissions after the 2015 Earthquake: a tertiary hospital-based study in Kathmandu, Nepal</a>.
+<em>Scientific Report</em>, 10, 4956 (2020)</p></li>
+<li><p><strong>B-S. Schlüter</strong>, B. Masquelier, C. J. E. Metcalf, A. Rasoanomenjanahary. <a href="https://pubmed.ncbi.nlm.nih.gov/32027239/">Long-term trends in seasonality of mortality in urban Madagascar: the role of the epidemiological transition</a>. <em>Global Health Action</em>, Volume 13, Issue 1 (2020)</p></li>
+<li><p>M. Moitinho de Almeida, J. van Loenhout, S. Singh Thapa, K. C. Kumar, <strong>B-S. Schlüter</strong> et al. <a href="https://journals.plos.org/plosone/article?id=10.1371/journal.pone.0220016">Clinical and demographic profile of admitted victims in a tertiary hospital after the 2015 earthquake in Nepal</a>. <em>PloS one</em>, 14(7): e0220016 (2019)</p></li>
+<li><p>D. Guha-Sapir, <strong>B-S. Schlüter</strong>, J. M. Rodriguez-Llanes, L. Lillywhite, M. Hicks. <a href="https://www.thelancet.com/journals/langlo/article/PIIS2214-109X(17)30469-2/fulltext">Patterns of civilian and child deaths due to war related-violence in Syria: a comparative analysis from the Violation Documentation Center dataset, 2011-16</a>. <em>Lancet Global Health</em>, Volume 6, Issue 1, p.e103-e110 (2018)</p></li>
+<li><p>J. M. Rodriguez-Llanes, D. Guha-Sapir, <strong>B-S. Schlüter</strong>, M. Hicks. <a href="https://conflictandhealth.biomedcentral.com/articles/10.1186/s13031-018-0150-4">Epidemiological findings of major chemical attacks in the Syrian war are consistent with civilian targeting: a short report</a>. <em>Conflict and Health</em>, 12:16 (2018)</p></li>
+</ul>
+<h1 id="talks">Talks</h1>
+<ul>
+<li><strong>European Population Conference</strong>, June 2024 - Edinburgh, Scotland
+<ul>
+<li><em>Modeling age patterns of childlessness: a Bayesian parametric approach</em>, B-S. Schlüter, M. J. Alexander</li>
+</ul></li>
+<li><strong>Population Association of America</strong>, April 2024 - Columbus, United States
+<ul>
+<li><em>Children experiencing parental death due to drugs and firearms in the United States, 1999 - 2020</em>, B-S. Schlüter, D. Alburez-Gutierrez, K. Bibbins-Domingo, M. J. Alexander, M. V. Kiang</li>
+<li><em>Modeling age patterns of childlessness: a Bayesian parametric approach</em>, B-S. Schlüter, M. J. Alexander</li>
+</ul></li>
+<li><strong>British Society for Population Studies</strong>, September 2022 - Winchester, United Kingdom
+<ul>
+<li><em>Comparison of small-area mortality estimation models: A simulation setup</em>, B-S. Schlüter, B. Masquelier</li>
+</ul></li>
+<li><strong>Dutch Demography Day</strong>, November 2022 - Utrecht, Netherlands
+<ul>
+<li><em>Comparison of small-area mortality estimation models: A simulation setup</em>, B-S. Schlüter, B. Masquelier</li>
+</ul></li>
+<li><strong>International Population Conference</strong>, December 2021 - Online
+<ul>
+<li><em>Heterogeneity in subnational mortality due to
+COVID-19: The case of Belgian districts</em>, B-S. Schlüter, B. Masquelier, C-G. Camarda</li>
+</ul></li>
+<li><strong>British Society for Population Studies</strong>, September 2021 - Online
+<ul>
+<li><em>Subnational analyses of Covid19 impact on mortality: The case of Belgian districts in 2020</em>, B-S. Schlüter, B. Masquelier</li>
+</ul></li>
+<li><strong>EAPS Health, Morbidity and Mortality Workshop</strong>, September 2020 - Evora, Portugal
+<ul>
+<li><em>Space-time smoothing of mortality estimates in
+children aged 5-14 in Sub-Saharan Africa</em>, B-S. Schlüter, B. Masquelier</li>
+</ul></li>
+<li><strong>8<span class="math inline">\(^{th}\)</span> African Population Conference</strong>, November 2019 - Entebbe, Uganda
+<ul>
+<li><em>Long-term trends in seasonality of mortality in
+Madagascar: the role of the epidemiological transition</em>, B-S. Schlüter, B. Masquelier, J. Metcalf, A. Rasoanomenjanahary</li>
+</ul></li>
+</ul>
 <div class="sourceCode" id="cb1"><pre class="sourceCode r distill-force-highlighting-css"><code class="sourceCode r"></code></pre></div>
 <!--radix_placeholder_article_footer-->
 <!--/radix_placeholder_article_footer-->
@@ -2266,6 +2339,15 @@ code span.wa { color: #5e5e5e; font-style: italic; } /* Warning */
 <div class="d-appendix">
 </div>
 
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
 
 <!--radix_placeholder_site_after_body-->
 <!--/radix_placeholder_site_after_body-->
