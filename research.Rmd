@@ -8,6 +8,8 @@ knitr::opts_chunk$set(echo = FALSE)
 
 # Peer-reviewed publications
 
+* __B-S. Schlüter__, D. Alburez-Gutierrez, K. Bibbins-Domingo, M. J. Alexander, M. V Kiang. [Youth experiencing parental death due to drug poisoning and firearm violence in the US, 1999-2020](https://jamanetwork.com/journals/jama/article-abstract/2818482) _JAMA_, 331 (20), 1741-1747 (2024)
+
 * A. Menashe-Oren, B. Masquelier, __B-S. Schlüter__, S. Helleringer. [Estimer la mortalité aux âges élevés dans les pays à données incomplètes: les estimations basées sur la survie des parents sont-elles affectées par des biais de sélection ?](https://www.ined.fr/fr/publications/editions/population/population-2023-n3-4/) _Population_ (french edition) 78 (3), 501-522 (2023)
 
 * __B-S. Schlüter__, B. Masquelier, C-G. Camarda. [Heterogeneity in subnational mortality in the context of the COVID-19 pandemic: The case of belgian districts](https://archpublichealth.biomedcentral.com/articles/10.1186/s13690-022-00874-7). _Archives of Public Health_, 80, 130 (2022)
